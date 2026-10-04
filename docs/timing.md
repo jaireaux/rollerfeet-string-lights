@@ -7,3 +7,5 @@ At the v2.0 sanitized import commit, 2026-10-04 12:19:08 EDT, measured elapsed p
 3.0.0-dev setup snapshot at 2026-10-04T16:20:56Z: approximately 792 seconds elapsed since tracked initiation; approximately 329 seconds measured AI waiting. Final commit/push verification after this snapshot is excluded.
 
 Retention setup snapshot 2026-10-04T16:30:53Z: 1389 seconds elapsed, 364 seconds measured AI waiting. Firmware explanation prompt was not timed; transfer and verification after this snapshot are excluded. Totals remain lower-bound approximations.
+
+Blynk removal snapshot 2026-10-04T21:58:22Z: 75 seconds measured in this turn from first clock capture. Intervening conversation and diagram work are not included in this repository total; timing remains a lower bound. Commit/push/retention verification after this snapshot is excluded.

@@ -1,6 +1,6 @@
 # Rollerfeet string lights
 
-Arduino holiday lights using FastLED and Blynk.
+Arduino holiday lights using FastLED. The v2.0 baseline retains its historical Blynk integration; v3.0 runs locally without Blynk.
 
 ## v2.0 baseline
 
@@ -16,7 +16,7 @@ This import preserves legacy animation behavior and comments; it does not assert
 
 ## v3.0 development
 
-Work on `develop/3.0`. Credentials belong only in ignored `arduino_secrets.h`; copy `arduino_secrets.example.h` to that filename and fill values on each development machine. Never commit credentials or compiled firmware containing them. Version: 3.0.0-dev. Animation behavior has not yet been refactored.
+Work on `develop/3.0`. The current sketch needs no credentials and does not connect to Wi-Fi or Blynk. The Wi-Fi-only `arduino_secrets.example.h` is reserved for future connectivity; private credentials remain in ignored `arduino_secrets.h`. Never commit credentials or compiled firmware containing them. Version: 3.0.0-dev. Animation behavior has not yet been refactored.
 
 ## Arduino and Git workflow
 
@@ -29,3 +29,7 @@ Use Git to share committed code with the LNM clone. Treat Google Drive as a one-
 [Timing records](docs/timing.md) describe measured project age and AI waiting.
 
 Build verification (2026-10-04): Arduino CLI compile for esp32:esp32:XIAO_ESP32S3 passed using the observed dependency versions: 1,274,219 bytes program storage and 50,992 bytes global RAM. No upload or live hardware validation performed.
+
+Blynk removal: removed the Quickstart callbacks, uptime reporting, cloud connection and timer. Serial debugging and all animation code, pixel settings, brightness settings and animation intervals are retained. The lights no longer wait for a Blynk/Wi-Fi connection at startup. Wi-Fi controls and OTA are not implemented yet. Animation rendering cadence may change without network servicing; hardware validation is still required.
+
+Blynk-free build verification (2026-10-04): PASS for `esp32:esp32:XIAO_ESP32S3`, esp32 core 3.3.10 / FastLED 3.10.5. Program storage: 676,743 bytes; global RAM: 27,892 bytes. All 12 animation/helper files and animation dispatch match the previous commit. No upload or live test performed.

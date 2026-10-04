@@ -37,6 +37,13 @@
       "approximate_response_released_at": "2026-10-04T16:30:53Z",
       "duration_seconds": 35,
       "status": "partial_pre_transfer_snapshot"
+    },
+    {
+      "id": "blynk-removal-005",
+      "approximate_received_at": "2026-10-04T21:57:07Z",
+      "approximate_response_released_at": "2026-10-04T21:58:22Z",
+      "duration_seconds": 75,
+      "status": "partial_pre_commit_snapshot; intervening conversational turns unmeasured"
     }
   ],
   "snapshots": [
@@ -66,6 +73,13 @@
       "recorded_at": "2026-10-04T16:30:53Z",
       "measured_project_elapsed_seconds": 1389,
       "measured_cumulative_ai_waiting_seconds": 364,
+      "historical_time_included": false
+    },
+    {
+      "label": "blynk-removal",
+      "recorded_at": "2026-10-04T21:58:22Z",
+      "measured_project_elapsed_seconds": 21038,
+      "measured_cumulative_ai_waiting_seconds": 439,
       "historical_time_included": false
     }
   ]
