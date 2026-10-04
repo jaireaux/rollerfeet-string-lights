@@ -1,0 +1,80 @@
+[
+  {
+    "file": "XIAO_ESP32_holiday_lights.ino",
+    "original_sha256": "2084df5191c86ec738d9be15cf7f5efc3d72b2167850d1786a42cd895b35cb27",
+    "import_sha256": "b0c4396fc12eac726b664f5311244008947af8fa43ced9eb547851afc2dd40e0",
+    "credential_values_replaced": true
+  },
+  {
+    "file": "_animations.h",
+    "original_sha256": "200856e7bf8ab18ca92976cc4384c120096ca64e80f6ac75ae1b692da799978b",
+    "import_sha256": "200856e7bf8ab18ca92976cc4384c120096ca64e80f6ac75ae1b692da799978b",
+    "credential_values_replaced": false
+  },
+  {
+    "file": "_classicChristmas.ino",
+    "original_sha256": "165ba756fcafd32857f3120bd17bf7f83afe9383c06c17cd8089cf9d0d1d0fb5",
+    "import_sha256": "165ba756fcafd32857f3120bd17bf7f83afe9383c06c17cd8089cf9d0d1d0fb5",
+    "credential_values_replaced": false
+  },
+  {
+    "file": "_fadeinout.ino",
+    "original_sha256": "50ac789666c2387aaafdb37473a8b6a1048297361ceffbdc6f4dce584c12d1fa",
+    "import_sha256": "50ac789666c2387aaafdb37473a8b6a1048297361ceffbdc6f4dce584c12d1fa",
+    "credential_values_replaced": false
+  },
+  {
+    "file": "_metaballs.ino",
+    "original_sha256": "e4e72bbb0138dec02cdf3d48b727a932e4374071ae01f923c9f02c4bf07d6efd",
+    "import_sha256": "e4e72bbb0138dec02cdf3d48b727a932e4374071ae01f923c9f02c4bf07d6efd",
+    "credential_values_replaced": false
+  },
+  {
+    "file": "_meteorRain.ino",
+    "original_sha256": "753ceaf4c3d4feb936f7292a7a8783f533769df063a922ed665eaaac20fb61c3",
+    "import_sha256": "753ceaf4c3d4feb936f7292a7a8783f533769df063a922ed665eaaac20fb61c3",
+    "credential_values_replaced": false
+  },
+  {
+    "file": "_pacifica.ino",
+    "original_sha256": "8fb453877cd727db239f8e24c1dc261cdd09fb36613b267d9c4f3cbd7674ce67",
+    "import_sha256": "8fb453877cd727db239f8e24c1dc261cdd09fb36613b267d9c4f3cbd7674ce67",
+    "credential_values_replaced": false
+  },
+  {
+    "file": "_peppermint.ino",
+    "original_sha256": "93e8fe932687ca388ad1026863b834fb99d7637638a56b96a89fe221002b89f1",
+    "import_sha256": "93e8fe932687ca388ad1026863b834fb99d7637638a56b96a89fe221002b89f1",
+    "credential_values_replaced": false
+  },
+  {
+    "file": "_redgreen.ino",
+    "original_sha256": "8c6fa25571e05317e801bc805cca04f50fd1b882fe107644f463b5d12fab21d7",
+    "import_sha256": "8c6fa25571e05317e801bc805cca04f50fd1b882fe107644f463b5d12fab21d7",
+    "credential_values_replaced": false
+  },
+  {
+    "file": "_solidglow.ino",
+    "original_sha256": "8835f6d76915d57c8c8afe2b484c9153f96ec64d405a1643490cdbb52021a204",
+    "import_sha256": "8835f6d76915d57c8c8afe2b484c9153f96ec64d405a1643490cdbb52021a204",
+    "credential_values_replaced": false
+  },
+  {
+    "file": "_throb.ino",
+    "original_sha256": "0d8558ba9d785f20dfa2afc16917f074cb7528f82fd2083a6b8b0e4ff2bffee7",
+    "import_sha256": "0d8558ba9d785f20dfa2afc16917f074cb7528f82fd2083a6b8b0e4ff2bffee7",
+    "credential_values_replaced": false
+  },
+  {
+    "file": "_tweaking4AllSharedSubroutines.ino",
+    "original_sha256": "208f30282c2bec95b9668911b2ad2268eeda833dff8fbfb4b7c02f0a30ed1c5a",
+    "import_sha256": "208f30282c2bec95b9668911b2ad2268eeda833dff8fbfb4b7c02f0a30ed1c5a",
+    "credential_values_replaced": false
+  },
+  {
+    "file": "_whiteblue.ino",
+    "original_sha256": "f399c9ecfb898bfa60ee6628704d119ed940b80d9989e16c2ef1e7e249061258",
+    "import_sha256": "f399c9ecfb898bfa60ee6628704d119ed940b80d9989e16c2ef1e7e249061258",
+    "credential_values_replaced": false
+  }
+]

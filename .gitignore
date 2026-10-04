@@ -1,0 +1,8 @@
+.DS_Store
+**/arduino_secrets.h
+**/build/
+*.bin
+*.elf
+*.map
+.env
+.env.*
