@@ -1,6 +1,6 @@
 # Hardware identification and build
 
-Saved build artifacts identify esp32:esp32:XIAO_ESP32S3. A supplied camera-board photograph is consistent with XIAO ESP32S3 Sense, but photographs and saved build settings do not prove the connected chip model. No live ROM chip identification or firmware upload has been performed.
+Saved build artifacts identify esp32:esp32:XIAO_ESP32S3. A supplied camera-board photograph is consistent with XIAO ESP32S3 Sense, but photographs and saved build settings do not prove the connected chip model. At initial intake no live chip identification had been performed. Subsequent user-supplied esptool v5.3.1 flash-id output on 2026-10-04 identifies ESP32-S3 (QFN56), revision v0.2, 8 MB embedded PSRAM, 8 MB quad flash at 3.3 V, 40 MHz crystal and USB-Serial/JTAG. This identifies the chip, not the installed firmware or exact carrier-board SKU. The temporary RAM stub and reset did not replace the installed application. No project firmware has been uploaded.
 
 In Arduino IDE, inspect the board selector or Tools > Board and Tools > Port. Select XIAO_ESP32S3 for this board family after confirming the hardware. USB auto-detection may report only ESP32 Family Device or an unrelated board sharing a USB identifier.
 

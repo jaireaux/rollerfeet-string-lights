@@ -23,6 +23,20 @@
       "approximate_response_released_at": "2026-10-04T16:20:56Z",
       "status": "approximate_pre_release_snapshot",
       "duration_seconds": 184
+    },
+    {
+      "id": "firmware-explanation-003",
+      "approximate_received_at": null,
+      "approximate_response_released_at": null,
+      "duration_seconds": null,
+      "status": "unmeasured_no_clock_capture"
+    },
+    {
+      "id": "retention-approval-004",
+      "approximate_received_at": "2026-10-04T16:30:18Z",
+      "approximate_response_released_at": "2026-10-04T16:30:53Z",
+      "duration_seconds": 35,
+      "status": "partial_pre_transfer_snapshot"
     }
   ],
   "snapshots": [
@@ -45,6 +59,13 @@
       "recorded_at": "2026-10-04T16:20:56Z",
       "measured_project_elapsed_seconds": 792,
       "measured_cumulative_ai_waiting_seconds": 329,
+      "historical_time_included": false
+    },
+    {
+      "label": "retention-setup",
+      "recorded_at": "2026-10-04T16:30:53Z",
+      "measured_project_elapsed_seconds": 1389,
+      "measured_cumulative_ai_waiting_seconds": 364,
       "historical_time_included": false
     }
   ]
