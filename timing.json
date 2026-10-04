@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "tracking_started_at": "2026-10-04T16:07:44Z",
+  "timezone": "America/New_York",
+  "epoch_status": "provisional_pending_user_agreement",
+  "historical_baseline": {
+    "original_project_started_at": null,
+    "ai_waiting_seconds": null,
+    "status": "unknown_pending_user_agreement"
+  },
+  "method": "Elapsed project age; sum approximate prompt-to-pre-release intervals. First receipt uses first clock capture, a lower bound.",
+  "intervals": [
+    {
+      "id": "initialization-001",
+      "approximate_received_at": "2026-10-04T16:07:44Z",
+      "approximate_response_released_at": "2026-10-04T16:10:09Z",
+      "duration_seconds": 145,
+      "status": "approximate_pre_release_snapshot"
+    },
+    {
+      "id": "source-intake-002",
+      "approximate_received_at": "2026-10-04T16:17:52Z",
+      "approximate_response_released_at": "2026-10-04T16:20:56Z",
+      "status": "approximate_pre_release_snapshot",
+      "duration_seconds": 184
+    }
+  ],
+  "snapshots": [
+    {
+      "label": "repository-initialization-not-application-release",
+      "recorded_at": "2026-10-04T16:10:09Z",
+      "measured_project_elapsed_seconds": 145,
+      "measured_cumulative_ai_waiting_seconds": 145,
+      "historical_time_included": false
+    },
+    {
+      "label": "v2.0-sanitized-import",
+      "recorded_at": "2026-10-04T16:19:08Z",
+      "measured_project_elapsed_seconds": 684,
+      "measured_cumulative_ai_waiting_seconds_at_commit": 221,
+      "historical_time_included": false
+    },
+    {
+      "label": "3.0.0-dev-setup",
+      "recorded_at": "2026-10-04T16:20:56Z",
+      "measured_project_elapsed_seconds": 792,
+      "measured_cumulative_ai_waiting_seconds": 329,
+      "historical_time_included": false
+    }
+  ]
+}

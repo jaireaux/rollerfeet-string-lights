@@ -13,3 +13,19 @@ Open `XIAO_ESP32_holiday_lights/XIAO_ESP32_holiday_lights.ino` directly from thi
 Dependencies observed at import: Espressif esp32 core 3.3.10, FastLED 3.10.5, Blynk 1.3.5. Compilation and hardware behavior have not yet been verified.
 
 This import preserves legacy animation behavior and comments; it does not assert third-party authorship or introduce a blanket license.
+
+## v3.0 development
+
+Work on `develop/3.0`. Credentials belong only in ignored `arduino_secrets.h`; copy `arduino_secrets.example.h` to that filename and fill values on each development machine. Never commit credentials or compiled firmware containing them. Version: 3.0.0-dev. Animation behavior has not yet been refactored.
+
+## Arduino and Git workflow
+
+Open the sketch inside this Git checkout and always save there. Arduino edits the files; Git versions those same files. Close or save Arduino tabs before switching branches and reopen afterward. Do not edit an older separate copy and expect Git to see it.
+
+Before work: `git pull --ff-only`. After saving: `git diff`, `git add` the intended source files, `git commit -m "Describe the change"`, then `git push`. Configure board and port in Arduino separately; uploading firmware is distinct from committing source.
+
+Use Git to share committed code with the LNM clone. Treat Google Drive as a one-way retained snapshot, not an independently edited working folder. No unattended synchronization is configured. Credentials must be provisioned separately on each machine.
+
+[Timing records](docs/timing.md) describe measured project age and AI waiting.
+
+Build verification (2026-10-04): Arduino CLI compile for esp32:esp32:XIAO_ESP32S3 passed using the observed dependency versions: 1,274,219 bytes program storage and 50,992 bytes global RAM. No upload or live hardware validation performed.

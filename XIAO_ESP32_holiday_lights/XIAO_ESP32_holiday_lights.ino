@@ -1,3 +1,6 @@
+#include "version.h"
+#include "arduino_secrets.h"
+
 //  DEVELOPMENT LIGHTS
 // #define ANIMATION_CYCLE 10000 // in milliseconds, how ofter the animations change
 
@@ -7,9 +10,7 @@
 
 // --------------- BLYNK --------------
 /* Fill-in information from Blynk Device Info here */
-#define BLYNK_TEMPLATE_ID           "REPLACE_ME"
 #define BLYNK_TEMPLATE_NAME         "Quickstart Template"
-#define BLYNK_AUTH_TOKEN            "REPLACE_ME"
 
 /* Comment this out to disable prints and save space */
 #define BLYNK_PRINT Serial
@@ -21,8 +22,8 @@
 
 // Your WiFi credentials.
 // Set password to "" for open networks.
-char ssid[] = "REPLACE_ME";
-char pass[] = "REPLACE_ME";
+char ssid[] = SECRET_WIFI_SSID;
+char pass[] = SECRET_WIFI_PASSWORD;
 
 BlynkTimer timer;
 
