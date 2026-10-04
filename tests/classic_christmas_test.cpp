@@ -12,7 +12,7 @@ struct CRGB {
 constexpr uint16_t pixelCount = 300;
 constexpr uint32_t classicChristmasStepMs = 500;
 CRGB pixels[pixelCount];
-#include "../XIAO_ESP32_holiday_lights/_classicChristmas.ino"
+#include "../inactive-animations/classic_christmas.ino"
 
 int main() {
   const CRGB::Color expected[] = {CRGB::Red, CRGB::Yellow, CRGB::Blue,

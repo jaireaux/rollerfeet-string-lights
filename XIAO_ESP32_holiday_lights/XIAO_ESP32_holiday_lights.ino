@@ -6,19 +6,20 @@
 // Hardware: XIAO D3 / GPIO4, WS2811 RGB, existing 300-pixel layout.
 constexpr uint8_t ledDataPin = 4;
 constexpr uint16_t pixelCount = 300;
-constexpr uint8_t outputBrightness = 200; // Previous Classic Christmas setting.
+constexpr uint8_t outputBrightness = 200; // Upper brightness limit for the effect.
 constexpr uint16_t skippedPixelBegin = 210;
 constexpr uint16_t skippedPixelEnd = pixelCount - 48; // Exclusive: 252.
 
 // Scheduling and visual motion are separate settings.
 constexpr uint32_t animationDurationMs = 15000;
-constexpr uint32_t frameIntervalMs = 500;
-constexpr uint32_t classicChristmasStepMs = 500;
+constexpr uint32_t frameIntervalMs = 50;
+constexpr uint32_t throbPeriodMs = 3000;
+constexpr uint8_t throbMinBrightness = 10;
 
 CRGB pixels[pixelCount];
 AnimationClock animationClock;
 
-void renderClassicChristmas(uint32_t elapsedMs);
+uint8_t renderThrob(uint32_t elapsedMs);
 void applySkippedPixels();
 void updateAnimation(uint32_t now);
 
@@ -28,7 +29,7 @@ void setup() {
       .setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(outputBrightness);
   animationClock.start(millis()); // Start after initialization, not before setup.
-  Serial.println("Classic Christmas only - shared timing controller");
+  Serial.println("Halloween Throb - orange/purple - shared timing controller");
 }
 
 void loop() {
@@ -42,7 +43,7 @@ void updateAnimation(uint32_t now) {
                                elapsedMs)) {
     return;
   }
-  renderClassicChristmas(elapsedMs);
+  FastLED.setBrightness(renderThrob(elapsedMs));
   applySkippedPixels();
   FastLED.show(); // The only place a frame is sent to the lights.
 }

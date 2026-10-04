@@ -51,6 +51,13 @@
       "approximate_response_released_at": "2026-10-04T23:27:04Z",
       "duration_seconds": 121,
       "status": "partial_pre_commit_snapshot; intervening discussion unmeasured"
+    },
+    {
+      "id": "throb-migration-007",
+      "approximate_received_at": null,
+      "approximate_response_released_at": "2026-10-04T23:53:49Z",
+      "duration_seconds": null,
+      "status": "unmeasured; first clock capture occurred after implementation"
     }
   ],
   "snapshots": [
@@ -93,6 +100,13 @@
       "label": "classic-refactor",
       "recorded_at": "2026-10-04T23:27:04Z",
       "measured_project_elapsed_seconds": 26360,
+      "measured_cumulative_ai_waiting_seconds": 560,
+      "historical_time_included": false
+    },
+    {
+      "label": "throb-migration",
+      "recorded_at": "2026-10-04T23:53:49Z",
+      "measured_project_elapsed_seconds": 27965,
       "measured_cumulative_ai_waiting_seconds": 560,
       "historical_time_included": false
     }
