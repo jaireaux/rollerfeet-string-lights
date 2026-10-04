@@ -1,33 +1,15 @@
-void classicChristmas() {
-  unsigned long classicChristmasAnimationCycleLength = 500; // how many milliseconds to switch colors
-  unsigned long classicChristmasAnimationCycle = millis() - animationsCycleStartTime;
-  unsigned long classicChristmasAnimationDuration = millis() - currentAnimationDuration;
- 
-  if( classicChristmasAnimationDuration < currentAnimationDurationMax ) {
-    CRGB christmaslights [7] { CRGB::Red,
-                              CRGB::Yellow,
-                              CRGB::Blue,
-                              CRGB::Magenta,
-                              CRGB::Orange,
-                              CRGB::Cyan,
-                              CRGB::Green };
-    int currentColor;
-    currentColor=(genericCounter % 7);
-                              
-    if( classicChristmasAnimationCycle > classicChristmasAnimationCycleLength) {
-      genericCounter=genericCounter+1;
-      for(int j=0; j<NUM_LEDS; j++) {
-  //      Serial.println("j=" + String(j) + ";gC=" + String(genericCounter) + ";cC=" + String(currentColor));
-        rawleds[j] =  christmaslights [ currentColor ];
-        currentColor = (currentColor < 6) ? currentColor+1 : 0;
-      }
-      setSkip();
-      FastLED.show(); // display this frame
-      animationsCycleStartTime = millis();
-    }
-  } else {
-    currentAnimationNumber = currentAnimationNumber + 1;
-    currentAnimationDuration = millis();
-    animationsCycleStartTime = millis();
+// Render one frame into the buffer. Scheduling and LED output live in
+// updateAnimation(); this function neither waits nor changes global timers.
+void renderClassicChristmas(uint32_t elapsedMs) {
+  static const CRGB palette[] = {
+    CRGB::Red, CRGB::Yellow, CRGB::Blue, CRGB::Magenta,
+    CRGB::Orange, CRGB::Cyan, CRGB::Green
+  };
+  constexpr uint8_t paletteSize = sizeof(palette) / sizeof(palette[0]);
+
+  // Time determines position, so dropped frames do not slow the pattern.
+  const uint8_t colorOffset = (elapsedMs / classicChristmasStepMs) % paletteSize;
+  for (uint16_t i = 0; i < pixelCount; ++i) {
+    pixels[i] = palette[(i + colorOffset) % paletteSize];
   }
 }

@@ -9,3 +9,5 @@ At the v2.0 sanitized import commit, 2026-10-04 12:19:08 EDT, measured elapsed p
 Retention setup snapshot 2026-10-04T16:30:53Z: 1389 seconds elapsed, 364 seconds measured AI waiting. Firmware explanation prompt was not timed; transfer and verification after this snapshot are excluded. Totals remain lower-bound approximations.
 
 Blynk removal snapshot 2026-10-04T21:58:22Z: 75 seconds measured in this turn from first clock capture. Intervening conversation and diagram work are not included in this repository total; timing remains a lower bound. Commit/push/retention verification after this snapshot is excluded.
+
+Classic Christmas refactor snapshot 2026-10-04T23:27:04Z: 121 measured seconds this turn, excluding subsequent commit and retention. Intervening discussion remains unmeasured.

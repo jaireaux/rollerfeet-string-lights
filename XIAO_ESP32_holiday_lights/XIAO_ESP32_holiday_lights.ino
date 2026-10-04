@@ -1,158 +1,54 @@
 #include "version.h"
-
-//  DEVELOPMENT LIGHTS
-// #define ANIMATION_CYCLE 10000 // in milliseconds, how ofter the animations change
-
-//     ****** FASTLED ANIMATIONS ******* below
-#define FASTLED_INTERNAL // add this before including FastLED.h
+#define FASTLED_INTERNAL
 #include <FastLED.h>
+#include "animation_clock.h"
 
-// prod
-#define ANIMATION_CYCLE 15000 // 600000 // in milliseconds, how ofter the animations change
-#define ANIMATION_FADE_CYCLE 5000 // in milliseconds, how ofter the animations change
+// Hardware: XIAO D3 / GPIO4, WS2811 RGB, existing 300-pixel layout.
+constexpr uint8_t ledDataPin = 4;
+constexpr uint16_t pixelCount = 300;
+constexpr uint8_t outputBrightness = 200; // Previous Classic Christmas setting.
+constexpr uint16_t skippedPixelBegin = 210;
+constexpr uint16_t skippedPixelEnd = pixelCount - 48; // Exclusive: 252.
 
-#define APP_DEBUG
+// Scheduling and visual motion are separate settings.
+constexpr uint32_t animationDurationMs = 15000;
+constexpr uint32_t frameIntervalMs = 500;
+constexpr uint32_t classicChristmasStepMs = 500;
 
-//     ****** FASTLED ANIMATIONS ******* below
-// #define FASTLED_INTERNAL // add this before including FastLED.h
-// #include <FastLED.h>
+CRGB pixels[pixelCount];
+AnimationClock animationClock;
 
-#include "_animations.h"
-#define ANIMATIONS 5 // how many animations are in play
-                      // 1. redgreen, NOPE 2. pacifica, NOPE 3. metaballs, 4. classicChristmas
-                      // 5. peppermint, 6 meteorRain, NOPE 7 fadeinot
+void renderClassicChristmas(uint32_t elapsedMs);
+void applySkippedPixels();
+void updateAnimation(uint32_t now);
 
-#define LED_PIN     4
-#define DATA_PIN LED_PIN
-#define COLOR_ORDER RGB
-#define CHIPSET     WS2811
-#define PIXELSECTIONS 6
-#define PIXELSPERSECTION 50
-#define NUM_LEDS PIXELSPERSECTION * PIXELSECTIONS
-#define Width ((int) sqrt( NUM_LEDS) )+1
-#define Height ((int) sqrt( NUM_LEDS) )-1
-#define BRIGHTNESS 50
-
-CRGB rawleds[NUM_LEDS];
-CRGBSet leds(rawleds, NUM_LEDS);
-
-unsigned long uptime = millis();
-int currentAnimationNumber = 1;
-unsigned long currentAnimationDuration = millis();
-unsigned long currentAnimationDurationMax = ANIMATION_CYCLE;
-unsigned long animationsCycleStartTime = millis();
-int genericCounter=0;
-unsigned long loopcounter=0;
-
-//     ****** FASTLED ANIMATIONS ******* above
-
-void setup()
-{
-
-  // Debug console
+void setup() {
   Serial.begin(115200);
-
-  delay(1000);
-  Serial.println("let's do this!");
-  Serial.println("NUM_LEDS are " + String(NUM_LEDS));
-  
-  FastLED.addLeds<CHIPSET, LED_PIN, COLOR_ORDER>(rawleds, NUM_LEDS).setCorrection( TypicalLEDStrip );
-  FastLED.setBrightness( BRIGHTNESS );
-  genericCounter=0;
+  FastLED.addLeds<WS2811, ledDataPin, RGB>(pixels, pixelCount)
+      .setCorrection(TypicalLEDStrip);
+  FastLED.setBrightness(outputBrightness);
+  animationClock.start(millis()); // Start after initialization, not before setup.
+  Serial.println("Classic Christmas only - shared timing controller");
 }
 
 void loop() {
-  // if( loopcounter % 20000 == 0) Serial.println("in the loop!");
-  if( loopcounter % 5000 == 0) Serial.println("current animation=" + String(currentAnimationNumber));
-  
-//  switch (2) {
- switch (currentAnimationNumber) {
- case 1:
-  FastLED.setBrightness(200);
-  pacifica();
-  break;
- case 2:
-  FastLED.setBrightness(200);
-  metaballs();
-  Serial.println("metaballs");
-  break;
- case 3:
-  //  if( loopcounter % 20000 == 0) Serial.println("just in case 1!");
-   FastLED.setBrightness( 200 );
-  // meteorRain(byte red, byte green, byte blue, byte meteorSize, byte meteorTrailDecay, bool meteorRandomDecay, int SpeedDelay)
-   meteorRain(0xFF, 0x00, 0x00, 0x0A, 0x01, false, 0);
-  // solidglow();
-   break;
- case 4:
-  //  if( loopcounter % 20000 == 0) Serial.println("just in case 1!");
-   FastLED.setBrightness( 200 );
-   whiteblue();
-  // solidglow();
-   break;
- case 5:
-  //  if( loopcounter % 20000 == 0) Serial.println("just in case 2!");
-   FastLED.setBrightness( 255 );
-  //  classicChristmas();
-  throb();
-   break;
- case 6:
-  //  if( loopcounter % 20000 == 0) Serial.println("just in case 3!");
-   FastLED.setBrightness( 200 );
-   peppermint();
-   break;
- case 7:
-  //  if( loopcounter % 20000 == 0) Serial.println("just in case 3!");
-   FastLED.setBrightness( 200 );
-   classicChristmas();
-   break;
- default:
-  //  pacifica();
-
-    if( loopcounter % 20000 == 0) Serial.println("blergh default");
-    // whiteblue();
-    // FastLED.setBrightness( 25 );
-    // leds=CRGB::White;
-    // FastLED.show(); // display this frame
-    currentAnimationNumber = 1;
-    currentAnimationDuration = millis();
-    animationsCycleStartTime = millis();
-
-   break;
- }
- loopcounter++;
+  updateAnimation(millis());
+  // Future control and OTA services can run here on every pass.
 }
 
-void printwhichanimation() {
-     if( loopcounter % 1000 == 0) Serial.println("current animation=" + String(currentAnimationNumber));
+void updateAnimation(uint32_t now) {
+  uint32_t elapsedMs;
+  if (!animationClock.frameDue(now, animationDurationMs, frameIntervalMs,
+                               elapsedMs)) {
+    return;
+  }
+  renderClassicChristmas(elapsedMs);
+  applySkippedPixels();
+  FastLED.show(); // The only place a frame is sent to the lights.
 }
 
-// Valentine colors
-//// Gradient palette "bhw4_098_gp", originally from
-//// http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw4/tn/bhw4_098.png.index.html
-//// converted for FastLED with gammas (2.6, 2.2, 2.5)
-//// Size: 32 bytes of program space.
-//
-//DEFINE_GRADIENT_PALETTE( bhw4_098_gp ) {
-//    0, 128, 33, 52,
-//   35, 255, 17, 47,
-//   58, 222,  2, 51,
-//   99, 144, 56, 78,
-//  124, 188,115,137,
-//  178, 255, 16, 52,
-//  219, 199,  1,  4,
-//  255, 106,  1,  2};
-
-// Gradient palette "bhw1_hello_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw1/tn/bhw1_hello.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 32 bytes of program space.
-
-DEFINE_GRADIENT_PALETTE( bhw1_hello_gp ) {
-    0, 237,156,197,
-   35, 244,189,230,
-   56, 255,255,255,
-   79, 244,189,230,
-  109, 237,156,197,
-  160, 121,255,255,
-  196, 255,255,255,
-  255, 121,255,255};
+void applySkippedPixels() {
+  for (uint16_t i = skippedPixelBegin; i < skippedPixelEnd; ++i) {
+    pixels[i] = CRGB::Black;
+  }
+}
