@@ -1,4 +1,4 @@
 #pragma once
 #ifndef HOLIDAY_LIGHTS_VERSION
-#define HOLIDAY_LIGHTS_VERSION "3.0.0-ota.6"
+#define HOLIDAY_LIGHTS_VERSION "3.0.0-ota.7"
 #endif

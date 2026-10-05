@@ -35,8 +35,11 @@ int main() {
   for (uint8_t effect=1;effect<=animationCount;++effect) {
     updateAnimation(uint32_t(effect)*animationDurationMs);
     assert(currentAnimationIndex==effect%animationCount);
-    for (int i=skippedPixelBegin;i<skippedPixelEnd && i<pixelCount;++i) assert(dark(pixels[i]));
+
   }
+  for (auto &p:pixels) p=CRGB(100,50,25);
+  sendCurrentFrame(0);
+  assert(pixels[skippedPixelBegin].r==100 && displayedPixels[skippedPixelBegin].r>0);
   // Fixed position and fade at a known time, regardless of prior rendering.
   renderMeteorRain(1000); // Head at pixel 60, ten-pixel body, 800 ms trail.
   assert(pixels[60].r==128 && pixels[51].r==128 && dark(pixels[61]));

@@ -101,7 +101,7 @@ void updateAnimation(uint32_t now) {
     return;
   }
   animationBrightness = animation.render(elapsedMs);
-  applySkippedPixels();
+  // applySkippedPixels(); // Blackout disabled until the outdoor layout is finalized.
   sendCurrentFrame(now);
 }
 
