@@ -35,13 +35,18 @@ int main() {
   renderMeteorRain(4000);
   renderMeteorRain(1000);
   assert(pixels[30].r==sample.r && pixels[30].g==sample.g);
-  constexpr uint32_t launchPeriod = HOLIDAY_LIGHTS_PRODUCTION ? 6650 : 3317;
-  renderMeteorRain(launchPeriod-1); // Entire trail has faded; launch pause.
-  for (const auto &p:pixels) assert(dark(p));
-  renderMeteorRain(launchPeriod); // Next launch is purple.
+  constexpr uint32_t launchInterval = HOLIDAY_LIGHTS_PRODUCTION ? 3325 : 1659;
+  renderMeteorRain(launchInterval-1);
+  assert(dark(pixels[0])); // No next launch yet.
+  renderMeteorRain(launchInterval); // New purple head while orange remains ahead.
   assert(pixels[0].r==64 && pixels[0].b==64);
-  renderMeteorRain(2*launchPeriod); // Third launch is green.
+  const uint16_t olderHead = launchInterval * 60 / 1000;
+  assert(pixels[olderHead].r==128 && pixels[olderHead].g==70);
+  renderMeteorRain(2*launchInterval); // Third launch is green.
   assert(pixels[0].g==50 && pixels[0].r==0);
-  renderMeteorRain(3*launchPeriod); // Wrap to orange.
+  renderMeteorRain(3*launchInterval); // Wrap to orange.
   assert(pixels[0].r==128 && pixels[0].g==70);
+  renderMeteorRain(0); // Restart drops all previous launches.
+  assert(pixels[0].r==128);
+  for (int i=1;i<pixelCount;++i) assert(dark(pixels[i]));
 }
