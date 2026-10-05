@@ -72,6 +72,13 @@
       "approximate_response_released_at": "2026-10-05T00:06:51Z",
       "duration_seconds": null,
       "status": "unmeasured_no_start_clock_capture"
+    },
+    {
+      "id": "meteor-rain-010",
+      "approximate_received_at": "2026-10-05T00:18:54Z",
+      "approximate_response_released_at": "2026-10-05T00:21:03Z",
+      "duration_seconds": 129,
+      "status": "partial_pre_commit_snapshot"
     }
   ],
   "snapshots": [
@@ -122,6 +129,13 @@
       "recorded_at": "2026-10-04T23:53:49Z",
       "measured_project_elapsed_seconds": 27965,
       "measured_cumulative_ai_waiting_seconds": 560,
+      "historical_time_included": false
+    },
+    {
+      "label": "meteor-rain",
+      "recorded_at": "2026-10-05T00:21:03Z",
+      "measured_project_elapsed_seconds": 29599,
+      "measured_cumulative_ai_waiting_seconds": 689,
       "historical_time_included": false
     }
   ]

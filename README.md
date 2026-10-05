@@ -2,25 +2,25 @@
 
 Arduino holiday lights using FastLED. The v2.0 baseline retains its historical Blynk integration; v3.0 runs locally without Blynk.
 
-## Current development: two-animation Halloween playlist
+## Current development: three-animation Halloween playlist
 
-Open `XIAO_ESP32_holiday_lights/XIAO_ESP32_holiday_lights.ino` in Arduino IDE, selecting `esp32:esp32:XIAO_ESP32S3`. Throb and Orange / Purple are active. The refactored Classic Christmas renderer is preserved in `inactive-animations/classic_christmas.ino`; its step setting is 500 ms when restored. Original animations remain unchanged in `legacy/pre-classic-refactor/`. Both folders are outside the Arduino sketch and excluded from its build.
+Open `XIAO_ESP32_holiday_lights/XIAO_ESP32_holiday_lights.ino` in Arduino IDE; select `esp32:esp32:XIAO_ESP32S3`. Active order: Throb, Orange / Purple, Meteor Rain, then repeat. All effects use one `animationDurationMs`. `HOLIDAY_LIGHTS_PRODUCTION` defaults to 0 (30 seconds per effect); set it to 1 for 180 seconds per effect. This replaces the earlier per-effect 9/16-second durations. Production runs three minutes per effect; development prioritizes quick transitions and can interrupt a repeating color sequence or meteor at the shared deadline.
 
-Throb gives each color a full three-second pulse: 1.5 seconds rising, then 1.5 seconds falling. Colors switch only at the minimum between pulses: darker orange RGB(128,70,0), darker purple RGB(64,0,64), then dark green RGB(0,50,0). Orange and purple are half their previous RGB intensity. The old red/green colors are replaced for Halloween. The old formula only traversed approximately half its intended brightness range; the new triangle reaches the configured minimum and maximum. This is an intentional visual correction, not an exact reproduction of the old math.
+The animation table contains names, frame intervals, and render functions. `AnimationClock` checks elapsed time and frame deadlines. `updateAnimation(now)` advances the playlist, starts the next effect immediately, applies its brightness, masks the connecting section and calls `FastLED.show()` once. Effects never block, call delay, or send their own frames. Late frames sample current elapsed time without replaying missed frames.
 
-| Setting | Value | Meaning |
-|---|---:|---|
-| Throb duration | 3 × throbPeriodMs = 9000 | Complete all three pulses before advancing |
-| Throb frame interval | 50 | Render at most 20 frames per second |
-| `throbPeriodMs` | 3000 | One complete rise/fall cycle |
-| `throbMinBrightness` | 10 | Lowest brightness |
-| `outputBrightness` | 200 | Peak brightness |
+| Effect | Behavior | Frame interval |
+|---|---|---:|
+| Throb | Darker orange, purple, green; full 3-second rise/fall for each, brightness 10–200 | 50 ms |
+| Orange / Purple | Whole visible string switches between darker orange and purple every second, brightness 200 | 1000 ms |
+| Meteor Rain | One moving head and smooth fading trail; successive launches use darker orange, purple, green | 20 ms |
 
-The `animations[]` table contains the effect name, duration, frame interval, and renderer. `updateAnimation(now)` advances the table index at expiry, wraps to Throb, and resets the clock for an immediate first frame. `AnimationClock` handles elapsed-time and frame-due checks. Orange / Purple ports the former White/Blue behavior: a steady whole-string color alternates every 1000 ms, using RGB(128,70,0) and RGB(64,0,64), brightness 200. It runs for 16000 ms (eight complete pairs), making the full playlist 25 seconds. `renderThrob(elapsedMs)` fills the pixel buffer and returns the brightness; it never reads the clock, blocks, or sends output. The controller applies brightness, blacks out the connecting section, and calls `FastLED.show()` once per due frame. Delayed frames sample the current phase without slowing the pulse or replaying missed frames.
+Meteor settings live in `meteor_settings.h`: `meteorHeadPixels=10`, `meteorSpeedPixelsPerSecond=60`, `meteorTrailFadeMs=800`, `meteorLaunchPauseMs=700`. Rendering reconstructs every pixel from elapsed time, avoiding accumulated frame-rate-dependent fading and leftovers from another effect. Head departure, full trail fade, and launch pause are separate phases. With 300 pixels, a launch starts every 6650 ms. The meteor traverses physical indices including the hidden connection, so it disappears/reappears naturally across the gap. The controller can end this effect at the common deadline without waiting for a sweep.
 
-GPIO4 (XIAO D3), WS2811/RGB, 300 configured pixels, TypicalLEDStrip correction, and blacked-out zero-based pixels 210–251 are retained. Dependencies: esp32 core 3.3.10 and FastLED 3.10.5. No Wi-Fi, BLE, Blynk, or OTA yet.
+RGB colors are orange (128,70,0), purple (64,0,64), and green (0,50,0). Hardware remains GPIO4/XIAO D3, WS2811/RGB, 300 configured pixels, TypicalLEDStrip correction, and global brightness limit 200. Zero-based pixels 210–251 stay black as the intentional connecting section. The purchased inventory is not the configured pixel count.
 
-Host checks: compile and run each `tests/*_test.cpp` with `c++ -std=c++11 -Wall -Wextra -pedantic`. Tests cover clock deadlines/rollover, the preserved Classic Christmas renderer, and Throb endpoints, monotonic ramps, colors, bounds, and repeatability. Hardware appearance still needs an upload and visual check.
+Refactored Classic Christmas is preserved outside the build in `inactive-animations/`. Original source is preserved under `legacy/pre-classic-refactor/`. Dependencies: esp32 core 3.3.10, FastLED 3.10.5. Wi-Fi, BLE and OTA remain unimplemented.
+
+Run each `tests/*_test.cpp` with `c++ -std=c++11 -Wall -Wextra -pedantic -I tests/fakes`, then execute its output. Also run `playlist_test.cpp` with `-DHOLIDAY_LIGHTS_PRODUCTION=1`. Tests exercise the actual main controller/renderers using fake LED output, plus timing rollover and the preserved Classic Christmas effect. On-device appearance still requires upload and visual checking.
 
 ## v2.0 baseline
 
@@ -61,3 +61,5 @@ Throb validation (2026-10-04): all three host tests passed; XIAO ESP32S3 compile
 Three-color Throb validation (2026-10-04): all three host tests passed, including constant color through both halves of each pulse and the nine-second restart. XIAO compile passed (412,759 bytes program, 27,856 bytes global RAM). No upload performed.
 
 Two-animation validation: all four host tests passed; XIAO compile passed (412,935 bytes program, 27,864 bytes global RAM). Tests cover intervals/transitions and rollover, Throb, alternating color boundaries, and preserved Classic Christmas. No upload or visual hardware test performed.
+
+Meteor Rain validation: all five host test programs passed, including controller/rendering integration in development and production modes. XIAO ESP32S3 compile passed (413,267 program bytes, 27,864 global RAM bytes). No upload or physical visual check performed.
