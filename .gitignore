@@ -1,5 +1,6 @@
 .DS_Store
 **/arduino_secrets.h
+**/ota_secrets.h
 **/build/
 *.bin
 *.elf

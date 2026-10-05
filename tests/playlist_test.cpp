@@ -1,5 +1,13 @@
 #include <cassert>
 #include <cstring>
+#include <cstdint>
+bool fakeUpdateBusy=false, fakeRestart=false;
+void beginNetworkUpdates() {}
+void serviceNetworkUpdates(uint32_t) {}
+bool networkUpdateBusy() { return fakeUpdateBusy; }
+bool takeAnimationRestartRequest() {
+  const bool value=fakeRestart; fakeRestart=false; return value;
+}
 #include "../XIAO_ESP32_holiday_lights/XIAO_ESP32_holiday_lights.ino"
 #include "../XIAO_ESP32_holiday_lights/_throb.ino"
 #include "../XIAO_ESP32_holiday_lights/_alternatingColors.ino"
@@ -92,5 +100,15 @@ int main() {
   for (int i=0;i<pixelCount;++i)
     assert(pixels[i].r==reference[i].r && pixels[i].g==reference[i].g && pixels[i].b==reference[i].b);
   assert(FastLED.frames==framesBefore);
-
+  // OTA pauses output; a handled failure requests a clean animation restart.
+  fakeUpdateBusy=true;
+  testNow=200000;
+  loop();
+  assert(FastLED.frames==framesBefore);
+  const uint8_t previousEffect=currentAnimationIndex;
+  fakeUpdateBusy=false;
+  fakeRestart=true;
+  loop();
+  assert(FastLED.frames==framesBefore+1 && currentAnimationIndex==previousEffect);
+  assert(!fakeRestart);
 }

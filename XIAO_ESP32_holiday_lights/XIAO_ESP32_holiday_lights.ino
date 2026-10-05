@@ -5,6 +5,7 @@
 #include "meteor_settings.h"
 #include "haunted_tide_settings.h"
 #include "sparkle_settings.h"
+#include "ota_service.h"
 
 // Development uses the current 100-pixel test string.
 #ifndef HOLIDAY_LIGHTS_PRODUCTION
@@ -70,11 +71,14 @@ void setup() {
   animationClock.start(millis()); // Start after initialization, not before setup.
   Serial.println("Halloween playlist starting:");
   Serial.println(animations[currentAnimationIndex].name);
+  beginNetworkUpdates();
 }
 
 void loop() {
-  updateAnimation(millis());
-  // Future control and OTA services can run here on every pass.
+  serviceNetworkUpdates(millis());
+  const uint32_t now = millis(); // Network servicing may have taken time.
+  if (takeAnimationRestartRequest()) animationClock.start(now);
+  if (!networkUpdateBusy()) updateAnimation(now);
 }
 
 void updateAnimation(uint32_t now) {

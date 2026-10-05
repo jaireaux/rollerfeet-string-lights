@@ -2,6 +2,10 @@
 
 Arduino holiday lights using FastLED. The v2.0 baseline retains its historical Blynk integration; v3.0 runs locally without Blynk.
 
+## Wi-Fi firmware updates
+
+Current firmware: **3.0.0-ota.2**. Password-protected ArduinoOTA and two-network Wi-Fi retry support are implemented; the lights continue while Wi-Fi is unavailable. A read-only `/status` page reports the running version. Version ota.1 was installed over USB, then ota.2 was successfully uploaded over Wi-Fi and read back after reboot. Build: esp32 core 3.3.12, FastLED 3.10.5, 1,081,355 program bytes and 54,988 global RAM bytes. Six host test programs passed, including retry timing/rollover and animation output pausing, plus the production playlist check. Browser firmware upload and BLE controls are future work. See [OTA setup and upload instructions](docs/ota.md).
+
 ## Current development: two-animation preview
 
 Open `XIAO_ESP32_holiday_lights/XIAO_ESP32_holiday_lights.ino` in Arduino IDE; select `esp32:esp32:XIAO_ESP32S3`. Development currently alternates only Meteor Rain and Witchfire Sparkles, as requested. Keep previews to two selected effects while adding animations. Production retains Throb, Orange / Purple, Meteor Rain, Haunted Tide, Witchfire Sparkles. All effects use one `animationDurationMs`. `HOLIDAY_LIGHTS_PRODUCTION` defaults to 0 (30 seconds per effect); set it to 1 for 180 seconds per effect. This replaces the earlier per-effect 9/16-second durations. Production runs three minutes per effect; development prioritizes quick transitions and can interrupt a repeating color sequence or meteor at the shared deadline.
@@ -24,7 +28,7 @@ Meteor settings live in `meteor_settings.h`: `meteorHeadPixels=10`, `meteorSpeed
 
 RGB colors are orange (128,70,0), purple (64,0,64), and green (0,50,0). Hardware remains GPIO4/XIAO D3, WS2811/RGB, 100 development pixels, TypicalLEDStrip correction, and global brightness limit 200. `HOLIDAY_LIGHTS_PRODUCTION=1` selects `productionPixelCount`, currently 300 from the previous layout; confirm the actual production length before deployment. Development uses `developmentPixelCount=100`. The intentional black connecting section stays fixed at zero-based indices 210–251, and masking is bounded by the configured length, so all 100 development pixels are available. The purchased inventory is not the configured pixel count.
 
-Refactored Classic Christmas is preserved outside the build in `inactive-animations/`. Original source is preserved under `legacy/pre-classic-refactor/`. Dependencies: esp32 core 3.3.10, FastLED 3.10.5. Wi-Fi, BLE and OTA remain unimplemented.
+Refactored Classic Christmas is preserved outside the build in `inactive-animations/`. Original source is preserved under `legacy/pre-classic-refactor/`. Dependencies: esp32 core 3.3.12, FastLED 3.10.5. Nonblocking Wi-Fi retries across two configured networks and password-protected ArduinoOTA are implemented. BLE and browser firmware upload remain future work. See [OTA instructions](docs/ota.md).
 
 Run each `tests/*_test.cpp` with `c++ -std=c++11 -Wall -Wextra -pedantic -I tests/fakes`, then execute its output. Also run `playlist_test.cpp` with `-DHOLIDAY_LIGHTS_PRODUCTION=1`. Tests exercise the actual main controller/renderers using fake LED output, plus timing rollover and the preserved Classic Christmas effect. On-device appearance still requires upload and visual checking.
 
