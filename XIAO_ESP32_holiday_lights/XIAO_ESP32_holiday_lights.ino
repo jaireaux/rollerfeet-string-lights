@@ -4,17 +4,22 @@
 #include "animation_clock.h"
 #include "meteor_settings.h"
 
-// Hardware: XIAO D3 / GPIO4, WS2811 RGB, existing 300-pixel layout.
-constexpr uint8_t ledDataPin = 4;
-constexpr uint16_t pixelCount = 300;
-constexpr uint8_t outputBrightness = 200; // Upper brightness limit for the effect.
-constexpr uint16_t skippedPixelBegin = 210;
-constexpr uint16_t skippedPixelEnd = pixelCount - 48; // Exclusive: 252.
-
-// One runtime for every animation; effect speeds remain independent.
+// Development uses the current 100-pixel test string.
 #ifndef HOLIDAY_LIGHTS_PRODUCTION
 #define HOLIDAY_LIGHTS_PRODUCTION 0 // Set to 1 for the outdoor production display.
 #endif
+constexpr uint16_t developmentPixelCount = 100;
+constexpr uint16_t productionPixelCount = 300; // Previous layout; confirm before deployment.
+constexpr uint16_t pixelCount = HOLIDAY_LIGHTS_PRODUCTION
+    ? productionPixelCount : developmentPixelCount;
+
+// Hardware: XIAO D3 / GPIO4, WS2811 RGB.
+constexpr uint8_t ledDataPin = 4;
+constexpr uint8_t outputBrightness = 200; // Upper brightness limit for the effect.
+constexpr uint16_t skippedPixelBegin = 210;
+constexpr uint16_t skippedPixelEnd = 252; // Exclusive; fixed physical connecting section.
+
+// One runtime for every animation; effect speeds remain independent.
 constexpr uint32_t animationDurationMs = HOLIDAY_LIGHTS_PRODUCTION ? 180000 : 30000;
 
 // Scheduling and visual motion are separate settings.
@@ -76,7 +81,7 @@ void updateAnimation(uint32_t now) {
 }
 
 void applySkippedPixels() {
-  for (uint16_t i = skippedPixelBegin; i < skippedPixelEnd; ++i) {
+  for (uint16_t i = skippedPixelBegin; i < skippedPixelEnd && i < pixelCount; ++i) {
     pixels[i] = CRGB::Black;
   }
 }

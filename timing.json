@@ -86,6 +86,13 @@
       "approximate_response_released_at": "2026-10-05T00:28:49Z",
       "duration_seconds": null,
       "status": "unmeasured_no_start_clock_capture"
+    },
+    {
+      "id": "development-100-pixels-012",
+      "approximate_received_at": null,
+      "approximate_response_released_at": "2026-10-05T00:48:11Z",
+      "duration_seconds": null,
+      "status": "unmeasured_no_start_clock_capture; intervening video discussion unmeasured"
     }
   ],
   "snapshots": [
