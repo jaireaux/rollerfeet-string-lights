@@ -11,9 +11,9 @@ constexpr uint16_t skippedPixelBegin = 210;
 constexpr uint16_t skippedPixelEnd = pixelCount - 48; // Exclusive: 252.
 
 // Scheduling and visual motion are separate settings.
-constexpr uint32_t animationDurationMs = 15000;
 constexpr uint32_t frameIntervalMs = 50;
 constexpr uint32_t throbPeriodMs = 3000;
+constexpr uint32_t animationDurationMs = 3 * throbPeriodMs; // Full color sequence.
 constexpr uint8_t throbMinBrightness = 10;
 
 CRGB pixels[pixelCount];
@@ -29,7 +29,7 @@ void setup() {
       .setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(outputBrightness);
   animationClock.start(millis()); // Start after initialization, not before setup.
-  Serial.println("Halloween Throb - orange/purple - shared timing controller");
+  Serial.println("Halloween Throb - orange/purple/green - shared timing controller");
 }
 
 void loop() {

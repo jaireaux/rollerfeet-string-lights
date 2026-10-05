@@ -6,11 +6,11 @@ Arduino holiday lights using FastLED. The v2.0 baseline retains its historical B
 
 Open `XIAO_ESP32_holiday_lights/XIAO_ESP32_holiday_lights.ino` in Arduino IDE, selecting `esp32:esp32:XIAO_ESP32S3`. Only Throb is active. The refactored Classic Christmas renderer is preserved in `inactive-animations/classic_christmas.ino`; its step setting is 500 ms when restored. Original animations remain unchanged in `legacy/pre-classic-refactor/`. Both folders are outside the Arduino sketch and excluded from its build.
 
-Throb rises in DarkOrange for 1.5 seconds, then falls in Purple for 1.5 seconds. The color switches at peak brightness. The old red/green colors are replaced for Halloween. The old formula only traversed approximately half its intended brightness range; the new triangle reaches the configured minimum and maximum. This is an intentional visual correction, not an exact reproduction of the old math.
+Throb gives each color a full three-second pulse: 1.5 seconds rising, then 1.5 seconds falling. Colors switch only at the minimum between pulses: darker orange RGB(128,70,0), darker purple RGB(64,0,64), then dark green RGB(0,50,0). Orange and purple are half their previous RGB intensity. The old red/green colors are replaced for Halloween. The old formula only traversed approximately half its intended brightness range; the new triangle reaches the configured minimum and maximum. This is an intentional visual correction, not an exact reproduction of the old math.
 
 | Setting | Value | Meaning |
 |---|---:|---|
-| `animationDurationMs` | 15000 | Restart the sole animation after five pulses |
+| `animationDurationMs` | 3 × throbPeriodMs = 9000 | Restart after all three colors complete their pulses |
 | `frameIntervalMs` | 50 | Render at most 20 frames per second |
 | `throbPeriodMs` | 3000 | One complete rise/fall cycle |
 | `throbMinBrightness` | 10 | Lowest brightness |
@@ -57,3 +57,5 @@ Blynk-free build verification (2026-10-04): PASS for `esp32:esp32:XIAO_ESP32S3`,
 Classic Christmas refactor validation (2026-10-04): both host tests passed; XIAO ESP32S3 compile passed (666,787 bytes program, 27,700 bytes global RAM). All 13 preserved legacy files match their previous committed bytes. No firmware upload or hardware test performed.
 
 Throb validation (2026-10-04): all three host tests passed; XIAO ESP32S3 compile passed (412,743 bytes program, 27,856 bytes global RAM). Shared scheduler unchanged and refactored Classic Christmas preserved byte-for-byte. No firmware upload or hardware test performed.
+
+Three-color Throb validation (2026-10-04): all three host tests passed, including constant color through both halves of each pulse and the nine-second restart. XIAO compile passed (412,759 bytes program, 27,856 bytes global RAM). No upload performed.

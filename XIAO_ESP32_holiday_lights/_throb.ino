@@ -1,4 +1,4 @@
-// One three-second cycle: orange rises, purple falls. Return the brightness
+// Each color gets a full three-second rise and fall. Return the brightness
 // for the controller to apply; no clock reads, delays, or LED output here.
 uint8_t renderThrob(uint32_t elapsedMs) {
   static_assert(throbPeriodMs > 0 && throbPeriodMs % 2 == 0,
@@ -11,7 +11,13 @@ uint8_t renderThrob(uint32_t elapsedMs) {
   const uint32_t rampMs = rising ? phaseMs : throbPeriodMs - phaseMs;
   const uint8_t brightness = throbMinBrightness +
       (uint32_t(outputBrightness - throbMinBrightness) * rampMs) / halfPeriodMs;
-  const CRGB color = rising ? CRGB::DarkOrange : CRGB::Purple;
+  static const CRGB colors[] = {
+    CRGB(128, 70, 0), // Darker orange: half the previous DarkOrange intensity.
+    CRGB(64, 0, 64),  // Darker purple: half the previous Purple intensity.
+    CRGB(0, 50, 0)    // Dark green.
+  };
+  const uint8_t colorIndex = (elapsedMs / throbPeriodMs) % 3;
+  const CRGB color = colors[colorIndex];
   for (uint16_t i = 0; i < pixelCount; ++i) {
     pixels[i] = color;
   }
