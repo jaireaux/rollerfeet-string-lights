@@ -2,9 +2,9 @@
 
 Arduino holiday lights using FastLED. The v2.0 baseline retains its historical Blynk integration; v3.0 runs locally without Blynk.
 
-## Current development: three-animation Halloween playlist
+## Current development: four-animation Halloween playlist
 
-Open `XIAO_ESP32_holiday_lights/XIAO_ESP32_holiday_lights.ino` in Arduino IDE; select `esp32:esp32:XIAO_ESP32S3`. Active order: Throb, Orange / Purple, Meteor Rain, then repeat. All effects use one `animationDurationMs`. `HOLIDAY_LIGHTS_PRODUCTION` defaults to 0 (30 seconds per effect); set it to 1 for 180 seconds per effect. This replaces the earlier per-effect 9/16-second durations. Production runs three minutes per effect; development prioritizes quick transitions and can interrupt a repeating color sequence or meteor at the shared deadline.
+Open `XIAO_ESP32_holiday_lights/XIAO_ESP32_holiday_lights.ino` in Arduino IDE; select `esp32:esp32:XIAO_ESP32S3`. Active order: Throb, Orange / Purple, Meteor Rain, Haunted Tide, then repeat. All effects use one `animationDurationMs`. `HOLIDAY_LIGHTS_PRODUCTION` defaults to 0 (30 seconds per effect); set it to 1 for 180 seconds per effect. This replaces the earlier per-effect 9/16-second durations. Production runs three minutes per effect; development prioritizes quick transitions and can interrupt a repeating color sequence or meteor at the shared deadline.
 
 The animation table contains names, frame intervals, and render functions. `AnimationClock` checks elapsed time and frame deadlines. `updateAnimation(now)` advances the playlist, starts the next effect immediately, applies its brightness, masks the connecting section and calls `FastLED.show()` once. Effects never block, call delay, or send their own frames. Late frames sample current elapsed time without replaying missed frames.
 
@@ -13,6 +13,9 @@ The animation table contains names, frame intervals, and render functions. `Anim
 | Throb | Darker orange, purple, green; full 3-second rise/fall for each, brightness 10–200 | 50 ms |
 | Orange / Purple | Whole visible string switches between darker orange and purple every second, brightness 200 | 1000 ms |
 | Meteor Rain | Two staggered meteors with smooth fading trails; successive launches use darker orange, purple, green | 20 ms |
+| Haunted Tide | Slow Halloween-colored waves with scattered fireflies that gently brighten and fade | 40 ms |
+
+Haunted Tide combines four Pacifica-inspired wave layers with one independent firefly per 10-pixel region. Fireflies glow for 1.8–3.2 seconds, pause for 0.7–2 seconds, then choose a new position and Halloween color within their region. Wave colors are dimmer than the fireflies, with soft colored highlights instead of white flashes. Tune `haunted_tide_settings.h`. The original Pacifica source remains preserved in `legacy/`; this new renderer uses elapsed time and the shared controller.
 
 Meteor settings live in `meteor_settings.h`: `meteorHeadPixels=10`, `meteorSpeedPixelsPerSecond=60`, `meteorTrailFadeMs=800`, `meteorLaunchPauseMs=700`, `meteorsPerCycle=2`. Rendering reconstructs every pixel from elapsed time, avoiding accumulated frame-rate-dependent fading and leftovers from another effect. The original travel/fade/pause cycle is divided by `meteorsPerCycle`, doubling launch frequency without changing speed or trail length. With 100 development pixels, a launch starts every 1659 ms; with the previous 300-pixel production setting, every 3325 ms. Recent launches are rendered together, keeping the brighter contribution per color channel. New launches can start before earlier trails finish; there is no shared all-dark pause. The meteor traverses physical indices including the hidden connection, so it disappears/reappears naturally across the gap. The controller can end this effect at the common deadline without waiting for a sweep.
 

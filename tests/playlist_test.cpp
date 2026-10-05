@@ -3,6 +3,7 @@
 #include "../XIAO_ESP32_holiday_lights/_throb.ino"
 #include "../XIAO_ESP32_holiday_lights/_alternatingColors.ino"
 #include "../XIAO_ESP32_holiday_lights/_meteorRain.ino"
+#include "../XIAO_ESP32_holiday_lights/_hauntedTide.ino"
 bool dark(const CRGB &p) {return p.r==0 && p.g==0 && p.b==0;}
 int main() {
   static_assert(pixelCount == (HOLIDAY_LIGHTS_PRODUCTION ? 300 : 100), "Profile length");
@@ -26,6 +27,10 @@ int main() {
   assert(pixels[252].r>0);
 #endif
   updateAnimation(3*animationDurationMs);
+  assert(currentAnimationIndex==3 && FastLED.brightness==outputBrightness);
+  for (int i=0;i<pixelCount;++i)
+    if (i>=skippedPixelBegin && i<skippedPixelEnd) assert(dark(pixels[i]));
+  updateAnimation(4*animationDurationMs);
   assert(currentAnimationIndex==0 && FastLED.brightness==10);
   // Fixed position and fade at a known time, regardless of prior rendering.
   renderMeteorRain(1000); // Head at pixel 60, ten-pixel body, 800 ms trail.
@@ -49,4 +54,24 @@ int main() {
   renderMeteorRain(0); // Restart drops all previous launches.
   assert(pixels[0].r==128);
   for (int i=1;i<pixelCount;++i) assert(dark(pixels[i]));
+  // Haunted Tide never sends frames, respects color bounds, and ignores old pixels.
+  const unsigned framesBefore = FastLED.frames;
+  CRGB reference[pixelCount];
+  renderHauntedTide(12345);
+  for (int i=0;i<pixelCount;++i) reference[i]=pixels[i];
+  for (auto &p:pixels) p=CRGB(255,255,255);
+  renderHauntedTide(12345);
+  for (int i=0;i<pixelCount;++i) {
+    assert(pixels[i].r==reference[i].r && pixels[i].g==reference[i].g && pixels[i].b==reference[i].b);
+  }
+  bool changed=false;
+  for (uint32_t t=0;t<180000;t+=137) {
+    renderHauntedTide(t);
+    for (int i=0;i<pixelCount;++i) {
+      assert(pixels[i].r<=128 && pixels[i].g<=70 && pixels[i].b<=64);
+      changed |= pixels[i].r!=reference[i].r || pixels[i].g!=reference[i].g || pixels[i].b!=reference[i].b;
+    }
+  }
+  assert(changed && FastLED.frames==framesBefore);
+  renderHauntedTide(UINT32_MAX); // No overflow in staggered firefly clocks.
 }

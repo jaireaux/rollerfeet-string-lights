@@ -3,6 +3,7 @@
 #include <FastLED.h>
 #include "animation_clock.h"
 #include "meteor_settings.h"
+#include "haunted_tide_settings.h"
 
 // Development uses the current 100-pixel test string.
 #ifndef HOLIDAY_LIGHTS_PRODUCTION
@@ -33,6 +34,7 @@ AnimationClock animationClock;
 uint8_t renderThrob(uint32_t elapsedMs);
 uint8_t renderAlternatingColors(uint32_t elapsedMs);
 uint8_t renderMeteorRain(uint32_t elapsedMs);
+uint8_t renderHauntedTide(uint32_t elapsedMs);
 void applySkippedPixels();
 void updateAnimation(uint32_t now);
 
@@ -45,7 +47,8 @@ struct Animation {
 const Animation animations[] = {
   {"Throb", 50, renderThrob},
   {"Orange / Purple", alternatingColorStepMs, renderAlternatingColors},
-  {"Meteor Rain", 20, renderMeteorRain}
+  {"Meteor Rain", 20, renderMeteorRain},
+  {"Haunted Tide", hauntedTideFrameMs, renderHauntedTide}
 };
 constexpr uint8_t animationCount = sizeof(animations) / sizeof(animations[0]);
 uint8_t currentAnimationIndex = 0;
@@ -56,7 +59,7 @@ void setup() {
       .setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(outputBrightness);
   animationClock.start(millis()); // Start after initialization, not before setup.
-  Serial.println("Halloween playlist: Throb, Orange / Purple, Meteor Rain");
+  Serial.println("Halloween playlist: Throb, Orange / Purple, Meteor Rain, Haunted Tide");
 }
 
 void loop() {
