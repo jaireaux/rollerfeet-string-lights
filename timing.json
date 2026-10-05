@@ -114,6 +114,13 @@
       "approximate_response_released_at": "2026-10-05T01:13:44Z",
       "duration_seconds": 72,
       "status": "partial_pre_commit_snapshot"
+    },
+    {
+      "id": "single-frame-sparkles-016",
+      "approximate_received_at": "2026-10-05T01:23:24Z",
+      "approximate_response_released_at": "2026-10-05T01:24:01Z",
+      "duration_seconds": 37,
+      "status": "partial_pre_commit_snapshot"
     }
   ],
   "snapshots": [

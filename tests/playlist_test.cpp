@@ -17,7 +17,7 @@ int main() {
 #if HOLIDAY_LIGHTS_PRODUCTION
   assert(animationCount==5 && !strcmp(animations[2].name,"Meteor Rain"));
 #else
-  assert(animationCount==2 && !strcmp(animations[0].name,"Haunted Tide") &&
+  assert(animationCount==2 && !strcmp(animations[0].name,"Meteor Rain") &&
       !strcmp(animations[1].name,"Witchfire Sparkles"));
 #endif
   for (uint8_t effect=1;effect<=animationCount;++effect) {
@@ -67,8 +67,10 @@ int main() {
   }
   assert(changed && FastLED.frames==framesBefore);
   renderHauntedTide(UINT32_MAX); // No overflow in staggered firefly clocks.
-  // Each physical 25-pixel region gets 1–3 distinct glints, over a uniform base.
-  for (uint32_t t=0;t<18000;t+=37) {
+  // Flashes contain 1–3 glints per region; the following frame is background only.
+  bool previouslyLit[(pixelCount+24)/25] = {};
+  unsigned flashCount=0;
+  for (uint32_t t=0;t<18000;t+=sparkleFrameMs) {
     const CRGB base=sparkleBackground(t);
     renderWitchfireSparkles(t);
     for (int start=0;start<pixelCount;start+=25) {
@@ -76,9 +78,13 @@ int main() {
       for (int i=start;i<start+25 && i<pixelCount;++i) {
         glints += pixels[i].r!=base.r || pixels[i].g!=base.g || pixels[i].b!=base.b;
       }
-      assert(glints>=1 && glints<=3);
+      assert(glints<=3);
+      if (previouslyLit[start/25]) assert(glints==0);
+      previouslyLit[start/25] = glints>0;
+      flashCount += glints>0;
     }
   }
+  assert(flashCount>0);
   renderWitchfireSparkles(1234);
   for (int i=0;i<pixelCount;++i) reference[i]=pixels[i];
   renderWitchfireSparkles(UINT32_MAX);

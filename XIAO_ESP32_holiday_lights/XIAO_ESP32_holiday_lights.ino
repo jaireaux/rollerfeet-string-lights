@@ -46,15 +46,17 @@ struct Animation {
   uint8_t (*render)(uint32_t elapsedMs);
 };
 
-// Development previews only the last finished effect and the new effect.
-// Move this pair forward as new animations are added; retain the full production list.
+// Development previews two selected effects (currently Meteor Rain + Witchfire Sparkles).
+// Update this pair as requested; retain the full production list.
 const Animation animations[] = {
 #if HOLIDAY_LIGHTS_PRODUCTION
   {"Throb", 50, renderThrob},
   {"Orange / Purple", alternatingColorStepMs, renderAlternatingColors},
   {"Meteor Rain", 20, renderMeteorRain},
-#endif
   {"Haunted Tide", hauntedTideFrameMs, renderHauntedTide},
+#else
+  {"Meteor Rain", 20, renderMeteorRain},
+#endif
   {"Witchfire Sparkles", sparkleFrameMs, renderWitchfireSparkles}
 };
 constexpr uint8_t animationCount = sizeof(animations) / sizeof(animations[0]);

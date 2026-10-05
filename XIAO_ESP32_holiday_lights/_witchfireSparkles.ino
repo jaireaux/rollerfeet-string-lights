@@ -27,7 +27,8 @@ CRGB sparkleBackground(uint32_t elapsedMs) {
 }
 
 uint8_t renderWitchfireSparkles(uint32_t elapsedMs) {
-  static_assert(sparkleRegionPixels > 0 && sparkleRefreshMs > 0 &&
+  static_assert(sparkleRegionPixels > 0 && sparkleFrameMs > 0 && sparkleOnMs > 0 &&
+      sparkleRefreshMs >= 2*sparkleOnMs && sparkleRefreshMs % sparkleFrameMs == 0 &&
       sparkleColorShiftMs > 0 && sparkleThrobMs > 0 &&
       sparkleMinCount > 0 && sparkleMinCount <= sparkleMaxCount,
       "Sparkle settings must have positive periods and valid counts");
@@ -36,7 +37,10 @@ uint8_t renderWitchfireSparkles(uint32_t elapsedMs) {
 
   for (uint32_t start=0; start<pixelCount; start+=sparkleRegionPixels) {
     const uint32_t seed = sparkleHash(start + 911U);
-    const uint64_t clock = uint64_t(elapsedMs) + seed % sparkleRefreshMs;
+    const uint32_t offset = (seed % (sparkleRefreshMs / sparkleFrameMs)) * sparkleFrameMs;
+    const uint64_t clock = uint64_t(elapsedMs) + offset;
+    // The next frame rebuilds the background: no sparkle fade or retained trail.
+    if (clock % sparkleRefreshMs >= sparkleOnMs) continue;
     uint32_t random = sparkleHash(seed + uint32_t(clock / sparkleRefreshMs));
     const uint16_t width = pixelCount-start < sparkleRegionPixels
         ? pixelCount-start : sparkleRegionPixels;
@@ -44,10 +48,7 @@ uint8_t renderWitchfireSparkles(uint32_t elapsedMs) {
     if (count > width) count = width;
     uint16_t chosen[sparkleMaxCount];
     // Warm-white glints are distinct from the three-color background.
-    const float strength = 1.0f - 0.7f * float(clock % sparkleRefreshMs) / sparkleRefreshMs;
-    const CRGB glint(uint8_t(background.r*(1-strength)+230*strength),
-                     uint8_t(background.g*(1-strength)+215*strength),
-                     uint8_t(background.b*(1-strength)+185*strength));
+    const CRGB glint(230, 215, 185);
     for (uint8_t n=0; n<count; ++n) {
       random = sparkleHash(random + n + 1);
       uint16_t candidate = random % width;
