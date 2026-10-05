@@ -121,6 +121,13 @@
       "approximate_response_released_at": "2026-10-05T01:24:01Z",
       "duration_seconds": 37,
       "status": "partial_pre_commit_snapshot"
+    },
+    {
+      "id": "sparkle-brightness-017",
+      "approximate_received_at": "2026-10-05T01:33:06Z",
+      "approximate_response_released_at": "2026-10-05T01:33:38Z",
+      "duration_seconds": 32,
+      "status": "partial_pre_commit_snapshot"
     }
   ],
   "snapshots": [

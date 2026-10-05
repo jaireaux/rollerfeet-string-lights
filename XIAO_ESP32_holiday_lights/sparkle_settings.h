@@ -12,3 +12,5 @@ constexpr uint32_t sparkleRefreshMs = 240; // Each region fires once per cycle, 
 constexpr uint32_t sparkleOnMs = sparkleFrameMs;
 constexpr uint8_t sparkleMinCount = 1;
 constexpr uint8_t sparkleMaxCount = 3;
+
+constexpr uint8_t sparkleBrightnessPercent = 75; // Glints only; background unchanged.

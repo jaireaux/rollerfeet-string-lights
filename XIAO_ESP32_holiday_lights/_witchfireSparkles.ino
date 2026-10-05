@@ -30,7 +30,8 @@ uint8_t renderWitchfireSparkles(uint32_t elapsedMs) {
   static_assert(sparkleRegionPixels > 0 && sparkleFrameMs > 0 && sparkleOnMs > 0 &&
       sparkleRefreshMs >= 2*sparkleOnMs && sparkleRefreshMs % sparkleFrameMs == 0 &&
       sparkleColorShiftMs > 0 && sparkleThrobMs > 0 &&
-      sparkleMinCount > 0 && sparkleMinCount <= sparkleMaxCount,
+      sparkleMinCount > 0 && sparkleMinCount <= sparkleMaxCount &&
+      sparkleBrightnessPercent <= 100,
       "Sparkle settings must have positive periods and valid counts");
   const CRGB background = sparkleBackground(elapsedMs);
   for (uint16_t i=0; i<pixelCount; ++i) pixels[i] = background;
@@ -48,7 +49,9 @@ uint8_t renderWitchfireSparkles(uint32_t elapsedMs) {
     if (count > width) count = width;
     uint16_t chosen[sparkleMaxCount];
     // Warm-white glints are distinct from the three-color background.
-    const CRGB glint(230, 215, 185);
+    const CRGB glint((230U * sparkleBrightnessPercent + 50) / 100,
+                     (215U * sparkleBrightnessPercent + 50) / 100,
+                     (185U * sparkleBrightnessPercent + 50) / 100);
     for (uint8_t n=0; n<count; ++n) {
       random = sparkleHash(random + n + 1);
       uint16_t candidate = random % width;
