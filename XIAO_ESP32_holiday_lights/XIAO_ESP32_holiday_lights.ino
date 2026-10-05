@@ -7,12 +7,12 @@
 #include "sparkle_settings.h"
 #include "ota_service.h"
 
-// Development uses the current 100-pixel test string.
+// Both profiles use the current 600-pixel string.
 #ifndef HOLIDAY_LIGHTS_PRODUCTION
 #define HOLIDAY_LIGHTS_PRODUCTION 0 // Set to 1 for the outdoor production display.
 #endif
-constexpr uint16_t developmentPixelCount = 100;
-constexpr uint16_t productionPixelCount = 300; // Previous layout; confirm before deployment.
+constexpr uint16_t developmentPixelCount = 600;
+constexpr uint16_t productionPixelCount = 600;
 constexpr uint16_t pixelCount = HOLIDAY_LIGHTS_PRODUCTION
     ? productionPixelCount : developmentPixelCount;
 

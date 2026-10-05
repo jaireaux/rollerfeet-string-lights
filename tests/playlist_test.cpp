@@ -20,7 +20,7 @@ bool takeAnimationRestartRequest() {
 #include "../XIAO_ESP32_holiday_lights/_witchfireSparkles.ino"
 bool dark(const CRGB &p) {return p.r==0 && p.g==0 && p.b==0;}
 int main() {
-  static_assert(pixelCount == (HOLIDAY_LIGHTS_PRODUCTION ? 300 : 100), "Profile length");
+  static_assert(pixelCount == 600, "Profile length");
   setup();
   updateAnimation(0);
   assert(currentAnimationIndex==0 && FastLED.frames==1);
@@ -45,7 +45,7 @@ int main() {
   renderMeteorRain(4000);
   renderMeteorRain(1000);
   assert(pixels[30].r==sample.r && pixels[30].g==sample.g);
-  constexpr uint32_t launchInterval = HOLIDAY_LIGHTS_PRODUCTION ? 3075 : 1409;
+  constexpr uint32_t launchInterval = 5575;
   renderMeteorRain(launchInterval-1);
   assert(dark(pixels[0])); // No next launch yet.
   renderMeteorRain(launchInterval); // New purple head while orange remains ahead.
