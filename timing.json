@@ -107,6 +107,13 @@
       "approximate_response_released_at": "2026-10-05T01:04:50Z",
       "duration_seconds": 58,
       "status": "partial_pre_commit_snapshot"
+    },
+    {
+      "id": "witchfire-sparkles-015",
+      "approximate_received_at": "2026-10-05T01:12:32Z",
+      "approximate_response_released_at": "2026-10-05T01:13:44Z",
+      "duration_seconds": 72,
+      "status": "partial_pre_commit_snapshot"
     }
   ],
   "snapshots": [

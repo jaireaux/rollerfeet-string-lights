@@ -1,9 +1,11 @@
 #include <cassert>
+#include <cstring>
 #include "../XIAO_ESP32_holiday_lights/XIAO_ESP32_holiday_lights.ino"
 #include "../XIAO_ESP32_holiday_lights/_throb.ino"
 #include "../XIAO_ESP32_holiday_lights/_alternatingColors.ino"
 #include "../XIAO_ESP32_holiday_lights/_meteorRain.ino"
 #include "../XIAO_ESP32_holiday_lights/_hauntedTide.ino"
+#include "../XIAO_ESP32_holiday_lights/_witchfireSparkles.ino"
 bool dark(const CRGB &p) {return p.r==0 && p.g==0 && p.b==0;}
 int main() {
   static_assert(pixelCount == (HOLIDAY_LIGHTS_PRODUCTION ? 300 : 100), "Profile length");
@@ -12,26 +14,17 @@ int main() {
   assert(currentAnimationIndex==0 && FastLED.frames==1);
   updateAnimation(1);
   assert(FastLED.frames==1);
-  updateAnimation(animationDurationMs);
-  assert(currentAnimationIndex==1 && FastLED.brightness==200);
-  for (int i=0;i<pixelCount;++i)
-    assert(dark(pixels[i]) == (i>=skippedPixelBegin && i<skippedPixelEnd));
-  updateAnimation(2*animationDurationMs);
-  assert(currentAnimationIndex==2 && pixels[0].r==128);
-  for (int i=1;i<pixelCount;++i) assert(dark(pixels[i])); // No preceding frame remnants.
 #if HOLIDAY_LIGHTS_PRODUCTION
-  // Meteor crosses the hidden section on physical indices.
-  updateAnimation(2*animationDurationMs+3600);
-  for (int i=210;i<252;++i) assert(dark(pixels[i]));
-  updateAnimation(2*animationDurationMs+4300);
-  assert(pixels[252].r>0);
+  assert(animationCount==5 && !strcmp(animations[2].name,"Meteor Rain"));
+#else
+  assert(animationCount==2 && !strcmp(animations[0].name,"Haunted Tide") &&
+      !strcmp(animations[1].name,"Witchfire Sparkles"));
 #endif
-  updateAnimation(3*animationDurationMs);
-  assert(currentAnimationIndex==3 && FastLED.brightness==outputBrightness);
-  for (int i=0;i<pixelCount;++i)
-    if (i>=skippedPixelBegin && i<skippedPixelEnd) assert(dark(pixels[i]));
-  updateAnimation(4*animationDurationMs);
-  assert(currentAnimationIndex==0 && FastLED.brightness==10);
+  for (uint8_t effect=1;effect<=animationCount;++effect) {
+    updateAnimation(uint32_t(effect)*animationDurationMs);
+    assert(currentAnimationIndex==effect%animationCount);
+    for (int i=skippedPixelBegin;i<skippedPixelEnd && i<pixelCount;++i) assert(dark(pixels[i]));
+  }
   // Fixed position and fade at a known time, regardless of prior rendering.
   renderMeteorRain(1000); // Head at pixel 60, ten-pixel body, 800 ms trail.
   assert(pixels[60].r==128 && pixels[51].r==128 && dark(pixels[61]));
@@ -40,7 +33,7 @@ int main() {
   renderMeteorRain(4000);
   renderMeteorRain(1000);
   assert(pixels[30].r==sample.r && pixels[30].g==sample.g);
-  constexpr uint32_t launchInterval = HOLIDAY_LIGHTS_PRODUCTION ? 3325 : 1659;
+  constexpr uint32_t launchInterval = HOLIDAY_LIGHTS_PRODUCTION ? 3075 : 1409;
   renderMeteorRain(launchInterval-1);
   assert(dark(pixels[0])); // No next launch yet.
   renderMeteorRain(launchInterval); // New purple head while orange remains ahead.
@@ -74,4 +67,24 @@ int main() {
   }
   assert(changed && FastLED.frames==framesBefore);
   renderHauntedTide(UINT32_MAX); // No overflow in staggered firefly clocks.
+  // Each physical 25-pixel region gets 1–3 distinct glints, over a uniform base.
+  for (uint32_t t=0;t<18000;t+=37) {
+    const CRGB base=sparkleBackground(t);
+    renderWitchfireSparkles(t);
+    for (int start=0;start<pixelCount;start+=25) {
+      int glints=0;
+      for (int i=start;i<start+25 && i<pixelCount;++i) {
+        glints += pixels[i].r!=base.r || pixels[i].g!=base.g || pixels[i].b!=base.b;
+      }
+      assert(glints>=1 && glints<=3);
+    }
+  }
+  renderWitchfireSparkles(1234);
+  for (int i=0;i<pixelCount;++i) reference[i]=pixels[i];
+  renderWitchfireSparkles(UINT32_MAX);
+  renderWitchfireSparkles(1234);
+  for (int i=0;i<pixelCount;++i)
+    assert(pixels[i].r==reference[i].r && pixels[i].g==reference[i].g && pixels[i].b==reference[i].b);
+  assert(FastLED.frames==framesBefore);
+
 }

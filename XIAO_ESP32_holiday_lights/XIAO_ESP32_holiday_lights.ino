@@ -4,6 +4,7 @@
 #include "animation_clock.h"
 #include "meteor_settings.h"
 #include "haunted_tide_settings.h"
+#include "sparkle_settings.h"
 
 // Development uses the current 100-pixel test string.
 #ifndef HOLIDAY_LIGHTS_PRODUCTION
@@ -35,6 +36,7 @@ uint8_t renderThrob(uint32_t elapsedMs);
 uint8_t renderAlternatingColors(uint32_t elapsedMs);
 uint8_t renderMeteorRain(uint32_t elapsedMs);
 uint8_t renderHauntedTide(uint32_t elapsedMs);
+uint8_t renderWitchfireSparkles(uint32_t elapsedMs);
 void applySkippedPixels();
 void updateAnimation(uint32_t now);
 
@@ -44,11 +46,16 @@ struct Animation {
   uint8_t (*render)(uint32_t elapsedMs);
 };
 
+// Development previews only the last finished effect and the new effect.
+// Move this pair forward as new animations are added; retain the full production list.
 const Animation animations[] = {
+#if HOLIDAY_LIGHTS_PRODUCTION
   {"Throb", 50, renderThrob},
   {"Orange / Purple", alternatingColorStepMs, renderAlternatingColors},
   {"Meteor Rain", 20, renderMeteorRain},
-  {"Haunted Tide", hauntedTideFrameMs, renderHauntedTide}
+#endif
+  {"Haunted Tide", hauntedTideFrameMs, renderHauntedTide},
+  {"Witchfire Sparkles", sparkleFrameMs, renderWitchfireSparkles}
 };
 constexpr uint8_t animationCount = sizeof(animations) / sizeof(animations[0]);
 uint8_t currentAnimationIndex = 0;
@@ -59,7 +66,8 @@ void setup() {
       .setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(outputBrightness);
   animationClock.start(millis()); // Start after initialization, not before setup.
-  Serial.println("Halloween playlist: Throb, Orange / Purple, Meteor Rain, Haunted Tide");
+  Serial.println("Halloween playlist starting:");
+  Serial.println(animations[currentAnimationIndex].name);
 }
 
 void loop() {

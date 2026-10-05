@@ -8,3 +8,5 @@ constexpr uint32_t meteorLaunchPauseMs = 700;
 
 // Launch two meteors during the former single-meteor cycle.
 constexpr uint8_t meteorsPerCycle = 2;
+
+constexpr uint32_t meteorLaunchAdvanceMs = 250; // Shorten the launch interval.

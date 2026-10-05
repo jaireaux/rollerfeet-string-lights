@@ -11,7 +11,11 @@ uint8_t renderMeteorRain(uint32_t elapsedMs) {
       ((uint32_t(pixelCount - 1) + meteorHeadPixels) * 1000 +
        meteorSpeedPixelsPerSecond - 1) / meteorSpeedPixelsPerSecond;
   constexpr uint32_t cycleMs = headExitMs + meteorTrailFadeMs + meteorLaunchPauseMs;
-  constexpr uint32_t launchIntervalMs = (cycleMs + meteorsPerCycle - 1) / meteorsPerCycle;
+  constexpr uint32_t originalIntervalMs = (cycleMs + meteorsPerCycle - 1) / meteorsPerCycle;
+  static_assert(originalIntervalMs > meteorLaunchAdvanceMs, "Launch interval must stay positive");
+  constexpr uint32_t launchIntervalMs = originalIntervalMs - meteorLaunchAdvanceMs;
+  constexpr uint32_t activeLaunches = (headExitMs + meteorTrailFadeMs + launchIntervalMs - 1)
+      / launchIntervalMs;
   const uint32_t latestLaunch = elapsedMs / launchIntervalMs;
   const uint32_t latestAgeMs = elapsedMs % launchIntervalMs;
   constexpr uint64_t headLength = uint64_t(meteorHeadPixels) * 1000;
@@ -21,7 +25,7 @@ uint8_t renderMeteorRain(uint32_t elapsedMs) {
     CRGB combined(0, 0, 0);
     const uint64_t pixelPosition = uint64_t(i) * 1000;
     // Reconstruct recent launches; never invent a meteor before animation start.
-    for (uint8_t previous = 0; previous < meteorsPerCycle; ++previous) {
+    for (uint32_t previous = 0; previous < activeLaunches; ++previous) {
       if (previous > latestLaunch) break;
       const uint32_t ageMs = latestAgeMs + uint32_t(previous) * launchIntervalMs;
       const uint64_t headPosition = uint64_t(ageMs) * meteorSpeedPixelsPerSecond;
