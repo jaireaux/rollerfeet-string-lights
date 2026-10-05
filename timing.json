@@ -79,6 +79,13 @@
       "approximate_response_released_at": "2026-10-05T00:21:03Z",
       "duration_seconds": 129,
       "status": "partial_pre_commit_snapshot"
+    },
+    {
+      "id": "pixel-walk-diagnostic-011",
+      "approximate_received_at": null,
+      "approximate_response_released_at": "2026-10-05T00:28:49Z",
+      "duration_seconds": null,
+      "status": "unmeasured_no_start_clock_capture"
     }
   ],
   "snapshots": [
