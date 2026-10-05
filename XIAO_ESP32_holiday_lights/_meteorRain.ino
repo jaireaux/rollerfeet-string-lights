@@ -2,18 +2,15 @@
 // Pixels keep their physical indices, including the dark connecting section.
 uint8_t renderMeteorRain(uint32_t elapsedMs) {
   static_assert(meteorHeadPixels > 0 && meteorSpeedPixelsPerSecond > 0 &&
-                meteorTrailFadeMs > 0 && meteorsPerCycle > 0, "Meteor size, speed and fade must be positive");
+                meteorTrailFadeMs > 0 && meteorLaunchIntervalMs > 0, "Meteor size, speed and fade must be positive");
   static const CRGB colors[] = {
     CRGB(128, 70, 0), CRGB(64, 0, 64), CRGB(0, 50, 0)
   };
-  // Keep the original travel/fade/pause cycle as the density reference.
+  // String length determines how many previous launches remain visible.
   constexpr uint32_t headExitMs =
       ((uint32_t(pixelCount - 1) + meteorHeadPixels) * 1000 +
        meteorSpeedPixelsPerSecond - 1) / meteorSpeedPixelsPerSecond;
-  constexpr uint32_t cycleMs = headExitMs + meteorTrailFadeMs + meteorLaunchPauseMs;
-  constexpr uint32_t originalIntervalMs = (cycleMs + meteorsPerCycle - 1) / meteorsPerCycle;
-  static_assert(originalIntervalMs > meteorLaunchAdvanceMs, "Launch interval must stay positive");
-  constexpr uint32_t launchIntervalMs = originalIntervalMs - meteorLaunchAdvanceMs;
+  constexpr uint32_t launchIntervalMs = meteorLaunchIntervalMs;
   constexpr uint32_t activeLaunches = (headExitMs + meteorTrailFadeMs + launchIntervalMs - 1)
       / launchIntervalMs;
   const uint32_t latestLaunch = elapsedMs / launchIntervalMs;

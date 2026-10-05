@@ -45,7 +45,7 @@ int main() {
   renderMeteorRain(4000);
   renderMeteorRain(1000);
   assert(pixels[30].r==sample.r && pixels[30].g==sample.g);
-  constexpr uint32_t launchInterval = 5575;
+  constexpr uint32_t launchInterval = 2250;
   renderMeteorRain(launchInterval-1);
   assert(dark(pixels[0])); // No next launch yet.
   renderMeteorRain(launchInterval); // New purple head while orange remains ahead.
