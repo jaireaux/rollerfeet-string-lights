@@ -44,7 +44,7 @@ Physical LED #1 (code index 0) temporarily overlays the animation. OTA indicatio
 |---|---|---|
 | Searching for a configured network | Blinking blue | Connection attempts |
 | Network connected | Solid blue | 2 seconds |
-| No configured network connected after a round of attempts | Solid red | 4 seconds, then animation during retry cooldown |
+| No configured network connected after a round of attempts | Solid red | Until another search starts or a network connects |
 | Receiving an OTA update | Blinking green | While transfer makes progress |
 | OTA image successfully written | Solid green | 2 seconds, then reboot |
 | OTA error | Blinking red | 4 seconds |

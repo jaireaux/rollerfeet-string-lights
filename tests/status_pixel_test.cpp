@@ -10,7 +10,8 @@ int main() {
   light.network(NetworkLight::Connected, 600);
   assert(light.pixel(2599).b==100 && !light.pixel(2600).active);
   light.network(NetworkLight::Offline, 3000);
-  assert(light.pixel(6999).r==100 && !light.pixel(7000).active);
+  assert(light.pixel(6999).r==100 && light.pixel(7000).r==100);
+  assert(light.pixel(600000).active && light.pixel(600000).r==100);
   light.update(UpdateLight::Receiving, 8000);
   light.network(NetworkLight::Searching, 8000);
   assert(light.pixel(8000).g==100 && light.pixel(8000).b==0);

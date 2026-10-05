@@ -25,7 +25,7 @@ class StatusIndicator {
     if (network_ == NetworkLight::Searching) return blink(networkAge, 0, 0, 100);
     if (network_ == NetworkLight::Connected && networkAge < confirmationMs)
       return {true, 0, 0, 100};
-    if (network_ == NetworkLight::Offline && networkAge < failureMs)
+    if (network_ == NetworkLight::Offline)
       return {true, 100, 0, 0};
     return {false, 0, 0, 0};
   }
