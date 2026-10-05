@@ -4,7 +4,7 @@ Arduino holiday lights using FastLED. The v2.0 baseline retains its historical B
 
 ## Wi-Fi firmware updates
 
-Current firmware: **3.0.0-ota.2**. Password-protected ArduinoOTA and two-network Wi-Fi retry support are implemented; the lights continue while Wi-Fi is unavailable. A read-only `/status` page reports the running version. Version ota.1 was installed over USB, then ota.2 was successfully uploaded over Wi-Fi and read back after reboot. Build: esp32 core 3.3.12, FastLED 3.10.5, 1,081,355 program bytes and 54,988 global RAM bytes. Six host test programs passed, including retry timing/rollover and animation output pausing, plus the production playlist check. Browser firmware upload and BLE controls are future work. See [OTA setup and upload instructions](docs/ota.md).
+Current firmware: **3.0.0-ota.3**. Password-protected ArduinoOTA and two-network Wi-Fi retry support are implemented; the lights continue while Wi-Fi is unavailable. A read-only `/status` page reports the running version. Version ota.1 was installed over USB, then ota.2 was successfully uploaded over Wi-Fi and read back after reboot. Build: esp32 core 3.3.12, FastLED 3.10.5, 1,082,251 program bytes and 55,316 global RAM bytes. Seven host test programs passed, including retry timing/rollover and animation output pausing, plus the production playlist check. LED #1 now shows temporary Wi-Fi/OTA status, with OTA priority and brief confirmations before returning to the animation. Browser firmware upload and BLE controls are future work. See [OTA setup and upload instructions](docs/ota.md).
 
 ## Current development: two-animation preview
 

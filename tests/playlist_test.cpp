@@ -1,6 +1,10 @@
 #include <cassert>
 #include <cstring>
 #include <cstdint>
+#include "../XIAO_ESP32_holiday_lights/status_pixel.h"
+StatusPixel fakeStatus={false,0,0,0};
+StatusPixel networkStatusPixel(uint32_t) { return fakeStatus; }
+void setStatusFrameCallback(void (*)(uint32_t)) {}
 bool fakeUpdateBusy=false, fakeRestart=false;
 void beginNetworkUpdates() {}
 void serviceNetworkUpdates(uint32_t) {}
@@ -111,4 +115,15 @@ int main() {
   loop();
   assert(FastLED.frames==framesBefore+1 && currentAnimationIndex==previousEffect);
   assert(!fakeRestart);
+  // Status owns only physical pixel #1 and never changes the animation buffer.
+  animationBrightness=10;
+  for (auto &p:pixels) p=CRGB(100,50,25);
+  fakeStatus={true,0,0,100};
+  sendCurrentFrame(testNow);
+  assert(displayedPixels[0].b==100 && displayedPixels[0].r==0);
+  assert(displayedPixels[1].r==5 && displayedPixels[1].g==2 && displayedPixels[1].b==1);
+  assert(pixels[0].r==100 && pixels[1].r==100);
+  fakeStatus={false,0,0,0};
+  refreshStatusFrame(testNow+1);
+  assert(displayedPixels[0].r==5 && displayedPixels[0].b==1);
 }

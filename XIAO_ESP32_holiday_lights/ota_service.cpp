@@ -28,6 +28,14 @@ WiFiRetry retry(networkCount);
 WebServer statusServer(80); // Read-only version/status; no browser upload endpoint yet.
 bool enabled = false, ready = false, updating = false, restartAnimation = false;
 unsigned lastPercent = 101;
+StatusIndicator indicator;
+void (*statusFrameCallback)(uint32_t) = nullptr;
+bool rebootPending = false;
+uint32_t completedAt = 0;
+
+void refreshStatus() {
+  if (statusFrameCallback) statusFrameCallback(millis());
+}
 
 void sendStatus() {
   String body = "{\"version\":\"" HOLIDAY_LIGHTS_VERSION "\",\"hostname\":\"";
@@ -49,6 +57,7 @@ void beginNetworkUpdates() {
   enabled = SECRET_WIFI_SSID[0] && strcmp(SECRET_WIFI_SSID, "REPLACE_ME") != 0
       && strlen(SECRET_OTA_PASSWORD) >= 12;
   if (!enabled) {
+    indicator.network(NetworkLight::Offline, millis());
     Serial.println("Wi-Fi/OTA disabled: configure private Wi-Fi and OTA credentials.");
     return;
   }
@@ -58,25 +67,36 @@ void beginNetworkUpdates() {
   WiFi.setAutoReconnect(false); // Retry policy chooses between configured networks.
   ArduinoOTA.setHostname(hostname);
   ArduinoOTA.setPassword(SECRET_OTA_PASSWORD);
-  ArduinoOTA.setRebootOnSuccess(true);
+  ArduinoOTA.setRebootOnSuccess(false); // Give LED #1 a visible success window.
   ArduinoOTA.setTimeout(10000);
   ArduinoOTA.onStart([]() {
     updating = true;
     lastPercent = 101;
+    indicator.update(UpdateLight::Receiving, millis());
+    refreshStatus();
     Serial.println("OTA: starting; animation output paused.");
   });
   ArduinoOTA.onProgress([](unsigned progress, unsigned total) {
+    refreshStatus(); // Called outside flash writes; sends only changed blink phases.
     const unsigned percent = total ? uint64_t(progress) * 100 / total : 0;
     if (percent / 10 != lastPercent / 10) {
       Serial.printf("OTA: %u%%\n", percent);
       lastPercent = percent;
     }
   });
-  ArduinoOTA.onEnd([]() { Serial.println("OTA: complete; restarting."); });
+  ArduinoOTA.onEnd([]() {
+    completedAt = millis();
+    indicator.update(UpdateLight::Complete, completedAt);
+    rebootPending = true;
+    refreshStatus();
+    Serial.println("OTA: complete; green confirmation, then restarting.");
+  });
   ArduinoOTA.onError([](ota_error_t error) {
     Serial.printf("OTA: error %u; lights continue.\n", unsigned(error));
     if (updating) restartAnimation = true;
     updating = false;
+    indicator.update(UpdateLight::Failed, millis());
+    refreshStatus();
   });
   statusServer.on("/", HTTP_GET, sendStatus);
   statusServer.on("/status", HTTP_GET, sendStatus);
@@ -84,16 +104,24 @@ void beginNetworkUpdates() {
 
 void serviceNetworkUpdates(uint32_t now) {
   if (!enabled) return;
+  if (rebootPending) {
+    if (uint32_t(now - completedAt) >= StatusIndicator::confirmationMs) ESP.restart();
+    return;
+  }
   const bool connected = WiFi.status() == WL_CONNECTED;
   if (!connected && ready) {
     statusServer.stop();
     ArduinoOTA.end();
     ready = false;
-    if (updating) restartAnimation = true;
+    if (updating) {
+      restartAnimation = true;
+      indicator.update(UpdateLight::Failed, now);
+    }
     updating = false;
     Serial.println("Wi-Fi disconnected; reconnecting while lights continue.");
   }
   const int attempt = retry.poll(now, connected);
+  if (!connected) indicator.network(retry.searching() ? NetworkLight::Searching : NetworkLight::Offline, now);
   if (attempt >= 0) {
     WiFi.disconnect();
     Serial.printf("Wi-Fi: trying configured network %u.\n", unsigned(attempt + 1));
@@ -104,6 +132,7 @@ void serviceNetworkUpdates(uint32_t now) {
     ArduinoOTA.begin();
     statusServer.begin();
     ready = true;
+    indicator.network(NetworkLight::Connected, now);
     Serial.print("Wi-Fi connected. IP: ");
     Serial.println(WiFi.localIP());
     Serial.println("OTA ready: holiday-lights.local (port 3232).");
@@ -113,6 +142,8 @@ void serviceNetworkUpdates(uint32_t now) {
 }
 
 bool networkUpdateBusy() { return updating; }
+StatusPixel networkStatusPixel(uint32_t now) { return indicator.pixel(now); }
+void setStatusFrameCallback(void (*callback)(uint32_t)) { statusFrameCallback = callback; }
 bool takeAnimationRestartRequest() {
   const bool request = restartAnimation;
   restartAnimation = false;

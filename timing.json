@@ -135,6 +135,13 @@
       "approximate_response_released_at": "2026-10-05T17:54:31.519962+00:00",
       "duration_seconds": 809,
       "status": "partial_pre_commit_snapshot; first capture is a lower bound"
+    },
+    {
+      "id": "status-pixel-019",
+      "approximate_received_at": "2026-10-05T18:04:55+00:00",
+      "approximate_response_released_at": "2026-10-05T18:10:43.478798+00:00",
+      "duration_seconds": 348,
+      "status": "partial_pre_commit_snapshot"
     }
   ],
   "snapshots": [

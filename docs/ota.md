@@ -30,8 +30,24 @@ The helper imports the installed ESP32 uploader and reads the OTA password local
 
 ## Update behavior and recovery
 
-During an actual update, the last LED frame remains displayed while rendering is suspended. The ESP32 restarts after successful flashing. A handled update error releases the pause and restarts the current animation's clock. Wi-Fi loss restarts connection attempts. Firmware that cannot boot still requires USB recovery; automatic rollback is not enabled by this change.
+During an actual update, animation rendering is suspended; pixels #2 onward hold their last frame while pixel #1 indicates OTA status. The ESP32 shows green for two seconds after successful flashing, then restarts. A handled update error releases the pause and restarts the current animation's clock. Wi-Fi loss restarts connection attempts. Firmware that cannot boot still requires USB recovery; automatic rollback is not enabled by this change.
 
 The local status endpoint is read-only and does not grant update access. ArduinoOTA requires the private password. These are LAN services; do not expose them through router port forwarding. Future work: authenticated browser updater and optional password-protected fallback access point. Witch's Cauldron remains the animation backlog item after OTA.
 
 Official references: [ArduinoOTA example](https://github.com/espressif/arduino-esp32/blob/3.3.12/libraries/ArduinoOTA/examples/BasicOTA/BasicOTA.ino), [browser OTA workflow](https://docs.espressif.com/projects/arduino-esp32/en/latest/ota_web_update.html).
+
+## First-pixel status indicator
+
+Physical LED #1 (code index 0) temporarily overlays the animation. OTA indications take priority over network indications. The animation buffer stays intact, and status brightness is independent of the animation brightness.
+
+| State | Indication | Duration |
+|---|---|---|
+| Searching for a configured network | Blinking blue | Connection attempts |
+| Network connected | Solid blue | 2 seconds |
+| No configured network connected after a round of attempts | Solid red | 4 seconds, then animation during retry cooldown |
+| Receiving an OTA update | Blinking green | While transfer makes progress |
+| OTA image successfully written | Solid green | 2 seconds, then reboot |
+| OTA error | Blinking red | 4 seconds |
+| No current indication | Animation | Until the next event |
+
+Blink half-period is 250 ms. During a stalled OTA transfer, callbacks stop, so blinking can pause until transfer processing resumes; it is not an independent hardware heartbeat. Changing one WS2811 pixel still sends a frame to the entire string, adding some transfer overhead. A dead controller, power loss, or broken data path cannot be reported by this indicator. Green confirms the image was written successfully; the status endpoint verifies that the new firmware actually boots.

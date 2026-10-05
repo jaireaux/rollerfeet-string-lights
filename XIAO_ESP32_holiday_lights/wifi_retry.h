@@ -38,6 +38,7 @@ class WiFiRetry {
   }
   static constexpr uint32_t attemptMs = 10000;
   static constexpr uint32_t retryPauseMs = 20000;
+  bool searching() const { return attempting_; }
  private:
   uint8_t count_, current_ = 0, attempts_ = 0;
   bool attempting_ = false, cooling_ = false, wasConnected_ = false;
