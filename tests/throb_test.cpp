@@ -37,10 +37,12 @@ int main() {
   AnimationClock clock;
   uint32_t elapsed;
   clock.start(0);
-  assert(clock.frameDue(8950, 3 * throbPeriodMs, 50, elapsed));
+  assert(clock.frameDue(8950, 50, elapsed));
   renderThrob(elapsed);
   checkColor(expected[2]);
-  assert(clock.frameDue(9000, 3 * throbPeriodMs, 50, elapsed));
+  assert(clock.finished(9000, 3 * throbPeriodMs));
+  clock.start(9000);
+  assert(clock.frameDue(9000, 50, elapsed));
   assert(elapsed == 0 && renderThrob(elapsed) == 10);
   checkColor(expected[0]);
 }

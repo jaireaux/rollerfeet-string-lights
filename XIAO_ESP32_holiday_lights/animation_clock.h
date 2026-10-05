@@ -14,12 +14,11 @@ struct AnimationClock {
     firstFramePending = true;
   }
 
-  bool frameDue(uint32_t now, uint32_t animationDurationMs,
-                uint32_t frameIntervalMs, uint32_t &elapsedMs) {
-    if (now - animationStartedAtMs >= animationDurationMs) {
-      // Only one animation is enabled: restart it for now.
-      start(now);
-    }
+  bool finished(uint32_t now, uint32_t durationMs) const {
+    return now - animationStartedAtMs >= durationMs;
+  }
+
+  bool frameDue(uint32_t now, uint32_t frameIntervalMs, uint32_t &elapsedMs) {
     elapsedMs = now - animationStartedAtMs;
     if (!firstFramePending && now - lastFrameAtMs < frameIntervalMs) {
       return false;
