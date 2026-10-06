@@ -4,13 +4,21 @@ Arduino holiday lights using FastLED. The v2.0 baseline retains its historical B
 
 ## Wi-Fi firmware updates
 
-Current firmware: **3.0.0-ota.7**. Password-protected ArduinoOTA and two-network Wi-Fi retry support are implemented; the lights continue while Wi-Fi is unavailable. A read-only `/status` page reports the running version. Version ota.1 was installed over USB, then ota.2 was successfully uploaded over Wi-Fi and read back after reboot. Build: esp32 core 3.3.12, FastLED 3.10.5, 1,082,239 program bytes and 58,316 global RAM bytes. Seven host test programs passed, including retry timing/rollover and animation output pausing, plus the production playlist check. LED #1 shows Wi-Fi/OTA status, with OTA priority and brief success confirmations. Offline red remains until the next search or connection. Browser firmware upload and BLE controls are future work. See [OTA setup and upload instructions](docs/ota.md).
+Current prepared firmware: **3.0.0-web.1**. Password-protected ArduinoOTA and two-network Wi-Fi retry support are implemented; the lights continue while Wi-Fi is unavailable. A read-only `/status` endpoint reports the running version. The root page provides password-protected web controls; see [web control setup](docs/web-control.md). Version ota.1 was installed over USB, then ota.2 was successfully uploaded over Wi-Fi and read back after reboot. Build: esp32 core 3.3.12, FastLED 3.10.5, 1,106,595 program bytes and 58,332 global RAM bytes. Seven host test programs passed, including retry timing/rollover and animation output pausing, plus the production playlist check. LED #1 shows Wi-Fi/OTA status, with OTA priority and brief success confirmations. Offline red remains until the next search or connection. Browser firmware upload and BLE controls are future work. See [OTA setup and upload instructions](docs/ota.md).
+
+## Web controls
+
+Web.1 is prepared and compiled but has not been installed: the controller was unreachable during this work. The last verified installed version remains ota.7. The IONOS page and LNM relay are live and show offline until the controller reconnects and receives web.1.
+
+The phone-friendly page offers all five Halloween animations, on/off, brightness, next animation, automatic cycling, preview/full playlist, and a shared 10–600 second animation duration. Defaults preserve Meteor Rain / Witchfire Sparkles at 30 seconds each; settings reset on controller restart. Off and brightness zero leave the first pixel available for network/OTA status.
+
+Remote access uses an authenticated HTTPS relay on IONOS and a persistent outbound-only Python service on LNM. It requires no home inbound port or published DDNS. The page waits for controller acknowledgement, refuses commands while offline, and expires pending commands. [Operation and deployment](docs/web-control.md). Browser firmware upload, Tuya switch control, and BLE remain future work.
 
 ## Current development: two-animation preview
 
 Open `XIAO_ESP32_holiday_lights/XIAO_ESP32_holiday_lights.ino` in Arduino IDE; select `esp32:esp32:XIAO_ESP32S3`. Development currently alternates only Meteor Rain and Witchfire Sparkles, as requested. Keep previews to two selected effects while adding animations. Production retains Throb, Orange / Purple, Meteor Rain, Haunted Tide, Witchfire Sparkles. All effects use one `animationDurationMs`. `HOLIDAY_LIGHTS_PRODUCTION` defaults to 0 (30 seconds per effect); set it to 1 for 180 seconds per effect. This replaces the earlier per-effect 9/16-second durations. Production runs three minutes per effect; development prioritizes quick transitions and can interrupt a repeating color sequence or meteor at the shared deadline.
 
-The animation table contains names, frame intervals, and render functions. `AnimationClock` checks elapsed time and frame deadlines. `updateAnimation(now)` advances the playlist, starts the next effect immediately, applies its brightness, masks the connecting section and calls `FastLED.show()` once. Effects never block, call delay, or send their own frames. Late frames sample current elapsed time without replaying missed frames.
+The animation table contains names, frame intervals, and render functions. `AnimationClock` checks elapsed time and frame deadlines. `updateAnimation(now)` advances the playlist, starts the next effect immediately, applies its brightness and calls `FastLED.show()` once. Effects never block, call delay, or send their own frames. Late frames sample current elapsed time without replaying missed frames.
 
 | Effect | Behavior | Frame interval |
 |---|---|---:|

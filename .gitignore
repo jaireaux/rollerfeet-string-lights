@@ -7,3 +7,13 @@
 *.map
 .env
 .env.*
+**/bridge-config.json
+**/web-access.txt
+**/private/config.php
+**/private/state.json
+**/private/state.lock
+
+__pycache__/
+*.pyc
+
+/runtime/

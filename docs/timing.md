@@ -21,3 +21,5 @@ Two-animation playlist update 2026-10-05T00:06:51Z: response interval unmeasured
 Meteor Rain snapshot 2026-10-05T00:21:03Z: 129 seconds measured from first clock capture, excluding subsequent commit and retention verification. Historical gaps remain unmeasured.
 
 Pixel walk diagnostic 2026-10-05T00:28:49Z: response interval unmeasured; no start clock captured.
+
+Web control preparation snapshot 2026-10-06T21:59:01Z: 885 seconds since the first captured clock this turn, including user clarification. Website and outbound relay published; controller upload remains pending reachability. Post-snapshot commit, retention, and verification are excluded. Historical gaps and provisional epoch remain unchanged; calendar age is not labor time.

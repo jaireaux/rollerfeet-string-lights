@@ -5,6 +5,8 @@
 #include "version.h"
 #include "wifi_retry.h"
 #include "ota_service.h"
+#include "light_control.h"
+#include "web_app.h"
 #if __has_include("arduino_secrets.h")
 #include "arduino_secrets.h"
 #else
@@ -25,7 +27,7 @@ const Network networks[] = {
 };
 const uint8_t networkCount = SECRET_WIFI_SSID_2[0] && SECRET_WIFI_PASSWORD_2[0] ? 2 : 1;
 WiFiRetry retry(networkCount);
-WebServer statusServer(80); // Read-only version/status; no browser upload endpoint yet.
+WebServer statusServer(80);
 bool enabled = false, ready = false, updating = false, restartAnimation = false;
 unsigned lastPercent = 101;
 StatusIndicator indicator;
@@ -50,6 +52,46 @@ void sendStatus() {
   statusServer.sendHeader("Cache-Control", "no-store");
   statusServer.send(200, "application/json", body);
 }
+void apiError(int code, const char *message) {
+  statusServer.send(code, "application/json", String("{\"error\":\"") + message + "\"}");
+}
+bool authenticated() {
+  statusServer.sendHeader("Cache-Control", "no-store");
+  if (statusServer.authenticate("admin", SECRET_OTA_PASSWORD)) return true;
+  apiError(401, "Enter your controller password.");
+  return false;
+}
+void sendLightState() {
+  char buffer[384];
+  writeLightState(buffer, sizeof(buffer));
+  statusServer.send(200, "application/json", buffer);
+}
+void controlLights() {
+  if (!authenticated()) return;
+  if (statusServer.header("X-Holiday-Control") != "1") {
+    apiError(403, "Use the lights control page."); return;
+  }
+  const String origin = statusServer.header("Origin");
+  if (origin.length() && origin != String("http://") + statusServer.hostHeader()
+      && origin != String("https://") + statusServer.hostHeader()) {
+    apiError(403, "This page is not allowed to control the lights."); return;
+  }
+  if (updating) { apiError(409, "A firmware update is in progress."); return; }
+  const String value = statusServer.arg("value");
+  if (!statusServer.hasArg("action") || !value.length() || value.length() > 3) {
+    apiError(400, "Invalid light setting."); return;
+  }
+  uint32_t number = 0;
+  for (unsigned i = 0; i < value.length(); ++i) {
+    if (value[i] < '0' || value[i] > '9') { apiError(400, "Invalid light setting."); return; }
+    number = number * 10 + value[i] - '0';
+  }
+  if (!applyLightCommand(statusServer.arg("action").c_str(), number, millis())) {
+    apiError(400, "Invalid light setting."); return;
+  }
+  sendLightState();
+}
+
 }
 
 void beginNetworkUpdates() {
@@ -98,7 +140,16 @@ void beginNetworkUpdates() {
     indicator.update(UpdateLight::Failed, millis());
     refreshStatus();
   });
-  statusServer.on("/", HTTP_GET, sendStatus);
+  const char *headers[] = {"Authorization", "Origin", "X-Holiday-Control"};
+  statusServer.collectHeaders(headers, 3);
+  statusServer.on("/", HTTP_GET, []() {
+    statusServer.sendHeader("Cache-Control", "no-store");
+    statusServer.sendHeader("X-Content-Type-Options", "nosniff");
+    statusServer.sendHeader("Content-Security-Policy", "default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'");
+    statusServer.send_P(200, "text/html", holidayWebApp);
+  });
+  statusServer.on("/api/state", HTTP_GET, []() { if (authenticated()) sendLightState(); });
+  statusServer.on("/api/control", HTTP_POST, controlLights);
   statusServer.on("/status", HTTP_GET, sendStatus);
 }
 

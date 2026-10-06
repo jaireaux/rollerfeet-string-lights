@@ -6,6 +6,9 @@
 #include "haunted_tide_settings.h"
 #include "sparkle_settings.h"
 #include "ota_service.h"
+#include "light_control.h"
+#include <stdio.h>
+#include <string.h>
 
 // Both profiles use the current 600-pixel string.
 #ifndef HOLIDAY_LIGHTS_PRODUCTION
@@ -69,6 +72,85 @@ const Animation animations[] = {
 constexpr uint8_t animationCount = sizeof(animations) / sizeof(animations[0]);
 uint8_t currentAnimationIndex = 0;
 
+// The web controls expose every completed effect without changing the preview default.
+const Animation allAnimations[] = {
+  {"Throb", 50, renderThrob},
+  {"Orange / Purple", alternatingColorStepMs, renderAlternatingColors},
+  {"Meteor Rain", 20, renderMeteorRain},
+  {"Haunted Tide", hauntedTideFrameMs, renderHauntedTide},
+  {"Witchfire Sparkles", sparkleFrameMs, renderWitchfireSparkles}
+};
+constexpr uint8_t allAnimationCount = sizeof(allAnimations) / sizeof(allAnimations[0]);
+const Animation previewAnimations[] = {
+  {"Meteor Rain", 20, renderMeteorRain},
+  {"Witchfire Sparkles", sparkleFrameMs, renderWitchfireSparkles}
+};
+constexpr uint8_t previewAnimationCount = 2;
+bool lightsEnabled = true, automaticCycling = true;
+bool fullPlaylist = HOLIDAY_LIGHTS_PRODUCTION;
+uint8_t brightnessPercent = 100, manualAnimationIndex = 2;
+uint32_t runtimeDurationMs = animationDurationMs;
+
+const Animation &selectedAnimation() {
+  if (!automaticCycling) return allAnimations[manualAnimationIndex];
+  return fullPlaylist ? allAnimations[currentAnimationIndex] : previewAnimations[currentAnimationIndex];
+}
+uint8_t selectedAnimationId() {
+  const char *name = selectedAnimation().name;
+  for (uint8_t i = 0; i < allAnimationCount; ++i)
+    if (strcmp(name, allAnimations[i].name) == 0) return i;
+  return 2;
+}
+
+// Commands are validated before any state changes. Values are bounded at the firmware.
+bool applyLightCommand(const char *action, uint32_t value, uint32_t now) {
+  if (!action || networkUpdateBusy()) return false;
+  if (strcmp(action, "power") == 0 && value <= 1) lightsEnabled = value;
+  else if (strcmp(action, "brightness") == 0 && value <= 100) brightnessPercent = value;
+  else if (strcmp(action, "animation") == 0 && value < allAnimationCount) {
+    manualAnimationIndex = value;
+    automaticCycling = false;
+    animationClock.start(now);
+  } else if (strcmp(action, "auto") == 0 && value <= 1) {
+    const uint8_t previous = selectedAnimationId();
+    automaticCycling = value;
+    manualAnimationIndex = previous;
+    currentAnimationIndex = fullPlaylist ? previous : 0;
+    if (!fullPlaylist) {
+      for (uint8_t i = 0; i < previewAnimationCount; ++i)
+        if (strcmp(previewAnimations[i].name, allAnimations[previous].name) == 0) currentAnimationIndex = i;
+    }
+    animationClock.start(now);
+  } else if (strcmp(action, "playlist") == 0 && value <= 1) {
+    fullPlaylist = value;
+    automaticCycling = true;
+    currentAnimationIndex = 0;
+    animationClock.start(now);
+  } else if (strcmp(action, "duration") == 0 && value >= 10 && value <= 600) {
+    runtimeDurationMs = value * 1000;
+    animationClock.start(now);
+  } else if (strcmp(action, "next") == 0 && value == 1) {
+    if (automaticCycling) currentAnimationIndex = (currentAnimationIndex + 1) %
+        (fullPlaylist ? allAnimationCount : previewAnimationCount);
+    else manualAnimationIndex = (manualAnimationIndex + 1) % allAnimationCount;
+    animationClock.start(now);
+  } else return false;
+  updateAnimation(now);
+  sendCurrentFrame(now); // Brightness/power must respond even between slow effect frames.
+  return true;
+}
+
+void writeLightState(char *buffer, size_t capacity) {
+  snprintf(buffer, capacity,
+      "{\"version\":\"" HOLIDAY_LIGHTS_VERSION "\",\"pixels\":%u,"
+      "\"power\":%s,\"brightness\":%u,\"auto\":%s,\"playlist\":\"%s\","
+      "\"duration\":%lu,\"animation\":%u,\"updating\":%s}",
+      unsigned(pixelCount), lightsEnabled ? "true" : "false", unsigned(brightnessPercent),
+      automaticCycling ? "true" : "false", fullPlaylist ? "all" : "preview",
+      static_cast<unsigned long>(runtimeDurationMs / 1000), unsigned(selectedAnimationId()),
+      networkUpdateBusy() ? "true" : "false");
+}
+
 void setup() {
   Serial.begin(115200);
   FastLED.addLeds<WS2811, ledDataPin, RGB>(displayedPixels, pixelCount)
@@ -76,7 +158,7 @@ void setup() {
   FastLED.setBrightness(outputBrightness);
   animationClock.start(millis()); // Start after initialization, not before setup.
   Serial.println("Halloween playlist starting:");
-  Serial.println(animations[currentAnimationIndex].name);
+  Serial.println(selectedAnimation().name);
   setStatusFrameCallback(refreshStatusFrame);
   beginNetworkUpdates();
 }
@@ -90,12 +172,12 @@ void loop() {
 }
 
 void updateAnimation(uint32_t now) {
-  if (animationClock.finished(now, animationDurationMs)) {
-    currentAnimationIndex = (currentAnimationIndex + 1) % animationCount;
+  if (automaticCycling && animationClock.finished(now, runtimeDurationMs)) {
+    currentAnimationIndex = (currentAnimationIndex + 1) % (fullPlaylist ? allAnimationCount : previewAnimationCount);
     animationClock.start(now);
-    Serial.println(animations[currentAnimationIndex].name);
+    Serial.println(selectedAnimation().name);
   }
-  const Animation &animation = animations[currentAnimationIndex];
+  const Animation &animation = selectedAnimation();
   uint32_t elapsedMs;
   if (!animationClock.frameDue(now, animation.frameIntervalMs, elapsedMs)) {
     return;
@@ -109,9 +191,9 @@ void sendCurrentFrame(uint32_t now) {
   // Keep the animation buffer intact. Scale its brightness before adding status,
   // so a low Throb brightness cannot make the indicator unreadably dim.
   for (uint16_t i = 0; i < pixelCount; ++i) {
-    displayedPixels[i] = CRGB(uint16_t(pixels[i].r) * animationBrightness / outputBrightness,
-                             uint16_t(pixels[i].g) * animationBrightness / outputBrightness,
-                             uint16_t(pixels[i].b) * animationBrightness / outputBrightness);
+    displayedPixels[i] = CRGB(uint32_t(pixels[i].r) * animationBrightness * (lightsEnabled ? brightnessPercent : 0) / (outputBrightness * 100u),
+                             uint32_t(pixels[i].g) * animationBrightness * (lightsEnabled ? brightnessPercent : 0) / (outputBrightness * 100u),
+                             uint32_t(pixels[i].b) * animationBrightness * (lightsEnabled ? brightnessPercent : 0) / (outputBrightness * 100u));
   }
   displayedStatus = networkStatusPixel(now);
   if (displayedStatus.active) {

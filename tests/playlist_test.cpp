@@ -129,4 +129,45 @@ int main() {
   fakeStatus={false,0,0,0};
   refreshStatusFrame(testNow+1);
   assert(displayedPixels[0].r==5 && displayedPixels[0].b==1);
+  // Web commands expose all effects, hold manual selection, and reject invalid changes.
+  assert(!applyLightCommand("animation", 5, 200001));
+  assert(!applyLightCommand("brightness", 101, 200001));
+  assert(!applyLightCommand("duration", 9, 200001));
+  assert(!applyLightCommand("duration", 601, 200001));
+  assert(!applyLightCommand("power", 2, 200001));
+  assert(!applyLightCommand("unknown", 0, 200001));
+  assert(applyLightCommand("animation", 3, 200001));
+  assert(!automaticCycling && selectedAnimationId()==3);
+  updateAnimation(200001 + 2*animationDurationMs);
+  assert(selectedAnimationId()==3); // Manual stays put beyond automatic deadline.
+  assert(applyLightCommand("next", 1, 600000) && selectedAnimationId()==4);
+  assert(applyLightCommand("playlist", 1, 600001));
+  assert(automaticCycling && fullPlaylist && selectedAnimationId()==0);
+  assert(applyLightCommand("duration", 120, 600002));
+  updateAnimation(720001); assert(selectedAnimationId()==0);
+  updateAnimation(720002); assert(selectedAnimationId()==1);
+  assert(applyLightCommand("auto", 0, 720003));
+  assert(!automaticCycling && selectedAnimationId()==1);
+  assert(applyLightCommand("playlist", 0, 720004));
+  assert(automaticCycling && !fullPlaylist && selectedAnimationId()==2);
+  assert(applyLightCommand("next", 1, 720004) && selectedAnimationId()==4);
+  assert(applyLightCommand("next", 1, 720004) && selectedAnimationId()==2);
+  fakeUpdateBusy=true;
+  assert(!applyLightCommand("power", 0, 720005) && lightsEnabled);
+  fakeUpdateBusy=false;
+  assert(applyLightCommand("power", 0, 720006));
+  for (const auto &p:displayedPixels) assert(dark(p));
+  fakeStatus={true,100,0,0};sendCurrentFrame(720007);
+  assert(displayedPixels[0].r==100 && dark(displayedPixels[1]));
+  fakeStatus={false,0,0,0};
+  assert(applyLightCommand("power", 1, 720008));
+  assert(applyLightCommand("brightness", 25, 720009));
+  animationBrightness=outputBrightness;
+  for (auto &p:pixels) p=CRGB(100,80,40);
+  sendCurrentFrame(720009);
+  assert(displayedPixels[1].r==25 && displayedPixels[1].g==20 && displayedPixels[1].b==10);
+  char json[384];writeLightState(json,sizeof(json));
+  assert(strstr(json,"\"brightness\":25") && strstr(json,"\"duration\":120"));
+  char tiny[4];writeLightState(tiny,sizeof(tiny));assert(tiny[3]=='\0');
+
 }
