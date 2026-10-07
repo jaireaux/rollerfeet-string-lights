@@ -1,10 +1,10 @@
 # Web controls
 
-Prepared firmware: **3.0.0-web.1**. The web page is a single self-contained HTML file in `web/index.html`, embedded in the XIAO by `python3 tools/embed_web.py`. Its layout adapts to phones and larger screens and uses no third-party scripts or fonts.
+Firmware: **3.0.0-web.2**. The web page is a single self-contained HTML file in `web/index.html`, embedded in the XIAO by `python3 tools/embed_web.py`. Its layout adapts to phones and larger screens and uses no third-party scripts or fonts.
 
 Choose any of the five completed animations, next animation, lights on/off, brightness 0–100%, automatic cycling, preview/all playlist, and 10–600 seconds per animation. Picking an animation holds it until you change it or enable cycling. Changing the playlist starts cycling that list. Preview always contains Meteor Rain and Witchfire Sparkles, including in a production build. Production still defaults to all five at 180 seconds each; development defaults to preview at 30 seconds. Settings are held in memory and reset after a restart.
 
-Brightness is relative to the existing output limit of 200 and is applied separately from the renderer's brightness. LED #1's diagnostic overlay retains priority, even while lights are off. The 600-pixel length, fixed 2250 ms meteor launches, and disabled blackout mask are unchanged. Wi-Fi retry and authenticated ArduinoOTA remain available.
+Brightness is relative to the existing output limit of 200 and is applied separately from the renderer's brightness. LED #1's diagnostic overlay retains priority, even while lights are off. The 600-pixel length, fixed 1250 ms meteor launches, and disabled blackout mask are unchanged. Wi-Fi retry and authenticated ArduinoOTA remain available.
 
 ## Home and away
 
@@ -26,7 +26,7 @@ The relay marks controller status stale after 15 seconds and rejects new command
 
 ## Deployment
 
-1. Run `tools/embed_web.py` after editing the page, then compile and upload the Arduino sketch using the established private-password OTA helper. Verify `/status` reports web.1.
+1. Run `tools/embed_web.py` after editing the page, then compile and upload the Arduino sketch using the established private-password OTA helper. Verify `/status` reports web.2.
 2. Publish `web/index.html` as `lights/index.html`, plus `remote/api.php` and `remote/.htaccess` to the isolated `lights/` directory on IONOS. This leaves the homepage untouched. Use the domain's configured modern PHP runtime, not the server's default CLI PHP.
 3. Create `lights/private/.htaccess` from `remote/private.htaccess`. Provision a private `config.php` returning `password_hash` (PHP password_hash output) and a random `bridge_token`. Verify public requests to `private/config.php` and `private/state.json` receive HTTP 403 before enabling the relay. Runtime state is created with private file permissions.
 4. On LNM, install `remote/bridge.py` at `~/.local/share/holiday-lights/bridge.py` and the unit file at `~/.config/systemd/user/holiday-lights-bridge.service`. Provision mode-600 `~/.config/holiday-lights/bridge-config.json` with `relay_url`, `bridge_token`, `controller_url`, and `controller_password`. The relay URL must use HTTPS on rollerfeet.com. Credentials are never command-line arguments or logs.
@@ -39,4 +39,4 @@ Use source-only Git/Drive retention. Private credentials, web runtime state, fir
 
 Firmware tests cover bounded commands, manual hold, both playlists, duration, immediate output changes, status-pixel priority, and OTA rejection. Run the existing host tests and production playlist check as described in README. `python3 tests/relay_test.py` on a host with modern PHP tests the real relay for authentication, offline/update protection, bounds, cross-origin rejection, single claims, expiry, acknowledgements, and state filtering. `node tests/web_control_test.js` checks login, control updates, remote acknowledgements, offline/reconnect behavior, hidden-tab polling, and logout without accessing a browser. The website JavaScript also passes syntax checking.
 
-The web.1 build uses 1,106,595 bytes program storage and 58,332 bytes global RAM and passes for XIAO ESP32S3 with esp32 core 3.3.12 and FastLED 3.10.5. IONOS HTTPS, authentication, and private-storage denial and LNM's authenticated outgoing connection have been verified. At preparation time the controller could not be found on the home LAN; firmware upload and end-to-end physical control remain pending. Browser visual QA was blocked by the browser administrator policy. Phone appearance and live control need user review.
+The web.2 build uses 1,106,583 bytes program storage and 58,332 bytes global RAM and passes for XIAO ESP32S3 with esp32 core 3.3.12 and FastLED 3.10.5. IONOS HTTPS, authentication, and private-storage denial and LNM's authenticated outgoing connection have been verified. On October 6 the controller was unreachable. On October 7 web.2 was uploaded wirelessly, its restarted version verified, and the IONOS→LNM→controller command path verified using the existing brightness value. This confirms software acknowledgement, not a user-observed visual effect. Browser visual QA was blocked by the browser administrator policy. Phone appearance and live control need user review.

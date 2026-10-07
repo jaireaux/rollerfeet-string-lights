@@ -149,6 +149,13 @@
       "approximate_response_released_at": "2026-10-06T21:59:01Z",
       "duration_seconds": 885,
       "status": "partial_pre_commit_snapshot; includes interactive clarification; historical gaps remain unmeasured"
+    },
+    {
+      "id": "meteor-1250-hosting-research-021",
+      "approximate_received_at": "2026-10-07T22:44:24Z",
+      "approximate_response_released_at": "2026-10-07T22:46:54Z",
+      "duration_seconds": 150,
+      "status": "partial_pre_commit_snapshot; intervening conversations unmeasured"
     }
   ],
   "snapshots": [
@@ -213,6 +220,13 @@
       "recorded_at": "2026-10-06T21:59:01Z",
       "measured_project_elapsed_seconds": 193877,
       "measured_cumulative_ai_waiting_seconds": 2975,
+      "historical_time_included": false
+    },
+    {
+      "label": "3.0.0-web.2-meteor-1250-installed",
+      "recorded_at": "2026-10-07T22:46:54Z",
+      "measured_project_elapsed_seconds": 283150,
+      "measured_cumulative_ai_waiting_seconds": 3125,
       "historical_time_included": false
     }
   ]

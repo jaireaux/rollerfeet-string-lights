@@ -23,3 +23,5 @@ Meteor Rain snapshot 2026-10-05T00:21:03Z: 129 seconds measured from first clock
 Pixel walk diagnostic 2026-10-05T00:28:49Z: response interval unmeasured; no start clock captured.
 
 Web control preparation snapshot 2026-10-06T21:59:01Z: 885 seconds since the first captured clock this turn, including user clarification. Website and outbound relay published; controller upload remains pending reachability. Post-snapshot commit, retention, and verification are excluded. Historical gaps and provisional epoch remain unchanged; calendar age is not labor time.
+
+Web.2 / Meteor Rain update 2026-10-07T22:46:54Z: 150 seconds measured this turn from first clock capture. Installed firmware and remote command acknowledgement verified; subsequent commit/retention excluded. Intervening architectural discussion intervals remain unmeasured.
