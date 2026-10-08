@@ -1,6 +1,20 @@
 # Rollerfeet string lights
 
-Arduino holiday lights using FastLED. The v2.0 baseline retains its historical Blynk integration; v3.0 runs locally without Blynk.
+A Halloween light display running on a Seeed XIAO ESP32S3 with FastLED, a companion web app, and password-protected wireless firmware updates. Current installed firmware: **3.0.0-web.4**. The current code runs without Blynk.
+
+## What it does now
+
+- Drives **600 individually addressable WS2811 RGB pixels** using orange, purple, and green Halloween colors.
+- Runs five animations: **Throb, Orange / Purple, Meteor Rain, Haunted Tide, and Witchfire Sparkles**.
+- Provides a phone-friendly companion app at **[rollerfeet.com/lights](https://rollerfeet.com/lights/)**. The public page opens without a password to the animation picker, a countdown, and Next.
+- Starts the selected animation immediately, resets its countdown, and continues cycling through all five. The current display uses 30 seconds per animation.
+- Unlocks power, brightness, automatic cycling, playlist, and duration controls through **Admin Access Only**, using the web password.
+- Supports **password-protected ArduinoOTA updates over Wi-Fi**, so firmware can be installed without reconnecting USB. It retries two configured Wi-Fi networks and keeps the lights running when the network is unavailable.
+- Uses LED #1 for network and OTA status, returning it to the animation afterward; no-network status remains red.
+
+Remote control goes through the IONOS website and an outbound relay on LNM to the controller. No home inbound port or public DDNS address is required. Runtime settings reset after controller restart. Browser firmware uploads are not implemented; OTA uses the Arduino-compatible upload workflow.
+
+Current implementation lives on **[`develop/3.0`](https://github.com/jaireaux/rollerfeet-string-lights/tree/develop/3.0)**. The default `main` branch preserves the original v2.0 baseline. See [web app operation and deployment](docs/web-control.md) and [OTA setup and upload](docs/ota.md).
 
 ## Wi-Fi firmware updates
 
@@ -14,9 +28,9 @@ The phone-friendly page offers all five Halloween animations, on/off, brightness
 
 The public IONOS page opens with animation selection, Next, and a countdown. “Admin Access Only” prompts for the existing web password before showing full controls. Remote access uses an HTTPS relay on IONOS and a persistent outbound-only Python service on LNM. It requires no home inbound port or published DDNS. The page waits for controller acknowledgement, refuses commands while offline, and expires pending commands. [Operation and deployment](docs/web-control.md). Browser firmware upload, Tuya switch control, and BLE remain future work.
 
-## Current development: two-animation preview
+## Firmware profiles and animation implementation
 
-Open `XIAO_ESP32_holiday_lights/XIAO_ESP32_holiday_lights.ino` in Arduino IDE; select `esp32:esp32:XIAO_ESP32S3`. Development currently alternates only Meteor Rain and Witchfire Sparkles, as requested. Keep previews to two selected effects while adding animations. Production retains Throb, Orange / Purple, Meteor Rain, Haunted Tide, Witchfire Sparkles. All effects use one `animationDurationMs`. `HOLIDAY_LIGHTS_PRODUCTION` defaults to 0 (30 seconds per effect); set it to 1 for 180 seconds per effect. This replaces the earlier per-effect 9/16-second durations. Production runs three minutes per effect; development prioritizes quick transitions and can interrupt a repeating color sequence or meteor at the shared deadline.
+Open `XIAO_ESP32_holiday_lights/XIAO_ESP32_holiday_lights.ino` in Arduino IDE; select `esp32:esp32:XIAO_ESP32S3`. The development boot default is the Meteor Rain / Witchfire Sparkles preview. The installed display was switched to all five at 30 seconds each; using the animation picker also enables all five. Preview mode remains available for trying two effects while adding animations. Production retains Throb, Orange / Purple, Meteor Rain, Haunted Tide, Witchfire Sparkles. All effects use one `animationDurationMs`. `HOLIDAY_LIGHTS_PRODUCTION` defaults to 0 (30 seconds per effect); set it to 1 for 180 seconds per effect. This replaces the earlier per-effect 9/16-second durations. Production runs three minutes per effect; development prioritizes quick transitions and can interrupt a repeating color sequence or meteor at the shared deadline.
 
 The animation table contains names, frame intervals, and render functions. `AnimationClock` checks elapsed time and frame deadlines. `updateAnimation(now)` advances the playlist, starts the next effect immediately, applies its brightness and calls `FastLED.show()` once. Effects never block, call delay, or send their own frames. Late frames sample current elapsed time without replaying missed frames.
 
@@ -40,7 +54,7 @@ Refactored Classic Christmas is preserved outside the build in `inactive-animati
 
 Run each `tests/*_test.cpp` with `c++ -std=c++11 -Wall -Wextra -pedantic -I tests/fakes`, then execute its output. Also run `playlist_test.cpp` with `-DHOLIDAY_LIGHTS_PRODUCTION=1`. Tests exercise the actual main controller/renderers using fake LED output, plus timing rollover and the preserved Classic Christmas effect. On-device appearance still requires upload and visual checking.
 
-## v2.0 baseline
+## History: v2.0 baseline
 
 Imported existing source, with Wi-Fi name/password, Blynk template ID and auth token replaced by placeholders before the first commit. Original private files remain with the owner. Generated firmware/build output is excluded because it can contain embedded credentials. The import manifest records SHA-256 comparisons; the other 12 source files are byte-identical.
 
@@ -52,7 +66,7 @@ Dependencies observed at import: Espressif esp32 core 3.3.10, FastLED 3.10.5, Bl
 
 This import preserves legacy animation behavior and comments; it does not assert third-party authorship or introduce a blanket license.
 
-## Historical v3.0 setup (before Classic Christmas refactor)
+## History: initial v3.0 setup (before Classic Christmas refactor)
 
 Work on `develop/3.0`. The current sketch needs no credentials and does not connect to Wi-Fi or Blynk. The Wi-Fi-only `arduino_secrets.example.h` is reserved for future connectivity; private credentials remain in ignored `arduino_secrets.h`. Never commit credentials or compiled firmware containing them. Version: 3.0.0-dev. At that setup stage animation behavior had not yet been refactored.
 
@@ -65,6 +79,8 @@ Before work: `git pull --ff-only`. After saving: `git diff`, `git add` the inten
 Use Git to share committed code with the LNM clone. Treat Google Drive as a one-way retained snapshot, not an independently edited working folder. No unattended synchronization is configured. Credentials must be provisioned separately on each machine.
 
 [Timing records](docs/timing.md) describe measured project age and AI waiting.
+
+## Historical build and refactoring notes
 
 Build verification (2026-10-04): Arduino CLI compile for esp32:esp32:XIAO_ESP32S3 passed using the observed dependency versions: 1,274,219 bytes program storage and 50,992 bytes global RAM. No upload or live hardware validation performed.
 
