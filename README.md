@@ -20,6 +20,8 @@ Current supported source lives on **[`main`](https://github.com/jaireaux/rollerf
 
 Firmware and companion website use the same release number. Patch releases (3.0.1) cover fixes and small adjustments; minor releases (3.1.0) add compatible features or animations; major releases (4.0.0) introduce breaking changes. Each release receives a matching Git tag and GitHub release. See [release notes](CHANGELOG.md).
 
+For every firmware or website rollout, update this README to reflect current behavior and limitations, update the firmware and website version together, and record changes in CHANGELOG.md before publishing. Verify the installed version after deployment and retain the release source.
+
 ## Wi-Fi firmware updates
 
 Current firmware: **3.0.0**. Password-protected ArduinoOTA and two-network Wi-Fi retry support are implemented; the lights continue while Wi-Fi is unavailable. A read-only `/status` endpoint reports the running version. The root page provides password-protected web controls; see [web control setup](docs/web-control.md). Version ota.1 was installed over USB, then ota.2 was successfully uploaded over Wi-Fi and read back after reboot. Build: esp32 core 3.3.12, FastLED 3.10.5, 1,108,155 program bytes and 58,332 global RAM bytes. Seven host test programs passed, including retry timing/rollover and animation output pausing, plus the production playlist check. LED #1 shows Wi-Fi/OTA status, with OTA priority and brief success confirmations. Offline red remains until the next search or connection. Browser firmware upload and BLE controls are future work. See [OTA setup and upload instructions](docs/ota.md).
