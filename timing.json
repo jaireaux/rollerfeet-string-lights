@@ -212,6 +212,13 @@
       "approximate_response_released_at": "2026-10-08T22:42:21Z",
       "duration_seconds": null,
       "status": "unmeasured_no_start_clock_capture"
+    },
+    {
+      "id": "pixel-mapping-full-white-400",
+      "approximate_received_at": null,
+      "approximate_response_released_at": "2026-10-08T22:44:10Z",
+      "duration_seconds": null,
+      "status": "unmeasured_no_start_clock_capture"
     }
   ],
   "snapshots": [
@@ -310,6 +317,13 @@
       "label": "3.0.2-pixel-walk",
       "recorded_at": "2026-10-08T22:42:21Z",
       "measured_project_elapsed_seconds": 369277,
+      "measured_cumulative_ai_waiting_seconds": 3605,
+      "historical_time_included": false
+    },
+    {
+      "label": "3.0.2-pixel-walk.2",
+      "recorded_at": "2026-10-08T22:44:10Z",
+      "measured_project_elapsed_seconds": 369386,
       "measured_cumulative_ai_waiting_seconds": 3605,
       "historical_time_included": false
     }

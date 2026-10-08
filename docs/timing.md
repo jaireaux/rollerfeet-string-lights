@@ -41,3 +41,5 @@ Release v3.0.0 snapshot, 2026-10-08 00:53 EDT: provisional tracked development a
 3.0.2 brightness snapshot 2026-10-08T22:38:39Z: 369055 seconds elapsed calendar age; 3605 seconds measured cumulative AI waiting. Initial receipt clock not captured; this interval and subsequent commit/retention remain unmeasured. Historical baseline remains unknown.
 
 Temporary pixel mapping diagnostic snapshot 2026-10-08T22:42:21Z: 369277 seconds calendar project age; 3605 seconds measured cumulative waiting. This prompt interval is unmeasured because its starting timestamp was not captured.
+
+400-pixel full-white diagnostic snapshot 2026-10-08T22:44:10Z: 369386 seconds calendar project age; 3605 seconds measured cumulative waiting. Prompt interval unmeasured; no receipt clock captured.
