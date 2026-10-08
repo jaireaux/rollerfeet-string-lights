@@ -3,7 +3,7 @@
 
 constexpr uint32_t hauntedTideFrameMs = 40;
 constexpr uint8_t hauntedTideWaveMin = 20; // Palette brightness, out of 255.
-constexpr uint8_t hauntedTideWaveMax = 75;
+constexpr uint8_t hauntedTideWaveMax = 101; // About 35% brighter wave peaks; floor unchanged.
 constexpr uint16_t fireflySpacingPixels = 10; // One independent firefly per region.
 constexpr uint32_t fireflyMinGlowMs = 1800;
 constexpr uint32_t fireflyGlowVariationMs = 1400;

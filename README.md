@@ -1,10 +1,11 @@
 # Rollerfeet string lights
 
-A Halloween light display running on a Seeed XIAO ESP32S3 with FastLED, a companion web app, and password-protected wireless firmware updates. Current installed firmware: **3.0.1**. The current code runs without Blynk.
+A Halloween light display running on a Seeed XIAO ESP32S3 with FastLED, a companion web app, and password-protected wireless firmware updates. Current installed firmware: **3.0.2**. The current code runs without Blynk.
 
 ## What it does now
 
 - Drives **600 individually addressable WS2811 RGB pixels** using orange, purple, and green Halloween colors.
+- Haunted Tide’s wave peaks are about 35% brighter, with the same dark floor and firefly highlights.
 - Runs five animations: **Throb, Haunted Tide, Orange / Purple, Meteor Rain, and Witchfire Sparkles**.
 - Provides a phone-friendly companion app at **[rollerfeet.com/lights](https://rollerfeet.com/lights/)**. The public page opens without a password to the animation picker, a countdown, and Next.
 - Starts the selected animation immediately, resets its countdown, and continues cycling through all five. The current display uses 120 seconds per animation.
@@ -14,7 +15,7 @@ A Halloween light display running on a Seeed XIAO ESP32S3 with FastLED, a compan
 
 Remote control goes through the IONOS website and an outbound relay on LNM to the controller. No home inbound port or public DDNS address is required. Runtime settings reset after controller restart. Browser firmware uploads are not implemented; OTA uses the Arduino-compatible upload workflow.
 
-Current supported source lives on **[`main`](https://github.com/jaireaux/rollerfeet-string-lights/tree/main)**, tagged **v3.0.1**. The original v2.0 baseline is preserved in Git history and the legacy source directories. See [web app operation and deployment](docs/web-control.md) and [OTA setup and upload](docs/ota.md).
+Current supported source lives on **[`main`](https://github.com/jaireaux/rollerfeet-string-lights/tree/main)**, tagged **v3.0.2**. The original v2.0 baseline is preserved in Git history and the legacy source directories. See [web app operation and deployment](docs/web-control.md) and [OTA setup and upload](docs/ota.md).
 
 ## Release versions
 
@@ -24,7 +25,7 @@ For every firmware or website rollout, update this README to reflect current beh
 
 ## Wi-Fi firmware updates
 
-Current firmware: **3.0.1**. Password-protected ArduinoOTA and two-network Wi-Fi retry support are implemented; the lights continue while Wi-Fi is unavailable. A read-only `/status` endpoint reports the running version. The root page provides password-protected web controls; see [web control setup](docs/web-control.md). Version ota.1 was installed over USB, then ota.2 was successfully uploaded over Wi-Fi and read back after reboot. Build: esp32 core 3.3.12, FastLED 3.10.5, 1,108,155 program bytes and 58,332 global RAM bytes. Seven host test programs passed, including retry timing/rollover and animation output pausing, plus the production playlist check. LED #1 shows Wi-Fi/OTA status, with OTA priority and brief success confirmations. Offline red remains until the next search or connection. Browser firmware upload and BLE controls are future work. See [OTA setup and upload instructions](docs/ota.md).
+Current firmware: **3.0.2**. Password-protected ArduinoOTA and two-network Wi-Fi retry support are implemented; the lights continue while Wi-Fi is unavailable. A read-only `/status` endpoint reports the running version. The root page provides password-protected web controls; see [web control setup](docs/web-control.md). Version ota.1 was installed over USB, then ota.2 was successfully uploaded over Wi-Fi and read back after reboot. Build: esp32 core 3.3.12, FastLED 3.10.5, 1,108,155 program bytes and 58,332 global RAM bytes. Seven host test programs passed, including retry timing/rollover and animation output pausing, plus the production playlist check. LED #1 shows Wi-Fi/OTA status, with OTA priority and brief success confirmations. Offline red remains until the next search or connection. Browser firmware upload and BLE controls are future work. See [OTA setup and upload instructions](docs/ota.md).
 
 ## Web controls
 

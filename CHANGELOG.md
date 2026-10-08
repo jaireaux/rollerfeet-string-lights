@@ -1,5 +1,9 @@
 # Release notes
 
+## 3.0.2 — 2026-10-08
+
+- Raise Haunted Tide’s maximum wave brightness from 75 to 101 (34.7%); keep the minimum, colors, fireflies and timing unchanged.
+
 ## 3.0.1 — 2026-10-08
 
 - Move Haunted Tide to the second slot in the full playlist and website picker: Throb → Haunted Tide → Orange / Purple → Meteor Rain → Witchfire Sparkles.

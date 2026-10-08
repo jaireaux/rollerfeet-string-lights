@@ -198,6 +198,13 @@
       "approximate_response_released_at": "2026-10-08T22:35:10Z",
       "duration_seconds": null,
       "status": "unmeasured_no_start_clock_capture"
+    },
+    {
+      "id": "haunted-tide-brightness-3.0.2",
+      "approximate_received_at": null,
+      "approximate_response_released_at": "2026-10-08T22:38:39Z",
+      "duration_seconds": null,
+      "status": "unmeasured_no_start_clock_capture"
     }
   ],
   "snapshots": [
@@ -282,6 +289,13 @@
       "label": "v3.0.1",
       "recorded_at": "2026-10-08T22:35:10Z",
       "measured_project_elapsed_seconds": 368846,
+      "measured_cumulative_ai_waiting_seconds": 3605,
+      "historical_time_included": false
+    },
+    {
+      "label": "v3.0.2",
+      "recorded_at": "2026-10-08T22:38:39Z",
+      "measured_project_elapsed_seconds": 369055,
       "measured_cumulative_ai_waiting_seconds": 3605,
       "historical_time_included": false
     }
