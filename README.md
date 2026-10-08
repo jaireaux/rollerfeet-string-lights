@@ -4,7 +4,7 @@ Arduino holiday lights using FastLED. The v2.0 baseline retains its historical B
 
 ## Wi-Fi firmware updates
 
-Current firmware: **3.0.0-web.2**. Password-protected ArduinoOTA and two-network Wi-Fi retry support are implemented; the lights continue while Wi-Fi is unavailable. A read-only `/status` endpoint reports the running version. The root page provides password-protected web controls; see [web control setup](docs/web-control.md). Version ota.1 was installed over USB, then ota.2 was successfully uploaded over Wi-Fi and read back after reboot. Build: esp32 core 3.3.12, FastLED 3.10.5, 1,106,583 program bytes and 58,332 global RAM bytes. Seven host test programs passed, including retry timing/rollover and animation output pausing, plus the production playlist check. LED #1 shows Wi-Fi/OTA status, with OTA priority and brief success confirmations. Offline red remains until the next search or connection. Browser firmware upload and BLE controls are future work. See [OTA setup and upload instructions](docs/ota.md).
+Current firmware: **3.0.0-web.3**. Password-protected ArduinoOTA and two-network Wi-Fi retry support are implemented; the lights continue while Wi-Fi is unavailable. A read-only `/status` endpoint reports the running version. The root page provides password-protected web controls; see [web control setup](docs/web-control.md). Version ota.1 was installed over USB, then ota.2 was successfully uploaded over Wi-Fi and read back after reboot. Build: esp32 core 3.3.12, FastLED 3.10.5, 1,108,147 program bytes and 58,332 global RAM bytes. Seven host test programs passed, including retry timing/rollover and animation output pausing, plus the production playlist check. LED #1 shows Wi-Fi/OTA status, with OTA priority and brief success confirmations. Offline red remains until the next search or connection. Browser firmware upload and BLE controls are future work. See [OTA setup and upload instructions](docs/ota.md).
 
 ## Web controls
 
@@ -12,7 +12,7 @@ Web.1 was prepared on October 6 while the controller was unreachable. Web.2 was 
 
 The phone-friendly page offers all five Halloween animations, on/off, brightness, next animation, automatic cycling, preview/full playlist, and a shared 10–600 second animation duration. Defaults preserve Meteor Rain / Witchfire Sparkles at 30 seconds each; settings reset on controller restart. Off and brightness zero leave the first pixel available for network/OTA status.
 
-Remote access uses an authenticated HTTPS relay on IONOS and a persistent outbound-only Python service on LNM. It requires no home inbound port or published DDNS. The page waits for controller acknowledgement, refuses commands while offline, and expires pending commands. [Operation and deployment](docs/web-control.md). Browser firmware upload, Tuya switch control, and BLE remain future work.
+The public IONOS page opens with animation selection, Next, and a countdown. “Admin Access Only” prompts for the existing web password before showing full controls. Remote access uses an HTTPS relay on IONOS and a persistent outbound-only Python service on LNM. It requires no home inbound port or published DDNS. The page waits for controller acknowledgement, refuses commands while offline, and expires pending commands. [Operation and deployment](docs/web-control.md). Browser firmware upload, Tuya switch control, and BLE remain future work.
 
 ## Current development: two-animation preview
 

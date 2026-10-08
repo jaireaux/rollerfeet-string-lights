@@ -26,12 +26,18 @@ with tempfile.TemporaryDirectory(prefix='holiday-relay-test-') as directory:
    try:call('state');break
    except OSError:time.sleep(.05)
   assert call('state',credential='bad')[0]==401
+  assert call('public-state',credential='')[0]==200
+  assert call('public-control',{'action':'brightness','value':25},credential='')[0]==403
+  assert call('public-control',{'action':'power','value':0},credential='')[0]==403
   assert call('bridge',{},credential=auth)[0]==401
   assert call('state')[1]['online'] is False
   assert call('control',{'action':'power','value':0})[0]==409
-  state={'version':'3.0.0-web.1','pixels':600,'power':True,'brightness':100,'auto':True,'playlist':'preview','duration':30,'animation':2,'updating':False}
+  state={'version':'3.0.0-web.1','pixels':600,'power':True,'brightness':100,'auto':True,'playlist':'preview','duration':30,'animation':2,'updating':False,'remaining_ms':12345}
   def report(state=state,ack=None):return call('bridge',{'state':state,'ack':ack},'Bearer test-only-bridge')
   assert report()[0]==200 and call('state')[1]['online']
+  public=call('public-state',credential='')[1]['state'];assert public['remaining_ms']<=12345 and 'brightness' not in public and 'version' not in public
+  assert call('public-control',{'action':'animation','value':2},credential='')[0]==202
+  claimed=report()[1]['command'];report(ack={'id':claimed['id'],'ok':True})
   for name,value in [('duration',9),('duration',601),('animation',5),('brightness',101),('power',2),('next',0),('unknown',0),('power','-1')]:assert call('control',{'action':name,'value':value})[0]==400
   assert call('control',{'action':'power','value':0},origin='https://evil.invalid')[0]==403
   code,command=call('control',{'action':'next','value':1});assert code==202

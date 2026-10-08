@@ -141,14 +141,16 @@ bool applyLightCommand(const char *action, uint32_t value, uint32_t now) {
 }
 
 void writeLightState(char *buffer, size_t capacity) {
+  const uint32_t elapsed = millis() - animationClock.animationStartedAtMs;
+  const uint32_t remaining = automaticCycling && elapsed < runtimeDurationMs ? runtimeDurationMs - elapsed : 0;
   snprintf(buffer, capacity,
       "{\"version\":\"" HOLIDAY_LIGHTS_VERSION "\",\"pixels\":%u,"
       "\"power\":%s,\"brightness\":%u,\"auto\":%s,\"playlist\":\"%s\","
-      "\"duration\":%lu,\"animation\":%u,\"updating\":%s}",
+      "\"duration\":%lu,\"animation\":%u,\"updating\":%s,\"remaining_ms\":%lu}",
       unsigned(pixelCount), lightsEnabled ? "true" : "false", unsigned(brightnessPercent),
       automaticCycling ? "true" : "false", fullPlaylist ? "all" : "preview",
       static_cast<unsigned long>(runtimeDurationMs / 1000), unsigned(selectedAnimationId()),
-      networkUpdateBusy() ? "true" : "false");
+      networkUpdateBusy() ? "true" : "false", static_cast<unsigned long>(remaining));
 }
 
 void setup() {

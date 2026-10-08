@@ -27,3 +27,5 @@ Web control preparation snapshot 2026-10-06T21:59:01Z: 885 seconds since the fir
 Web.2 / Meteor Rain update 2026-10-07T22:46:54Z: 150 seconds measured this turn from first clock capture. Installed firmware and remote command acknowledgement verified; subsequent commit/retention excluded. Intervening architectural discussion intervals remain unmeasured.
 
 2026-10-07: request-limit research and live all-five playlist activation recorded as an approximate 186-second pre-commit interval; retention and subsequent reporting are outside this lower-bound snapshot. No firmware revision for the runtime selection.
+
+2026-10-08: web.3 public picker/countdown update; initial prompt clock was not captured, so this interval is unmeasured and excluded from cumulative AI waiting time.

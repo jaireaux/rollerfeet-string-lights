@@ -13,14 +13,15 @@ $config=require $configFile;
 $action=$_GET['action']??'';
 $authorization=$_SERVER['HTTP_AUTHORIZATION']??$_SERVER['REDIRECT_HTTP_AUTHORIZATION']??'';
 $bridge=$action==='bridge';
+$public=in_array($action,['public-state','public-control'],true);
 if ($bridge) {
     if (!hash_equals('Bearer '.$config['bridge_token'], $authorization)) fail(401,'Authentication required.');
-} else {
+} elseif (!$public) {
     $credentials=str_starts_with($authorization,'Basic ')?base64_decode(substr($authorization,6),true):false;
     if (!$credentials && isset($_SERVER['PHP_AUTH_USER'])) $credentials=$_SERVER['PHP_AUTH_USER'].':'.($_SERVER['PHP_AUTH_PW']??'');
     if (!is_string($credentials) || !str_starts_with($credentials,'admin:') || !password_verify(substr($credentials,6),$config['password_hash'])) fail(401,'Enter your lights web password.');
 }
-if ($action!=='state') {
+if (!in_array($action,['state','public-state'],true)) {
     if ($_SERVER['REQUEST_METHOD']!=='POST') fail(405,'Use POST for this request.');
     if (!$bridge) {
         if (($_SERVER['HTTP_X_HOLIDAY_CONTROL']??'')!=='1') fail(403,'Use the lights control page.');
@@ -29,9 +30,10 @@ if ($action!=='state') {
     }
 }
 $limits=['power'=>[0,1],'brightness'=>[0,100],'animation'=>[0,4],'auto'=>[0,1],'playlist'=>[0,1],'duration'=>[10,600],'next'=>[1,1]];
-if ($action==='control') {
+if (in_array($action,['control','public-control'],true)) {
     $name=$_POST['action']??''; $value=$_POST['value']??'';
     if (!is_string($name) || !isset($limits[$name]) || !is_string($value) || !preg_match('/^\d{1,3}$/D',$value)) fail(400,'Invalid light setting.');
+    if ($public && !in_array($name,['animation','next'],true)) fail(403,'Admin access required for this setting.');
     $value=(int)$value;
     if ($value<$limits[$name][0] || $value>$limits[$name][1]) fail(400,'Invalid light setting.');
 } elseif ($bridge) {
@@ -39,7 +41,7 @@ if ($action==='control') {
     try { $input=json_decode(file_get_contents('php://input'),true,16,JSON_THROW_ON_ERROR); }
     catch (JsonException $e) { fail(400,'Invalid relay report.'); }
     if (!is_array($input)) fail(400,'Invalid relay report.');
-} elseif ($action!=='state') fail(404,'Unknown request.');
+} elseif (!in_array($action,['state','public-state'],true)) fail(404,'Unknown request.');
 
 $handle=fopen(__DIR__.'/private/state.lock','c');
 if (!$handle || !flock($handle,LOCK_EX)) fail(503,'The lights service is busy.');
@@ -64,7 +66,8 @@ if ($bridge) {
         && is_int($s['duration']) && $s['duration']>=10 && $s['duration']<=600
         && is_int($s['animation']) && $s['animation']>=0 && $s['animation']<=4 && is_bool($s['updating']);
     if ($valid) {
-        $data['state']=array_intersect_key($s,array_flip(['version','pixels','power','brightness','auto','playlist','duration','animation','updating']));
+        $data['state']=array_intersect_key($s,array_flip(['version','pixels','power','brightness','auto','playlist','duration','animation','updating','remaining_ms']));
+        if (isset($s['remaining_ms']) && (!is_int($s['remaining_ms']) || $s['remaining_ms']<0 || $s['remaining_ms']>600000)) unset($data['state']['remaining_ms']);
         $data['seen']=$now;
     } else $data['seen']=0;
     $ack=$input['ack']??null;
@@ -79,7 +82,7 @@ if ($bridge) {
         $data['command']['status']='applying';
         $out['command']=$data['command']; // Claim once; never replay a next-animation command.
     }
-} elseif ($action==='control') {
+} elseif (in_array($action,['control','public-control'],true)) {
     if (!$data['state'] || $now-$data['seen']>15) { $status=409; $out=['error'=>'Controller is offline. No setting was queued.']; }
     elseif ($data['state']['updating']) { $status=409; $out=['error'=>'A firmware update is in progress.']; }
     elseif ($data['command'] && in_array($data['command']['status'],['queued','applying'],true)) { $status=409; $out=['error'=>'Wait for the previous setting to finish.']; }
@@ -92,4 +95,7 @@ $encoded=json_encode($data,JSON_THROW_ON_ERROR);
 $temporary=tempnam(__DIR__.'/private','state-');
 if (!$temporary || file_put_contents($temporary,$encoded)!==strlen($encoded) || !rename($temporary,$stateFile)) throw new RuntimeException('Storage write failed');
 flock($handle,LOCK_UN);fclose($handle);
+if ($public && isset($out['state']) && is_array($out['state'])) $out['state']=array_intersect_key($out['state'],array_flip(['auto','playlist','duration','animation','updating','remaining_ms']));
+if ($public && isset($out['command']) && is_array($out['command'])) $out['command']=array_intersect_key($out['command'],array_flip(['id','status','message']));
+if (isset($out['state']['remaining_ms'])) $out['state']['remaining_ms']=max(0,$out['state']['remaining_ms']-max(0,$now-$data['seen'])*1000);
 http_response_code($status);echo json_encode($out,JSON_THROW_ON_ERROR);
