@@ -170,6 +170,13 @@
       "approximate_response_released_at": "2026-10-08T04:34:15Z",
       "duration_seconds": null,
       "status": "unmeasured_initial_clock_not_captured"
+    },
+    {
+      "id": "selection-auto-web4-024",
+      "approximate_received_at": "2026-10-08T04:42:46Z",
+      "approximate_response_released_at": "2026-10-08T04:44:34Z",
+      "duration_seconds": 108,
+      "status": "approximate_pre_release_snapshot"
     }
   ],
   "snapshots": [

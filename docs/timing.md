@@ -29,3 +29,5 @@ Web.2 / Meteor Rain update 2026-10-07T22:46:54Z: 150 seconds measured this turn 
 2026-10-07: request-limit research and live all-five playlist activation recorded as an approximate 186-second pre-commit interval; retention and subsequent reporting are outside this lower-bound snapshot. No firmware revision for the runtime selection.
 
 2026-10-08: web.3 public picker/countdown update; initial prompt clock was not captured, so this interval is unmeasured and excluded from cumulative AI waiting time.
+
+2026-10-08: web.4 selection/countdown correction recorded as an approximate 108-second pre-commit lower-bound interval; subsequent cycle verification and retention excluded.

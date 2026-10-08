@@ -129,7 +129,7 @@ int main() {
   fakeStatus={false,0,0,0};
   refreshStatusFrame(testNow+1);
   assert(displayedPixels[0].r==5 && displayedPixels[0].b==1);
-  // Web commands expose all effects, hold manual selection, and reject invalid changes.
+  // Web commands expose all effects, restart the selected animation and keep cycling, and reject invalid changes.
   assert(!applyLightCommand("animation", 5, 200001));
   assert(!applyLightCommand("brightness", 101, 200001));
   assert(!applyLightCommand("duration", 9, 200001));
@@ -137,9 +137,11 @@ int main() {
   assert(!applyLightCommand("power", 2, 200001));
   assert(!applyLightCommand("unknown", 0, 200001));
   assert(applyLightCommand("animation", 3, 200001));
-  assert(!automaticCycling && selectedAnimationId()==3);
-  updateAnimation(200001 + 2*animationDurationMs);
-  assert(selectedAnimationId()==3); // Manual stays put beyond automatic deadline.
+  assert(automaticCycling && fullPlaylist && selectedAnimationId()==3);
+  assert(animationClock.animationStartedAtMs==200001);
+  updateAnimation(200001 + runtimeDurationMs - 1);assert(selectedAnimationId()==3);
+  updateAnimation(200001 + runtimeDurationMs);assert(selectedAnimationId()==4);
+  assert(applyLightCommand("animation", 3, 599000));
   assert(applyLightCommand("next", 1, 600000) && selectedAnimationId()==4);
   assert(applyLightCommand("playlist", 1, 600001));
   assert(automaticCycling && fullPlaylist && selectedAnimationId()==0);

@@ -109,7 +109,9 @@ bool applyLightCommand(const char *action, uint32_t value, uint32_t now) {
   else if (strcmp(action, "brightness") == 0 && value <= 100) brightnessPercent = value;
   else if (strcmp(action, "animation") == 0 && value < allAnimationCount) {
     manualAnimationIndex = value;
-    automaticCycling = false;
+    fullPlaylist = true;
+    currentAnimationIndex = value;
+    automaticCycling = true;
     animationClock.start(now);
   } else if (strcmp(action, "auto") == 0 && value <= 1) {
     const uint8_t previous = selectedAnimationId();
