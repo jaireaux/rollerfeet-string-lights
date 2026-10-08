@@ -11,16 +11,23 @@
  constexpr uint16_t pixelCount = HOLIDAY_LIGHTS_PRODUCTION
      ? productionPixelCount : developmentPixelCount;
  
-@@ -158,7 +158,7 @@
+@@ -157,8 +157,13 @@
+ 
  void setup() {
    Serial.begin(115200);
-   FastLED.addLeds<WS2811, ledDataPin, RGB>(displayedPixels, pixelCount)
+-  FastLED.addLeds<WS2811, ledDataPin, RGB>(displayedPixels, pixelCount)
 -      .setCorrection(TypicalLEDStrip);
-+      .setCorrection(UncorrectedColor);
++  // Clear the prior 600-pixel scan so no bulb beyond the new limit stays lit.
++  CRGB startupClear[600];
++  fill_solid(startupClear, 600, CRGB::Black);
++  auto &controller = FastLED.addLeds<WS2811, ledDataPin, RGB>(startupClear, 600);
++  controller.setCorrection(UncorrectedColor);
++  FastLED.show();
++  controller.setLeds(displayedPixels, pixelCount);
    FastLED.setBrightness(outputBrightness);
    animationClock.start(millis()); // Start after initialization, not before setup.
    Serial.println("Halloween playlist starting:");
-@@ -175,20 +175,20 @@
+@@ -175,20 +180,20 @@
    refreshStatusFrame(now); // Status changes are independent of animation cadence.
  }
  
@@ -54,7 +61,7 @@
  }
  
  void sendCurrentFrame(uint32_t now) {
-@@ -207,12 +207,7 @@
+@@ -207,12 +212,7 @@
    FastLED.show(); // One output path for animation frames and status callbacks.
  }
  
