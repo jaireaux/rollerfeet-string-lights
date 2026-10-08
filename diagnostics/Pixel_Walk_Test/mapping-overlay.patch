@@ -1,0 +1,58 @@
+--- a/XIAO_ESP32_holiday_lights.ino
++++ b/XIAO_ESP32_holiday_lights.ino
+@@ -175,20 +175,20 @@
+   refreshStatusFrame(now); // Status changes are independent of animation cadence.
+ }
+ 
++// Temporary mapping diagnostic: exactly one pixel, network servicing retained.
+ void updateAnimation(uint32_t now) {
+-  if (automaticCycling && animationClock.finished(now, runtimeDurationMs)) {
+-    currentAnimationIndex = (currentAnimationIndex + 1) % (fullPlaylist ? allAnimationCount : previewAnimationCount);
+-    animationClock.start(now);
+-    Serial.println(selectedAnimation().name);
+-  }
+-  const Animation &animation = selectedAnimation();
+-  uint32_t elapsedMs;
+-  if (!animationClock.frameDue(now, animation.frameIntervalMs, elapsedMs)) {
+-    return;
+-  }
+-  animationBrightness = animation.render(elapsedMs);
+-  // applySkippedPixels(); // Blackout disabled until the outdoor layout is finalized.
+-  sendCurrentFrame(now);
++  static uint32_t steppedAt = 0;
++  static uint16_t index = 0;
++  static bool first = true;
++  if (!first && now - steppedAt < 250) return;
++  if (!first) index = (index + 1) % pixelCount;
++  first = false;
++  steppedAt = now;
++  fill_solid(displayedPixels, pixelCount, CRGB::Black);
++  displayedPixels[index] = CRGB::White;
++  FastLED.setBrightness(32);
++  FastLED.show();
++  Serial.printf("Pixel %u (index %u)\n", unsigned(index + 1), unsigned(index));
+ }
+ 
+ void sendCurrentFrame(uint32_t now) {
+@@ -207,12 +207,7 @@
+   FastLED.show(); // One output path for animation frames and status callbacks.
+ }
+ 
+-void refreshStatusFrame(uint32_t now) {
+-  const StatusPixel status = networkStatusPixel(now);
+-  if (status.active != displayedStatus.active ||
+-      (status.active && (status.r != displayedStatus.r || status.g != displayedStatus.g ||
+-                        status.b != displayedStatus.b))) sendCurrentFrame(now);
+-}
++void refreshStatusFrame(uint32_t now) { (void)now; } // No status overlay during mapping.
+ 
+ void applySkippedPixels() {
+   for (uint16_t i = skippedPixelBegin; i < skippedPixelEnd && i < pixelCount; ++i) {
+--- a/version.h
++++ b/version.h
+@@ -1,4 +1,4 @@
+ #pragma once
+ #ifndef HOLIDAY_LIGHTS_VERSION
+-#define HOLIDAY_LIGHTS_VERSION "3.0.2"
++#define HOLIDAY_LIGHTS_VERSION "3.0.2-pixel-walk"
+ #endif

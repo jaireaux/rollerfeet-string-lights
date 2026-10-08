@@ -106,3 +106,7 @@ Two-animation validation: all four host tests passed; XIAO compile passed (412,9
 Meteor Rain validation: all five host test programs passed, including controller/rendering integration in development and production modes. XIAO ESP32S3 compile passed (413,267 program bytes, 27,864 global RAM bytes). No upload or physical visual check performed.
 
 Blackout mask temporarily disabled: all 600 pixels participate in animations. The saved indices 210–251 and mask function remain for restoring the connecting section after installation.
+
+## Temporary pixel mapping test
+
+The 3.0.2-pixel-walk diagnostic uses the current 600 pixels, one white bulb at brightness 32 for 250 ms, repeating in approximately 150 seconds. Keep the camera fixed and capture pixel 1 and one entire pass so bulb numbers can be matched to positions. Wi-Fi and OTA remain available; the status overlay is suppressed. Normal website animation controls do not select effects during this temporary test. Restore release 3.0.2 over OTA afterward. The reusable source change is retained in diagnostics/Pixel_Walk_Test/mapping-overlay.patch; apply it to a private copy of the 3.0.2 sketch, which uses the existing private Wi-Fi/OTA configuration. The standalone original test remains unchanged.
