@@ -61,9 +61,9 @@ struct Animation {
 const Animation animations[] = {
 #if HOLIDAY_LIGHTS_PRODUCTION
   {"Throb", 50, renderThrob},
+  {"Haunted Tide", hauntedTideFrameMs, renderHauntedTide},
   {"Orange / Purple", alternatingColorStepMs, renderAlternatingColors},
   {"Meteor Rain", 20, renderMeteorRain},
-  {"Haunted Tide", hauntedTideFrameMs, renderHauntedTide},
 #else
   {"Meteor Rain", 20, renderMeteorRain},
 #endif
@@ -75,9 +75,9 @@ uint8_t currentAnimationIndex = 0;
 // The web controls expose every completed effect without changing the preview default.
 const Animation allAnimations[] = {
   {"Throb", 50, renderThrob},
+  {"Haunted Tide", hauntedTideFrameMs, renderHauntedTide},
   {"Orange / Purple", alternatingColorStepMs, renderAlternatingColors},
   {"Meteor Rain", 20, renderMeteorRain},
-  {"Haunted Tide", hauntedTideFrameMs, renderHauntedTide},
   {"Witchfire Sparkles", sparkleFrameMs, renderWitchfireSparkles}
 };
 constexpr uint8_t allAnimationCount = sizeof(allAnimations) / sizeof(allAnimations[0]);

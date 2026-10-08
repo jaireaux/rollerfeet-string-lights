@@ -1,5 +1,10 @@
 # Release notes
 
+## 3.0.1 — 2026-10-08
+
+- Move Haunted Tide to the second slot in the full playlist and website picker: Throb → Haunted Tide → Orange / Purple → Meteor Rain → Witchfire Sparkles.
+- Keep the two-effect development preview unchanged.
+
 ## 3.0.0 — 2026-10-08
 
 First supported 3.0 milestone, consolidating the development versions through 3.0.0-web.4.

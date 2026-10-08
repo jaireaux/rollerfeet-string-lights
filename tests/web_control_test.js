@@ -8,7 +8,7 @@ const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
 function element() { return {value:'',hidden:false,disabled:false,checked:false,children:[],attributes:{},classList:{toggle(){},remove(){}},setAttribute(k,v){this.attributes[k]=v;},appendChild(b){this.children.push(b);},checkValidity(){return true;},reportValidity(){},showModal(){this.open=true;},close(){this.open=false;},focus(){}}; }
 async function scenario(remote) {
  const elements={};for(const match of html.matchAll(/id="([^"]+)"/g))elements[match[1]]=element();
- const state={version:'test',pixels:600,power:true,brightness:100,auto:true,playlist:'preview',duration:30,animation:2,updating:false,remaining_ms:12500};
+ const state={version:'test',pixels:600,power:true,brightness:100,auto:true,playlist:'preview',duration:30,animation:3,updating:false,remaining_ms:12500};
  let online=true,command=null,fail=false,poll,requests=0;
  const document={hidden:false,activeElement:null,getElementById:id=>elements[id],createElement:element,addEventListener(){}};
  const sandbox={document,location:{pathname:remote?'/lights/':'/'},AbortController,URLSearchParams,console,setTimeout,clearTimeout,Date,setInterval:(fn,ms)=>{if(ms===3000)poll=fn;},btoa:s=>Buffer.from(s).toString('base64'),fetch:async(url,options)=>{

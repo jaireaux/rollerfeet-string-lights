@@ -35,3 +35,5 @@ Web.2 / Meteor Rain update 2026-10-07T22:46:54Z: 150 seconds measured this turn 
 2026-10-08 00:49 EDT README updates on main and develop/3.0: provisional tracked project age 304892 seconds; cumulative measured AI-waiting intervals 3481 seconds. Latest partial interval 62 seconds. Historical baseline and unmeasured intervals remain excluded; retention/reporting after snapshot excluded.
 
 Release v3.0.0 snapshot, 2026-10-08 00:53 EDT: provisional tracked development age 305157 seconds; cumulative measured AI-waiting intervals 3605 seconds. Latest partial interval 124 seconds; baseline/unmeasured discussion and later publication/retention excluded.
+
+3.0.1 playlist-order snapshot 2026-10-08T22:35:10Z: 368846 seconds elapsed calendar age since the provisional epoch; 3605 seconds measured cumulative AI waiting. This prompt had no initial clock capture; its waiting interval is unmeasured. Commit and retention after this snapshot are excluded.

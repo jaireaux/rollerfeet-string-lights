@@ -191,6 +191,13 @@
       "approximate_response_released_at": "2026-10-08T04:53:41Z",
       "duration_seconds": 124,
       "status": "approximate_pre_release_snapshot"
+    },
+    {
+      "id": "haunted-tide-order-3.0.1",
+      "approximate_received_at": null,
+      "approximate_response_released_at": "2026-10-08T22:35:10Z",
+      "duration_seconds": null,
+      "status": "unmeasured_no_start_clock_capture"
     }
   ],
   "snapshots": [
@@ -268,6 +275,13 @@
       "label": "v3.0.0",
       "recorded_at": "2026-10-08T04:53:41Z",
       "measured_project_elapsed_seconds": 305157,
+      "measured_cumulative_ai_waiting_seconds": 3605,
+      "historical_time_included": false
+    },
+    {
+      "label": "v3.0.1",
+      "recorded_at": "2026-10-08T22:35:10Z",
+      "measured_project_elapsed_seconds": 368846,
       "measured_cumulative_ai_waiting_seconds": 3605,
       "historical_time_included": false
     }

@@ -27,7 +27,7 @@ int main() {
   updateAnimation(1);
   assert(FastLED.frames==1);
 #if HOLIDAY_LIGHTS_PRODUCTION
-  assert(animationCount==5 && !strcmp(animations[2].name,"Meteor Rain"));
+  assert(animationCount==5 && !strcmp(animations[3].name,"Meteor Rain"));
 #else
   assert(animationCount==2 && !strcmp(animations[0].name,"Meteor Rain") &&
       !strcmp(animations[1].name,"Witchfire Sparkles"));
@@ -62,6 +62,7 @@ int main() {
   renderMeteorRain(0); // Restart drops all previous launches.
   assert(pixels[0].r==128);
   for (int i=1;i<pixelCount;++i) assert(dark(pixels[i]));
+  assert(!strcmp(allAnimations[1].name,"Haunted Tide"));
   // Haunted Tide never sends frames, respects color bounds, and ignores old pixels.
   const unsigned framesBefore = FastLED.frames;
   CRGB reference[pixelCount];
@@ -151,9 +152,9 @@ int main() {
   assert(applyLightCommand("auto", 0, 720003));
   assert(!automaticCycling && selectedAnimationId()==1);
   assert(applyLightCommand("playlist", 0, 720004));
-  assert(automaticCycling && !fullPlaylist && selectedAnimationId()==2);
+  assert(automaticCycling && !fullPlaylist && selectedAnimationId()==3);
   assert(applyLightCommand("next", 1, 720004) && selectedAnimationId()==4);
-  assert(applyLightCommand("next", 1, 720004) && selectedAnimationId()==2);
+  assert(applyLightCommand("next", 1, 720004) && selectedAnimationId()==3);
   fakeUpdateBusy=true;
   assert(!applyLightCommand("power", 0, 720005) && lightsEnabled);
   fakeUpdateBusy=false;
