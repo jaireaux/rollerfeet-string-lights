@@ -1,111 +1,49 @@
-void meteorRain(byte red, byte green, byte blue, byte meteorSize, byte meteorTrailDecay, bool meteorRandomDecay, int SpeedDelay) {
+// Rebuild one frame from elapsed time: no retained trail state or blocking sweep.
+// Pixels keep their physical indices, including the dark connecting section.
+uint8_t renderMeteorRain(uint32_t elapsedMs) {
+  static_assert(meteorHeadPixels > 0 && meteorSpeedPixelsPerSecond > 0 &&
+                meteorTrailFadeMs > 0 && meteorLaunchIntervalMs > 0, "Meteor size, speed and fade must be positive");
+  static const CRGB colors[] = {
+    CRGB(128, 70, 0), CRGB(64, 0, 64), CRGB(0, 50, 0)
+  };
+  // String length determines how many previous launches remain visible.
+  constexpr uint32_t headExitMs =
+      ((uint32_t(pixelCount - 1) + meteorHeadPixels) * 1000 +
+       meteorSpeedPixelsPerSecond - 1) / meteorSpeedPixelsPerSecond;
+  constexpr uint32_t launchIntervalMs = meteorLaunchIntervalMs;
+  constexpr uint32_t activeLaunches = (headExitMs + meteorTrailFadeMs + launchIntervalMs - 1)
+      / launchIntervalMs;
+  const uint32_t latestLaunch = elapsedMs / launchIntervalMs;
+  const uint32_t latestAgeMs = elapsedMs % launchIntervalMs;
+  constexpr uint64_t headLength = uint64_t(meteorHeadPixels) * 1000;
+  constexpr uint64_t fadeDistance = uint64_t(meteorTrailFadeMs) * meteorSpeedPixelsPerSecond;
 
-  unsigned long redgreenAnimationDuration = millis() - currentAnimationDuration;
-  unsigned long redgreenAnimationCycleLength = 1000; // how many milliseconds to switch colors
-  unsigned long redgreenAnimationCycle = millis() - animationsCycleStartTime;
-
-  // setAll(0, 0, 0);
-  fill_solid( leds, NUM_LEDS, CRGB( 0, 0, 0) );
-
-// void loop() {
-//   meteorRain(0xff, 0x00, 0x00, 4, 22, true, 8);
-// }
-
-  for (int i = 0; i < NUM_LEDS + NUM_LEDS; i++) {
-
-    // fade brightness all LEDs one step
-    for (int j = 0; j < NUM_LEDS; j++) {
-      if ((!meteorRandomDecay) || (random(10) > 5)) {
-        // fadeToBlack(j, meteorTrailDecay);
-        leds[j].fadeToBlackBy( meteorTrailDecay );
-        // leds[ledNo].fadeToBlackBy( fadeValue );
+  for (uint16_t i = 0; i < pixelCount; ++i) {
+    CRGB combined(0, 0, 0);
+    const uint64_t pixelPosition = uint64_t(i) * 1000;
+    // Reconstruct recent launches; never invent a meteor before animation start.
+    for (uint32_t previous = 0; previous < activeLaunches; ++previous) {
+      if (previous > latestLaunch) break;
+      const uint32_t ageMs = latestAgeMs + uint32_t(previous) * launchIntervalMs;
+      const uint64_t headPosition = uint64_t(ageMs) * meteorSpeedPixelsPerSecond;
+      if (headPosition < pixelPosition) continue;
+      const uint64_t distance = headPosition - pixelPosition;
+      uint32_t intensity = 0;
+      if (distance <= headLength) {
+        intensity = 255;
+      } else if (distance - headLength < fadeDistance) {
+        intensity = 255 * (fadeDistance - (distance - headLength)) / fadeDistance;
       }
+      const CRGB color = colors[(latestLaunch - previous) % 3];
+      const CRGB contribution(uint16_t(color.r) * intensity / 255,
+                              uint16_t(color.g) * intensity / 255,
+                              uint16_t(color.b) * intensity / 255);
+      // Keep the brighter contribution per channel, without additive brightening.
+      if (contribution.r > combined.r) combined.r = contribution.r;
+      if (contribution.g > combined.g) combined.g = contribution.g;
+      if (contribution.b > combined.b) combined.b = contribution.b;
     }
-
-    // draw meteor
-    for (int j = 0; j < meteorSize; j++) {
-      if ((i - j < NUM_LEDS) && (i - j >= 0)) {
-        // setPixel(i - j, red, green, blue);
-        leds[i-j] = CRGB(red, green, blue);
-        // leds[Pixel] = CRGB(red, green, blue);
-      }
-    }
-
-    // Serial.print("redgreenAnimationDuration=" + String(redgreenAnimationDuration));
-    // Serial.print("; currentAnimationDurationMax=" + String(currentAnimationDurationMax));
-    // Serial.println("; currentAnimationNumber=" + String(currentAnimationNumber));
-    // Serial.println("redgreenAnimationCycle=" + String(redgreenAnimationCycle));
-    setSkip();
-    FastLED.show(); // display this frame
-    delay(SpeedDelay);
-
+    pixels[i] = combined;
   }
-
-    if( redgreenAnimationDuration < currentAnimationDurationMax ) {
-      setSkip();
-      FastLED.show(); // display this frame
-      animationsCycleStartTime = millis();
-    } else {
-      Serial.println("current animation=" + String(currentAnimationNumber));      
-      currentAnimationNumber = currentAnimationNumber + 1;
-      currentAnimationDuration = millis();
-      animationsCycleStartTime = millis();
-    }
+  return outputBrightness;
 }
-
-// void fadeToBlack(int ledNo, byte fadeValue) {
-//   #ifdef ADAFRUIT_NEOPIXEL_H
-//   // NeoPixel
-//   uint32_t oldColor;
-//   uint8_t r, g, b;
-//   int value;
-
-//   oldColor = strip.getPixelColor(ledNo);
-//   r = (oldColor & 0x00ff0000 UL) >> 16;
-//   g = (oldColor & 0x0000ff00 UL) >> 8;
-//   b = (oldColor & 0x000000ff UL);
-
-//   r = (r <= 10) ? 0 : (int) r - (r * fadeValue / 250);
-//   g = (g <= 10) ? 0 : (int) g - (g * fadeValue / 250);
-//   b = (b <= 10) ? 0 : (int) b - (b * fadeValue / 250);
-
-//   strip.setPixelColor(ledNo, r, g, b);
-//   #endif
-//   #ifndef ADAFRUIT_NEOPIXEL_H
-//   // FastLED
-//   leds[ledNo].fadeToBlackBy(fadeValue);
-//   #endif
-// }
-// -----------------------------------------
-// void showStrip() {
-//   #ifdef ADAFRUIT_NEOPIXEL_H
-//   // NeoPixel
-//   strip.show();
-//   #endif
-//   #ifndef ADAFRUIT_NEOPIXEL_H
-//   // FastLED
-//   FastLED.show();
-//   #endif
-// }
-
-// void setPixel(int Pixel, byte red, byte green, byte blue) {
-//   #ifdef ADAFRUIT_NEOPIXEL_H
-//   // NeoPixel
-//   strip.setPixelColor(Pixel, strip.Color(red, green, blue));
-//   #endif
-//   #ifndef ADAFRUIT_NEOPIXEL_H
-//   // FastLED
-//   leds[Pixel].r = red;
-//   leds[Pixel].g = green;
-//   leds[Pixel].b = blue;
-//   #endif
-// }
-
-// void setAll(byte red, byte green, byte blue) {
-//   for (int i = 0; i < NUM_LEDS; i++) {
-//     // setPixel(i, red, green, blue);
-//     leds[Pixel] = CRGB(red, green, blue);
-//   }
-//   // showStrip();
-//   FastLED.show();
-// }

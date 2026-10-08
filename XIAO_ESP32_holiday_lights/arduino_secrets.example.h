@@ -1,0 +1,3 @@
+#pragma once
+#define SECRET_WIFI_SSID "REPLACE_ME"
+#define SECRET_WIFI_PASSWORD "REPLACE_ME"

@@ -1,223 +1,221 @@
-//  DEVELOPMENT LIGHTS
-// #define ANIMATION_CYCLE 10000 // in milliseconds, how ofter the animations change
-
-//     ****** FASTLED ANIMATIONS ******* below
-#define FASTLED_INTERNAL // add this before including FastLED.h
+#include "version.h"
+#define FASTLED_INTERNAL
 #include <FastLED.h>
+#include "animation_clock.h"
+#include "meteor_settings.h"
+#include "haunted_tide_settings.h"
+#include "sparkle_settings.h"
+#include "ota_service.h"
+#include "light_control.h"
+#include <stdio.h>
+#include <string.h>
 
-// --------------- BLYNK --------------
-/* Fill-in information from Blynk Device Info here */
-#define BLYNK_TEMPLATE_ID           "REPLACE_ME"
-#define BLYNK_TEMPLATE_NAME         "Quickstart Template"
-#define BLYNK_AUTH_TOKEN            "REPLACE_ME"
+// Both profiles use the current 600-pixel string.
+#ifndef HOLIDAY_LIGHTS_PRODUCTION
+#define HOLIDAY_LIGHTS_PRODUCTION 0 // Set to 1 for the outdoor production display.
+#endif
+constexpr uint16_t developmentPixelCount = 600;
+constexpr uint16_t productionPixelCount = 600;
+constexpr uint16_t pixelCount = HOLIDAY_LIGHTS_PRODUCTION
+    ? productionPixelCount : developmentPixelCount;
 
-/* Comment this out to disable prints and save space */
-#define BLYNK_PRINT Serial
+// Hardware: XIAO D3 / GPIO4, WS2811 RGB.
+constexpr uint8_t ledDataPin = 4;
+constexpr uint8_t outputBrightness = 200; // Upper brightness limit for the effect.
+static_assert(pixelCount > 0 && outputBrightness > 0, "Status output needs pixels and brightness");
+constexpr uint16_t skippedPixelBegin = 210;
+constexpr uint16_t skippedPixelEnd = 252; // Exclusive; fixed physical connecting section.
 
+// One runtime for every animation; effect speeds remain independent.
+constexpr uint32_t animationDurationMs = HOLIDAY_LIGHTS_PRODUCTION ? 180000 : 30000;
 
-#include <WiFi.h>
-#include <WiFiClient.h>
-#include <BlynkSimpleEsp32.h>
+// Scheduling and visual motion are separate settings.
+constexpr uint32_t throbPeriodMs = 3000;
+constexpr uint32_t alternatingColorStepMs = 1000;
+constexpr uint8_t throbMinBrightness = 10;
 
-// Your WiFi credentials.
-// Set password to "" for open networks.
-char ssid[] = "REPLACE_ME";
-char pass[] = "REPLACE_ME";
+CRGB pixels[pixelCount];
+CRGB displayedPixels[pixelCount];
+uint8_t animationBrightness = outputBrightness;
+StatusPixel displayedStatus = {false, 0, 0, 0};
+AnimationClock animationClock;
 
-BlynkTimer timer;
+uint8_t renderThrob(uint32_t elapsedMs);
+uint8_t renderAlternatingColors(uint32_t elapsedMs);
+uint8_t renderMeteorRain(uint32_t elapsedMs);
+uint8_t renderHauntedTide(uint32_t elapsedMs);
+uint8_t renderWitchfireSparkles(uint32_t elapsedMs);
+void applySkippedPixels();
+void updateAnimation(uint32_t now);
+void sendCurrentFrame(uint32_t now);
+void refreshStatusFrame(uint32_t now);
 
-// This function is called every time the Virtual Pin 0 state changes
-BLYNK_WRITE(V0)
-{
-  // Set incoming value from pin V0 to a variable
-  int value = param.asInt();
+struct Animation {
+  const char *name;
+  uint32_t frameIntervalMs;
+  uint8_t (*render)(uint32_t elapsedMs);
+};
 
-  // Update state
-  Blynk.virtualWrite(V1, value);
+// Development previews two selected effects (currently Meteor Rain + Witchfire Sparkles).
+// Update this pair as requested; retain the full production list.
+const Animation animations[] = {
+#if HOLIDAY_LIGHTS_PRODUCTION
+  {"Throb", 50, renderThrob},
+  {"Orange / Purple", alternatingColorStepMs, renderAlternatingColors},
+  {"Meteor Rain", 20, renderMeteorRain},
+  {"Haunted Tide", hauntedTideFrameMs, renderHauntedTide},
+#else
+  {"Meteor Rain", 20, renderMeteorRain},
+#endif
+  {"Witchfire Sparkles", sparkleFrameMs, renderWitchfireSparkles}
+};
+constexpr uint8_t animationCount = sizeof(animations) / sizeof(animations[0]);
+uint8_t currentAnimationIndex = 0;
+
+// The web controls expose every completed effect without changing the preview default.
+const Animation allAnimations[] = {
+  {"Throb", 50, renderThrob},
+  {"Orange / Purple", alternatingColorStepMs, renderAlternatingColors},
+  {"Meteor Rain", 20, renderMeteorRain},
+  {"Haunted Tide", hauntedTideFrameMs, renderHauntedTide},
+  {"Witchfire Sparkles", sparkleFrameMs, renderWitchfireSparkles}
+};
+constexpr uint8_t allAnimationCount = sizeof(allAnimations) / sizeof(allAnimations[0]);
+const Animation previewAnimations[] = {
+  {"Meteor Rain", 20, renderMeteorRain},
+  {"Witchfire Sparkles", sparkleFrameMs, renderWitchfireSparkles}
+};
+constexpr uint8_t previewAnimationCount = 2;
+bool lightsEnabled = true, automaticCycling = true;
+bool fullPlaylist = HOLIDAY_LIGHTS_PRODUCTION;
+uint8_t brightnessPercent = 100, manualAnimationIndex = 2;
+uint32_t runtimeDurationMs = animationDurationMs;
+
+const Animation &selectedAnimation() {
+  if (!automaticCycling) return allAnimations[manualAnimationIndex];
+  return fullPlaylist ? allAnimations[currentAnimationIndex] : previewAnimations[currentAnimationIndex];
+}
+uint8_t selectedAnimationId() {
+  const char *name = selectedAnimation().name;
+  for (uint8_t i = 0; i < allAnimationCount; ++i)
+    if (strcmp(name, allAnimations[i].name) == 0) return i;
+  return 2;
 }
 
-// This function is called every time the device is connected to the Blynk.Cloud
-BLYNK_CONNECTED()
-{
-  // Change Web Link Button message to "Congratulations!"
-  Blynk.setProperty(V3, "offImageUrl", "https://static-image.nyc3.cdn.digitaloceanspaces.com/general/fte/congratulations.png");
-  Blynk.setProperty(V3, "onImageUrl",  "https://static-image.nyc3.cdn.digitaloceanspaces.com/general/fte/congratulations_pressed.png");
-  Blynk.setProperty(V3, "url", "https://docs.blynk.io/en/getting-started/what-do-i-need-to-blynk/how-quickstart-device-was-made");
+// Commands are validated before any state changes. Values are bounded at the firmware.
+bool applyLightCommand(const char *action, uint32_t value, uint32_t now) {
+  if (!action || networkUpdateBusy()) return false;
+  if (strcmp(action, "power") == 0 && value <= 1) lightsEnabled = value;
+  else if (strcmp(action, "brightness") == 0 && value <= 100) brightnessPercent = value;
+  else if (strcmp(action, "animation") == 0 && value < allAnimationCount) {
+    manualAnimationIndex = value;
+    fullPlaylist = true;
+    currentAnimationIndex = value;
+    automaticCycling = true;
+    animationClock.start(now);
+  } else if (strcmp(action, "auto") == 0 && value <= 1) {
+    const uint8_t previous = selectedAnimationId();
+    automaticCycling = value;
+    manualAnimationIndex = previous;
+    currentAnimationIndex = fullPlaylist ? previous : 0;
+    if (!fullPlaylist) {
+      for (uint8_t i = 0; i < previewAnimationCount; ++i)
+        if (strcmp(previewAnimations[i].name, allAnimations[previous].name) == 0) currentAnimationIndex = i;
+    }
+    animationClock.start(now);
+  } else if (strcmp(action, "playlist") == 0 && value <= 1) {
+    fullPlaylist = value;
+    automaticCycling = true;
+    currentAnimationIndex = 0;
+    animationClock.start(now);
+  } else if (strcmp(action, "duration") == 0 && value >= 10 && value <= 600) {
+    runtimeDurationMs = value * 1000;
+    animationClock.start(now);
+  } else if (strcmp(action, "next") == 0 && value == 1) {
+    if (automaticCycling) currentAnimationIndex = (currentAnimationIndex + 1) %
+        (fullPlaylist ? allAnimationCount : previewAnimationCount);
+    else manualAnimationIndex = (manualAnimationIndex + 1) % allAnimationCount;
+    animationClock.start(now);
+  } else return false;
+  updateAnimation(now);
+  sendCurrentFrame(now); // Brightness/power must respond even between slow effect frames.
+  return true;
 }
 
-// This function sends Arduino's uptime every second to Virtual Pin 2.
-void myTimerEvent()
-{
-  // You can send any value at any time.
-  // Please don't send more that 10 values per second.
-  Blynk.virtualWrite(V2, millis() / 1000);
+void writeLightState(char *buffer, size_t capacity) {
+  const uint32_t elapsed = millis() - animationClock.animationStartedAtMs;
+  const uint32_t remaining = automaticCycling && elapsed < runtimeDurationMs ? runtimeDurationMs - elapsed : 0;
+  snprintf(buffer, capacity,
+      "{\"version\":\"" HOLIDAY_LIGHTS_VERSION "\",\"pixels\":%u,"
+      "\"power\":%s,\"brightness\":%u,\"auto\":%s,\"playlist\":\"%s\","
+      "\"duration\":%lu,\"animation\":%u,\"updating\":%s,\"remaining_ms\":%lu}",
+      unsigned(pixelCount), lightsEnabled ? "true" : "false", unsigned(brightnessPercent),
+      automaticCycling ? "true" : "false", fullPlaylist ? "all" : "preview",
+      static_cast<unsigned long>(runtimeDurationMs / 1000), unsigned(selectedAnimationId()),
+      networkUpdateBusy() ? "true" : "false", static_cast<unsigned long>(remaining));
 }
 
-// ----------- END BLYNK --------------
-
-// prod
-#define ANIMATION_CYCLE 15000 // 600000 // in milliseconds, how ofter the animations change
-#define ANIMATION_FADE_CYCLE 5000 // in milliseconds, how ofter the animations change
-
-#define APP_DEBUG
-
-//     ****** FASTLED ANIMATIONS ******* below
-// #define FASTLED_INTERNAL // add this before including FastLED.h
-// #include <FastLED.h>
-
-#include "_animations.h"
-#define ANIMATIONS 5 // how many animations are in play
-                      // 1. redgreen, NOPE 2. pacifica, NOPE 3. metaballs, 4. classicChristmas
-                      // 5. peppermint, 6 meteorRain, NOPE 7 fadeinot
-
-#define LED_PIN     4
-#define DATA_PIN LED_PIN
-#define COLOR_ORDER RGB
-#define CHIPSET     WS2811
-#define PIXELSECTIONS 6
-#define PIXELSPERSECTION 50
-#define NUM_LEDS PIXELSPERSECTION * PIXELSECTIONS
-#define Width ((int) sqrt( NUM_LEDS) )+1
-#define Height ((int) sqrt( NUM_LEDS) )-1
-#define BRIGHTNESS 50
-
-CRGB rawleds[NUM_LEDS];
-CRGBSet leds(rawleds, NUM_LEDS);
-
-unsigned long uptime = millis();
-int currentAnimationNumber = 1;
-unsigned long currentAnimationDuration = millis();
-unsigned long currentAnimationDurationMax = ANIMATION_CYCLE;
-unsigned long animationsCycleStartTime = millis();
-int genericCounter=0;
-unsigned long loopcounter=0;
-
-//     ****** FASTLED ANIMATIONS ******* above
-
-void setup()
-{
-
-  // ---------------- BLYNK ----------------
-  // Debug console
+void setup() {
   Serial.begin(115200);
-
-  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
-  // You can also specify server:
-  //Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass, "blynk.cloud", 80);
-  //Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass, IPAddress(192,168,1,100), 8080);
-
-  // Setup a function to be called every second
-  timer.setInterval(1000L, myTimerEvent);
-  // ------------ END BLYNK ----------------
-
-  delay(1000);
-  Serial.println("let's do this!");
-  Serial.println("NUM_LEDS are " + String(NUM_LEDS));
-  
-  FastLED.addLeds<CHIPSET, LED_PIN, COLOR_ORDER>(rawleds, NUM_LEDS).setCorrection( TypicalLEDStrip );
-  FastLED.setBrightness( BRIGHTNESS );
-  genericCounter=0;
+  FastLED.addLeds<WS2811, ledDataPin, RGB>(displayedPixels, pixelCount)
+      .setCorrection(TypicalLEDStrip);
+  FastLED.setBrightness(outputBrightness);
+  animationClock.start(millis()); // Start after initialization, not before setup.
+  Serial.println("Halloween playlist starting:");
+  Serial.println(selectedAnimation().name);
+  setStatusFrameCallback(refreshStatusFrame);
+  beginNetworkUpdates();
 }
 
 void loop() {
-  // ---------------- BLYNK ----------------
-  Blynk.run();
-  timer.run();
-  // ------------ END BLYNK ----------------
-
-  // if( loopcounter % 20000 == 0) Serial.println("in the loop!");
-  if( loopcounter % 5000 == 0) Serial.println("current animation=" + String(currentAnimationNumber));
-  // Serial.println("blynk ready!");
-  // Serial.println("timer set!");
-  
-//  switch (2) {
- switch (currentAnimationNumber) {
- case 1:
-  FastLED.setBrightness(200);
-  pacifica();
-  break;
- case 2:
-  FastLED.setBrightness(200);
-  metaballs();
-  Serial.println("metaballs");
-  break;
- case 3:
-  //  if( loopcounter % 20000 == 0) Serial.println("just in case 1!");
-   FastLED.setBrightness( 200 );
-  // meteorRain(byte red, byte green, byte blue, byte meteorSize, byte meteorTrailDecay, bool meteorRandomDecay, int SpeedDelay)
-   meteorRain(0xFF, 0x00, 0x00, 0x0A, 0x01, false, 0);
-  // solidglow();
-   break;
- case 4:
-  //  if( loopcounter % 20000 == 0) Serial.println("just in case 1!");
-   FastLED.setBrightness( 200 );
-   whiteblue();
-  // solidglow();
-   break;
- case 5:
-  //  if( loopcounter % 20000 == 0) Serial.println("just in case 2!");
-   FastLED.setBrightness( 255 );
-  //  classicChristmas();
-  throb();
-   break;
- case 6:
-  //  if( loopcounter % 20000 == 0) Serial.println("just in case 3!");
-   FastLED.setBrightness( 200 );
-   peppermint();
-   break;
- case 7:
-  //  if( loopcounter % 20000 == 0) Serial.println("just in case 3!");
-   FastLED.setBrightness( 200 );
-   classicChristmas();
-   break;
- default:
-  //  pacifica();
-
-    if( loopcounter % 20000 == 0) Serial.println("blergh default");
-    // whiteblue();
-    // FastLED.setBrightness( 25 );
-    // leds=CRGB::White;
-    // FastLED.show(); // display this frame
-    currentAnimationNumber = 1;
-    currentAnimationDuration = millis();
-    animationsCycleStartTime = millis();
-
-   break;
- }
- loopcounter++;
+  serviceNetworkUpdates(millis());
+  const uint32_t now = millis(); // Network servicing may have taken time.
+  if (takeAnimationRestartRequest()) animationClock.start(now);
+  if (!networkUpdateBusy()) updateAnimation(now);
+  refreshStatusFrame(now); // Status changes are independent of animation cadence.
 }
 
-void printwhichanimation() {
-     if( loopcounter % 1000 == 0) Serial.println("current animation=" + String(currentAnimationNumber));
+void updateAnimation(uint32_t now) {
+  if (automaticCycling && animationClock.finished(now, runtimeDurationMs)) {
+    currentAnimationIndex = (currentAnimationIndex + 1) % (fullPlaylist ? allAnimationCount : previewAnimationCount);
+    animationClock.start(now);
+    Serial.println(selectedAnimation().name);
+  }
+  const Animation &animation = selectedAnimation();
+  uint32_t elapsedMs;
+  if (!animationClock.frameDue(now, animation.frameIntervalMs, elapsedMs)) {
+    return;
+  }
+  animationBrightness = animation.render(elapsedMs);
+  // applySkippedPixels(); // Blackout disabled until the outdoor layout is finalized.
+  sendCurrentFrame(now);
 }
 
-// Valentine colors
-//// Gradient palette "bhw4_098_gp", originally from
-//// http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw4/tn/bhw4_098.png.index.html
-//// converted for FastLED with gammas (2.6, 2.2, 2.5)
-//// Size: 32 bytes of program space.
-//
-//DEFINE_GRADIENT_PALETTE( bhw4_098_gp ) {
-//    0, 128, 33, 52,
-//   35, 255, 17, 47,
-//   58, 222,  2, 51,
-//   99, 144, 56, 78,
-//  124, 188,115,137,
-//  178, 255, 16, 52,
-//  219, 199,  1,  4,
-//  255, 106,  1,  2};
+void sendCurrentFrame(uint32_t now) {
+  // Keep the animation buffer intact. Scale its brightness before adding status,
+  // so a low Throb brightness cannot make the indicator unreadably dim.
+  for (uint16_t i = 0; i < pixelCount; ++i) {
+    displayedPixels[i] = CRGB(uint32_t(pixels[i].r) * animationBrightness * (lightsEnabled ? brightnessPercent : 0) / (outputBrightness * 100u),
+                             uint32_t(pixels[i].g) * animationBrightness * (lightsEnabled ? brightnessPercent : 0) / (outputBrightness * 100u),
+                             uint32_t(pixels[i].b) * animationBrightness * (lightsEnabled ? brightnessPercent : 0) / (outputBrightness * 100u));
+  }
+  displayedStatus = networkStatusPixel(now);
+  if (displayedStatus.active) {
+    displayedPixels[0] = CRGB(displayedStatus.r, displayedStatus.g, displayedStatus.b);
+  }
+  FastLED.setBrightness(outputBrightness);
+  FastLED.show(); // One output path for animation frames and status callbacks.
+}
 
-// Gradient palette "bhw1_hello_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw1/tn/bhw1_hello.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 32 bytes of program space.
+void refreshStatusFrame(uint32_t now) {
+  const StatusPixel status = networkStatusPixel(now);
+  if (status.active != displayedStatus.active ||
+      (status.active && (status.r != displayedStatus.r || status.g != displayedStatus.g ||
+                        status.b != displayedStatus.b))) sendCurrentFrame(now);
+}
 
-DEFINE_GRADIENT_PALETTE( bhw1_hello_gp ) {
-    0, 237,156,197,
-   35, 244,189,230,
-   56, 255,255,255,
-   79, 244,189,230,
-  109, 237,156,197,
-  160, 121,255,255,
-  196, 255,255,255,
-  255, 121,255,255};
+void applySkippedPixels() {
+  for (uint16_t i = skippedPixelBegin; i < skippedPixelEnd && i < pixelCount; ++i) {
+    pixels[i] = CRGB::Black;
+  }
+}

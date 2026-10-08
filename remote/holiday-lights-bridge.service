@@ -1,0 +1,17 @@
+[Unit]
+Description=Holiday lights outbound relay to Rollerfeet IONOS
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/bin/python3 %h/.local/share/holiday-lights/bridge.py --config %h/.config/holiday-lights/bridge-config.json
+Restart=on-failure
+RestartSec=10
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+MemoryMax=96M
+
+[Install]
+WantedBy=default.target
