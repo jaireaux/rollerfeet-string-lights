@@ -31,3 +31,5 @@ Web.2 / Meteor Rain update 2026-10-07T22:46:54Z: 150 seconds measured this turn 
 2026-10-08: web.3 public picker/countdown update; initial prompt clock was not captured, so this interval is unmeasured and excluded from cumulative AI waiting time.
 
 2026-10-08: web.4 selection/countdown correction recorded as an approximate 108-second pre-commit lower-bound interval; subsequent cycle verification and retention excluded.
+
+2026-10-08 00:49 EDT README updates on main and develop/3.0: provisional tracked project age 304892 seconds; cumulative measured AI-waiting intervals 3481 seconds. Latest partial interval 62 seconds. Historical baseline and unmeasured intervals remain excluded; retention/reporting after snapshot excluded.
