@@ -38,7 +38,7 @@ with tempfile.TemporaryDirectory(prefix='holiday-relay-test-') as directory:
   public=call('public-state',credential='')[1]['state'];assert public['remaining_ms']<=12345 and 'brightness' not in public and 'version' not in public
   assert call('public-control',{'action':'animation','value':2},credential='')[0]==202
   claimed=report()[1]['command'];report(ack={'id':claimed['id'],'ok':True})
-  for name,value in [('duration',9),('duration',601),('animation',7),('brightness',101),('power',2),('next',0),('unknown',0),('power','-1')]:assert call('control',{'action':name,'value':value})[0]==400
+  for name,value in [('duration',9),('duration',601),('animation',7),('playlist',3),('brightness',101),('power',2),('next',0),('unknown',0),('power','-1')]:assert call('control',{'action':name,'value':value})[0]==400
   assert call('control',{'action':'power','value':0},origin='https://evil.invalid')[0]==403
   code,command=call('control',{'action':'next','value':1});assert code==202
   assert call('control',{'action':'power','value':0})[0]==409

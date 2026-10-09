@@ -24,6 +24,9 @@ bool dark(const CRGB &p) {return p.r==0 && p.g==0 && p.b==0;}
 int main() {
   static_assert(pixelCount == 600, "Profile length");
   setup();
+  assert(fullPlaylist && showPlaylist);
+  assert(applyLightCommand("playlist", HOLIDAY_LIGHTS_PRODUCTION ? 1 : 0, 0));
+  FastLED.frames=0;animationClock.start(0);
   updateAnimation(0);
   assert(currentAnimationIndex==0 && FastLED.frames==1);
   updateAnimation(1);
@@ -173,6 +176,16 @@ int main() {
   assert(displayedPixels[1].r==25 && displayedPixels[1].g==20 && displayedPixels[1].b==10);
   char json[384];writeLightState(json,sizeof(json));
   assert(strstr(json,"\"brightness\":25") && strstr(json,"\"duration\":120"));
+  // Six-effect show excludes Red Slosh and wraps from Brew to Throb.
+  assert(applyLightCommand("duration",10,800000));
+  assert(applyLightCommand("playlist",2,800000));
+  const unsigned expected[]={0,1,2,3,4,6,0};
+  for(unsigned i=0;i<7;++i) {
+    updateAnimation(800000+i*10000);
+    assert(selectedAnimationId()==expected[i]);
+  }
+  assert(applyLightCommand("animation",5,900000));
+  assert(!showPlaylist && selectedAnimationId()==5);
   char tiny[4];writeLightState(tiny,sizeof(tiny));assert(tiny[3]=='\0');
 
 }

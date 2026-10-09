@@ -1,8 +1,8 @@
 # Web controls
 
-Firmware: **3.2.2**. The web page is a single self-contained HTML file in `web/index.html`, embedded in the XIAO by `python3 tools/embed_web.py`. Its layout adapts to phones and larger screens and uses no third-party scripts or fonts.
+Firmware: **3.3.0**. The web page is a single self-contained HTML file in `web/index.html`, embedded in the XIAO by `python3 tools/embed_web.py`. Its layout adapts to phones and larger screens and uses no third-party scripts or fonts.
 
-Choose any of the seven completed animations, next animation, lights on/off, brightness 0–100%, automatic cycling, preview/all playlist, and 10–600 seconds per animation. Picking an animation starts it immediately, resets its countdown, enables automatic cycling, and selects the all-seven playlist. Changing the playlist starts cycling that list. Preview always contains Red Slosh and Witch’s Brew, including in a production build. Production still defaults to all seven at 180 seconds each; development defaults to preview at 30 seconds. Settings are held in memory and reset after a restart.
+Choose any of the seven completed animations, next animation, lights on/off, brightness 0–100%, automatic cycling, preview/all/six-effect show playlists, and 10–600 seconds per animation. Picking an animation starts it immediately, resets its countdown, enables automatic cycling, and selects the all-seven playlist. Changing the playlist starts cycling that list. Preview always contains Red Slosh and Witch’s Brew, including in a production build. Both profiles now default to the six-effect show, production at 180 seconds and development at 30 seconds. Settings are held in memory and reset after a restart.
 
 Brightness is relative to the existing output limit of 200 and is applied separately from the renderer's brightness. LED #1's diagnostic overlay retains priority, even while lights are off. The 600-pixel length, fixed 1250 ms meteor launches, and disabled blackout mask are unchanged. Wi-Fi retry and authenticated ArduinoOTA remain available.
 
@@ -26,7 +26,7 @@ The relay marks controller status stale after 15 seconds and rejects new command
 
 ## Deployment
 
-1. Run `tools/embed_web.py` after editing the page, then compile and upload the Arduino sketch using the established private-password OTA helper. Verify `/status` reports 3.2.2.
+1. Run `tools/embed_web.py` after editing the page, then compile and upload the Arduino sketch using the established private-password OTA helper. Verify `/status` reports 3.3.0.
 2. Publish `web/index.html` as `lights/index.html`, plus `remote/api.php` and `remote/.htaccess` to the isolated `lights/` directory on IONOS. This leaves the homepage untouched. Use the domain's configured modern PHP runtime, not the server's default CLI PHP.
 3. Create `lights/private/.htaccess` from `remote/private.htaccess`. Provision a private `config.php` returning `password_hash` (PHP password_hash output) and a random `bridge_token`. Verify public requests to `private/config.php` and `private/state.json` receive HTTP 403 before enabling the relay. Runtime state is created with private file permissions.
 4. On LNM, install `remote/bridge.py` at `~/.local/share/holiday-lights/bridge.py` and the unit file at `~/.config/systemd/user/holiday-lights-bridge.service`. Provision mode-600 `~/.config/holiday-lights/bridge-config.json` with `relay_url`, `bridge_token`, `controller_url`, and `controller_password`. The relay URL must use HTTPS on rollerfeet.com. Credentials are never command-line arguments or logs.

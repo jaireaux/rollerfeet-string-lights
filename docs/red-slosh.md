@@ -34,3 +34,9 @@ Following operator reports of wild blinking outside the shadow and apparent free
 ## Phase-one isolation — 3.2.2
 
 User supplied IMG_6524.MOV and requested two-phase troubleshooting. The red and shadow sections are labeled separately; `applyRedSloshShadow(elapsedMs)` is commented out in the active renderer. Red waves remain 24/37 seconds at 75–100% of their peak. The preserved shadow function is tested separately but does not run. Live controller selects Red Slosh and disables automatic cycling; runtime settings reset after reboot, so reapply the manual hold after an upload or restart. Other animations remain available, but are not in the active rotation. First observe the red-only display, then resolve any remaining red flicker before restoring the shadow. The 22-second supplied daylight clip is evidence, not proof of a particular root cause; camera motion/exposure limit precise comparison.
+
+## Saved checkpoint and six-effect show — 3.3.0
+
+The operator paused troubleshooting for an errand. Preserve Red Slosh’s separate background/shadow sections and commented-out shadow call. Prior live checkpoint: 3.2.2, physical addresses 600 (mapped 300), Red Slosh ID 5, auto off, power on, brightness 100%, duration 120 seconds. Resume by selecting ID 5, then disabling Auto cycle. Pending question: does red-only output still flicker? Then troubleshoot the red field before restoring the shadow.
+
+The active show instead cycles IDs 0,1,2,3,4,6: Throb, Haunted Tide, Orange / Purple, Meteor Rain, Witchfire Sparkles, Witch’s Brew. New playlist value 2 reports `show`; value 0 remains the two-effect preview, value 1 all seven. The show skips Red Slosh on automatic transitions and Next, while direct picker selection deliberately enables all seven. Boot defaults to show; runtime duration remains configurable and resets after restart.

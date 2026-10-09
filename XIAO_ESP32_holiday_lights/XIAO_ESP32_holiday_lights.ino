@@ -91,7 +91,8 @@ const Animation previewAnimations[] = {
 };
 constexpr uint8_t previewAnimationCount = 2;
 bool lightsEnabled = true, automaticCycling = true;
-bool fullPlaylist = HOLIDAY_LIGHTS_PRODUCTION;
+bool fullPlaylist = true;
+bool showPlaylist = true; // Original five + Witch’s Brew; omit Red Slosh troubleshooting.
 uint8_t brightnessPercent = 100, manualAnimationIndex = 2;
 uint32_t runtimeDurationMs = animationDurationMs;
 
@@ -114,6 +115,7 @@ bool applyLightCommand(const char *action, uint32_t value, uint32_t now) {
   else if (strcmp(action, "animation") == 0 && value < allAnimationCount) {
     manualAnimationIndex = value;
     fullPlaylist = true;
+    showPlaylist = false; // Picking any effect explicitly selects all seven.
     currentAnimationIndex = value;
     automaticCycling = true;
     animationClock.start(now);
@@ -127,8 +129,9 @@ bool applyLightCommand(const char *action, uint32_t value, uint32_t now) {
         if (strcmp(previewAnimations[i].name, allAnimations[previous].name) == 0) currentAnimationIndex = i;
     }
     animationClock.start(now);
-  } else if (strcmp(action, "playlist") == 0 && value <= 1) {
-    fullPlaylist = value;
+  } else if (strcmp(action, "playlist") == 0 && value <= 2) {
+    fullPlaylist = value != 0;
+    showPlaylist = value == 2;
     automaticCycling = true;
     currentAnimationIndex = 0;
     animationClock.start(now);
@@ -139,6 +142,8 @@ bool applyLightCommand(const char *action, uint32_t value, uint32_t now) {
     if (automaticCycling) currentAnimationIndex = (currentAnimationIndex + 1) %
         (fullPlaylist ? allAnimationCount : previewAnimationCount);
     else manualAnimationIndex = (manualAnimationIndex + 1) % allAnimationCount;
+    if (automaticCycling && fullPlaylist && showPlaylist && currentAnimationIndex == 5)
+      currentAnimationIndex = 6; // Skip Red Slosh in the six-effect show.
     animationClock.start(now);
   } else return false;
   updateAnimation(now);
@@ -154,7 +159,7 @@ void writeLightState(char *buffer, size_t capacity) {
       "\"power\":%s,\"brightness\":%u,\"auto\":%s,\"playlist\":\"%s\","
       "\"duration\":%lu,\"animation\":%u,\"updating\":%s,\"remaining_ms\":%lu}",
       unsigned(pixelCount), lightsEnabled ? "true" : "false", unsigned(brightnessPercent),
-      automaticCycling ? "true" : "false", fullPlaylist ? "all" : "preview",
+      automaticCycling ? "true" : "false", fullPlaylist ? (showPlaylist ? "show" : "all") : "preview",
       static_cast<unsigned long>(runtimeDurationMs / 1000), unsigned(selectedAnimationId()),
       networkUpdateBusy() ? "true" : "false", static_cast<unsigned long>(remaining));
 }
@@ -182,6 +187,7 @@ void loop() {
 void updateAnimation(uint32_t now) {
   if (automaticCycling && animationClock.finished(now, runtimeDurationMs)) {
     currentAnimationIndex = (currentAnimationIndex + 1) % (fullPlaylist ? allAnimationCount : previewAnimationCount);
+    if (fullPlaylist && showPlaylist && currentAnimationIndex == 5) currentAnimationIndex = 6;
     animationClock.start(now);
     Serial.println(selectedAnimation().name);
   }

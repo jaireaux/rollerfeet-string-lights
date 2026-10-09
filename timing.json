@@ -247,6 +247,13 @@
       "approximate_response_released_at": "2026-10-09T20:51:02.596015+00:00",
       "duration_seconds": 165,
       "status": "partial_pre_commit_snapshot; first capture lower bound; later retention excluded"
+    },
+    {
+      "id": "six-effect-show-3.3.0",
+      "approximate_received_at": "2026-10-09T21:01:20+00:00",
+      "approximate_response_released_at": "2026-10-09T21:04:21.920617+00:00",
+      "duration_seconds": 181,
+      "status": "partial_pre_commit_snapshot; first capture lower bound; later retention excluded"
     }
   ],
   "snapshots": [
@@ -381,6 +388,13 @@
       "recorded_at": "2026-10-09T20:51:02.596015+00:00",
       "measured_project_elapsed_seconds": 448998,
       "measured_cumulative_ai_waiting_seconds": 4395,
+      "historical_time_included": false
+    },
+    {
+      "label": "v3.3.0",
+      "recorded_at": "2026-10-09T21:04:21.920617+00:00",
+      "measured_project_elapsed_seconds": 449797,
+      "measured_cumulative_ai_waiting_seconds": 4576,
       "historical_time_included": false
     }
   ]

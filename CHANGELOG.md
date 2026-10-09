@@ -1,5 +1,11 @@
 # Release notes
 
+## 3.3.0 — 2026-10-09
+
+- Add a six-effect show playlist: original five animations plus Witch’s Brew, excluding Red Slosh. Expose it in admin controls and relay validation; use it at boot.
+- Preserve the red-only troubleshooting renderer/checkpoint unchanged. Select Red Slosh and disable Auto cycle to resume.
+- Picking an individual animation still resets its clock and enables the full seven-effect playlist.
+
 ## 3.2.2 — 2026-10-09
 
 - Isolate Red Slosh’s red background for phase-one troubleshooting; comment out the shadow call and label background/shadow sections clearly.
