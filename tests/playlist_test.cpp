@@ -189,7 +189,7 @@ int main() {
   // Quadrant Throb must reach the actual output buffer via controller brightness.
   assert(applyLightCommand("brightness",100,1000000));
   unsigned quadrantPixel=0;
-  while(quadrantPixel<pixelCount && !redSloshBottomLeft(quadrantPixel)) ++quadrantPixel;
+  while(quadrantPixel<pixelCount && (!redSloshBottomLeft(quadrantPixel) || spatialMap[quadrantPixel].x>=16384)) ++quadrantPixel;
   assert(quadrantPixel<pixelCount);
   animationBrightness=renderRedSlosh(0);sendCurrentFrame(1000000);
   assert(displayedPixels[quadrantPixel].r==12);

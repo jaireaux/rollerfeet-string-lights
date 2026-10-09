@@ -1,5 +1,10 @@
 # Release notes
 
+## 3.3.7 — 2026-10-09
+
+- Slide the complete four-color pattern left, wrapping in from the right every six seconds.
+- Preserve the staggered three-second Throb envelopes; brightness travels with each color region.
+
 ## 3.3.6 — 2026-10-09
 
 - Offset quadrant pulses by quarter-cycle beats: red bottom-left, purple top-left, green top-right, orange bottom-right.

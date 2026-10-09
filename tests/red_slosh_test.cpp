@@ -33,7 +33,9 @@ int main() {
         assert(pixels[i].r==0 && pixels[i].g==0 && pixels[i].b==0);
         continue;
       }
-      const unsigned q=redSloshBottomLeft(i)?0:redSloshTopLeft(i)?1:redSloshTopRight(i)?2:3;
+      const unsigned shiftedX=(unsigned(spatialMap[i].x)+(t%6000)*65536u/6000)%65536;
+      const bool left=shiftedX<32768, bottom=spatialMap[i].y<32768;
+      const unsigned q=bottom?(left?0:3):(left?1:2);
       const uint32_t phase=(t%3000+3000-q*750)%3000;
       const uint32_t ramp=phase<1500?phase:3000-phase;
       const unsigned brightness=10+190*ramp/1500;
@@ -41,6 +43,20 @@ int main() {
       assert(pixels[i].g==colors[q].g*brightness/200);
       assert(pixels[i].b==colors[q].b*brightness/200);
     }
+  }
+  // Half a travel cycle swaps columns; full cycle restores color and pulse phase.
+  renderRedSlosh(0);
+  CRGB initial[pixelCount];
+  for(unsigned i=0;i<pixelCount;++i) initial[i]=pixels[i];
+  for(unsigned i=0;i<spatialPixelCount;++i) {
+    const unsigned q=redSloshMovingQuadrant(i,0);
+    const unsigned opposite[]={3,2,1,0};
+    assert(redSloshMovingQuadrant(i,3000)==opposite[q]);
+    assert(redSloshMovingQuadrant(i,6000)==q);
+  }
+  renderRedSlosh(6000);
+  for(unsigned i=0;i<pixelCount;++i) {
+    assert(pixels[i].r==initial[i].r && pixels[i].g==initial[i].g && pixels[i].b==initial[i].b);
   }
   // Preserved phase-two mask is still exercised independently.
   for(auto &p:pixels) p=CRGB(200,0,0);

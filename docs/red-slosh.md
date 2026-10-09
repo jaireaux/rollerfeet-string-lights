@@ -64,3 +64,7 @@ Added bottom-right orange RGB(128,70,0), using the existing Halloween orange. Th
 ## Sequential beats — 3.3.6
 
 Split the existing three-second cycle into four 750 ms beats. Bottom-left starts its rise on beat 1, top-left on 2, top-right on 3, bottom-right on 4; then repeat. Each quadrant completes a full three-second rise/fall with an offset, so pulses overlap. Compute four envelope levels per frame and apply them to each quadrant color; return the constant output cap so the controller preserves user brightness without applying a second pulse. Shadow remains disabled.
+
+## Leftward wrap — 3.3.7
+
+Translate the entire four-color pattern left by one normalized display width every six seconds, wrapping at the edges. Sample the pattern at physical x plus elapsed travel offset; y remains fixed. Pulse phases belong to the moving color regions, retaining the original quarter-cycle sequence and three-second Throb envelopes. Full appearance repeats every six seconds (two pulse cycles). Shadow stays disabled.

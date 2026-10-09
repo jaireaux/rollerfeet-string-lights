@@ -3,7 +3,7 @@
 #include "red_slosh_timing.h"
 #include "throb_envelope.h"
 
-// SECTION 1 — QUADRANT BACKGROUND (sequential four-color pulses for phase one).
+// SECTION 1 — QUADRANT BACKGROUND (leftward scrolling four-color pulses for phase one).
 // A continuous field over physical x/y: neighbors share a similar brightness.
 // Wave clocks are independent of the 22-second shadow choreography.
 float redSloshLevel(uint32_t elapsedMs, float x, float y) {
@@ -38,6 +38,16 @@ uint8_t redSloshQuadrantBrightness(uint32_t elapsedMs, uint8_t quadrant) {
   return throbBrightness(phase,throbPeriodMs,throbMinBrightness,outputBrightness);
 }
 
+// Sample to the right of each physical pixel: the pattern moves left.
+uint8_t redSloshMovingQuadrant(uint16_t i, uint32_t elapsedMs) {
+  constexpr uint32_t travelPeriodMs=6000;
+  const uint32_t shift=(elapsedMs%travelPeriodMs)*65536u/travelPeriodMs;
+  const uint16_t x=uint16_t(uint32_t(spatialMap[i].x)+shift);
+  const bool left=x<32768;
+  const bool bottom=spatialMap[i].y<32768;
+  return bottom ? (left?0:3) : (left?1:2);
+}
+
 void renderRedSloshBackground(uint32_t elapsedMs) {
   const CRGB colors[]={CRGB(255,0,4),CRGB(128,0,128),CRGB(0,128,0),CRGB(128,70,0)};
   CRGB levels[4];
@@ -48,10 +58,8 @@ void renderRedSloshBackground(uint32_t elapsedMs) {
                    uint32_t(colors[q].b)*brightness/outputBrightness);
   }
   for(uint16_t i=0;i<pixelCount;++i) {
-    pixels[i]=redSloshBottomLeft(i) ? levels[0] :
-              redSloshTopLeft(i) ? levels[1] :
-              redSloshTopRight(i) ? levels[2] :
-              redSloshBottomRight(i) ? levels[3] : CRGB(CRGB::Black);
+    pixels[i]=i<spatialPixelCount ? levels[redSloshMovingQuadrant(i,elapsedMs)]
+                                  : CRGB(CRGB::Black);
   }
 }
 

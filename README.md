@@ -1,8 +1,8 @@
 # Rollerfeet string lights
 
-A Halloween light display running on a Seeed XIAO ESP32S3 with FastLED, a companion web app, and password-protected wireless firmware updates. Current installed firmware: **3.3.6**. The current code runs without Blynk.
+A Halloween light display running on a Seeed XIAO ESP32S3 with FastLED, a companion web app, and password-protected wireless firmware updates. Current installed firmware: **3.3.7**. The current code runs without Blynk.
 
-**Troubleshooting in 3.3.6:** Four mapped quadrants use the original three-second Throb cycle, delayed by 750 ms each: red bottom-left starts on beat 1, purple top-left on 2, green top-right on 3, orange bottom-right on 4. Each completes its own full rise/fall; pulses overlap. Unmapped positions are dark, with the network/status pixel retaining priority. Shadow disabled; live rotation held on Red Slosh only.
+**Troubleshooting in 3.3.7:** Four mapped quadrants use the original three-second Throb cycle, delayed by 750 ms each: red bottom-left starts on beat 1, purple top-left on 2, green top-right on 3, orange bottom-right on 4. Each completes its own full rise/fall; pulses overlap. The whole pattern moves left and wraps in from the right, completing one display-width journey every six seconds. Unmapped positions are dark, with the network/status pixel retaining priority. Shadow disabled; live rotation held on Red Slosh only.
 
 **Available since 3.3.0:** The six-effect show cycles Throb → Haunted Tide → Orange / Purple → Meteor Rain → Witchfire Sparkles → Witch’s Brew, omitting Red Slosh. All seven remain available in the picker.
 
@@ -27,7 +27,7 @@ A Halloween light display running on a Seeed XIAO ESP32S3 with FastLED, a compan
 
 Remote control goes through the IONOS website and an outbound relay on LNM to the controller. No home inbound port or public DDNS address is required. Runtime settings reset after controller restart. Browser firmware uploads are not implemented; OTA uses the Arduino-compatible upload workflow.
 
-Current supported source lives on **[`main`](https://github.com/jaireaux/rollerfeet-string-lights/tree/main)**, tagged **v3.3.6**. The original v2.0 baseline is preserved in Git history and the legacy source directories. See [web app operation and deployment](docs/web-control.md) and [OTA setup and upload](docs/ota.md).
+Current supported source lives on **[`main`](https://github.com/jaireaux/rollerfeet-string-lights/tree/main)**, tagged **v3.3.7**. The original v2.0 baseline is preserved in Git history and the legacy source directories. See [web app operation and deployment](docs/web-control.md) and [OTA setup and upload](docs/ota.md).
 
 ## Release versions
 
@@ -37,7 +37,7 @@ For every firmware or website rollout, update this README to reflect current beh
 
 ## Wi-Fi firmware updates
 
-Current firmware: **3.3.6**. Password-protected ArduinoOTA and two-network Wi-Fi retry support are implemented; the lights continue while Wi-Fi is unavailable. A read-only `/status` endpoint reports the running version. The root page provides password-protected web controls; see [web control setup](docs/web-control.md). Version ota.1 was installed over USB, then ota.2 was successfully uploaded over Wi-Fi and read back after reboot. Build: esp32 core 3.3.12, FastLED 3.10.5, 1,111,795 program bytes and 58,332 global RAM bytes. Latest quadrant/controller host tests and web-control tests passed; prior full checks cover retry timing/rollover, animation output pausing and the production playlist. LED #1 shows Wi-Fi/OTA status, with OTA priority and brief success confirmations. Offline red remains until the next search or connection. Browser firmware upload and BLE controls are future work. See [OTA setup and upload instructions](docs/ota.md).
+Current firmware: **3.3.7**. Password-protected ArduinoOTA and two-network Wi-Fi retry support are implemented; the lights continue while Wi-Fi is unavailable. A read-only `/status` endpoint reports the running version. The root page provides password-protected web controls; see [web control setup](docs/web-control.md). Version ota.1 was installed over USB, then ota.2 was successfully uploaded over Wi-Fi and read back after reboot. Build: esp32 core 3.3.12, FastLED 3.10.5, 1,111,631 program bytes and 58,332 global RAM bytes. Latest quadrant/controller host tests and web-control tests passed; prior full checks cover retry timing/rollover, animation output pausing and the production playlist. LED #1 shows Wi-Fi/OTA status, with OTA priority and brief success confirmations. Offline red remains until the next search or connection. Browser firmware upload and BLE controls are future work. See [OTA setup and upload instructions](docs/ota.md).
 
 ## Web controls
 
