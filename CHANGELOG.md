@@ -1,5 +1,10 @@
 # Release notes
 
+## 3.3.5 — 2026-10-09
+
+- Add bottom-right orange, synchronized with the other three quadrants on the original three-second Throb envelope.
+- Keep shadow disabled, unmapped pixels dark and live cycling off.
+
 ## 3.3.4 — 2026-10-09
 
 - Add green to the top-right quadrant, synchronized with red bottom-left and purple top-left on the same three-second Throb envelope.

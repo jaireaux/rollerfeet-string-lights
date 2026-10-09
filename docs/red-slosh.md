@@ -56,3 +56,7 @@ Johnny confirmed the original Throb pulse is visible. Added top-left purple RGB(
 ## Three synchronized quadrants — 3.3.4
 
 Added top-right green RGB(0,128,0), defined by normalized x >= 32768 and y >= 32768. It shares the same three-second brightness envelope with red bottom-left and purple top-left. Bottom-right and unmapped pixels remain dark; shadow stays disabled.
+
+## Four synchronized quadrants — 3.3.5
+
+Added bottom-right orange RGB(128,70,0), using the existing Halloween orange. The 53 mapped pixels with normalized x >= 32768 and y < 32768 share the same three-second Throb envelope as red bottom-left, purple top-left and green top-right. All 300 mapped pixels are now covered; unmapped addresses remain dark. Shadow stays disabled.

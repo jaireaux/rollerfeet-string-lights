@@ -282,6 +282,13 @@
       "approximate_response_released_at": "2026-10-09T23:26:33.704913+00:00",
       "duration_seconds": 91,
       "status": "partial_pre_commit_snapshot; first capture is a lower bound; deployment and retention excluded"
+    },
+    {
+      "id": "orange-quadrant-3.3.5",
+      "approximate_received_at": "2026-10-09T23:28:59+00:00",
+      "approximate_response_released_at": "2026-10-09T23:30:27.836196+00:00",
+      "duration_seconds": 88,
+      "status": "partial_pre_commit_snapshot; first capture is a lower bound; deployment and retention excluded"
     }
   ],
   "snapshots": [
@@ -444,6 +451,13 @@
       "recorded_at": "2026-10-09T23:26:33.704913+00:00",
       "measured_project_elapsed_seconds": 458329,
       "measured_cumulative_ai_waiting_seconds": 4986,
+      "historical_time_included": false
+    },
+    {
+      "label": "v3.3.5",
+      "recorded_at": "2026-10-09T23:30:27.836196+00:00",
+      "measured_project_elapsed_seconds": 458563,
+      "measured_cumulative_ai_waiting_seconds": 5074,
       "historical_time_included": false
     }
   ]

@@ -3,7 +3,7 @@
 #include "red_slosh_timing.h"
 #include "throb_envelope.h"
 
-// SECTION 1 — QUADRANT BACKGROUND (synchronized red/purple/green pulses for phase one).
+// SECTION 1 — QUADRANT BACKGROUND (synchronized four-color pulses for phase one).
 // A continuous field over physical x/y: neighbors share a similar brightness.
 // Wave clocks are independent of the 22-second shadow choreography.
 float redSloshLevel(uint32_t elapsedMs, float x, float y) {
@@ -27,15 +27,21 @@ bool redSloshTopRight(uint16_t i) {
   return i < spatialPixelCount && spatialMap[i].x >= 32768 && spatialMap[i].y >= 32768;
 }
 
+bool redSloshBottomRight(uint16_t i) {
+  return i < spatialPixelCount && spatialMap[i].x >= 32768 && spatialMap[i].y < 32768;
+}
+
 void renderRedSloshBackground(uint32_t elapsedMs) {
   (void)elapsedMs; // Throb timing is applied by the controller, not per-pixel color.
   const CRGB red(255,0,4);
   const CRGB purple(128,0,128);
   const CRGB green(0,128,0);
+  const CRGB orange(128,70,0);
   for (uint16_t i=0; i<pixelCount; ++i) {
     pixels[i]=redSloshBottomLeft(i) ? red :
               redSloshTopLeft(i) ? purple :
-              redSloshTopRight(i) ? green : CRGB(CRGB::Black);
+              redSloshTopRight(i) ? green :
+              redSloshBottomRight(i) ? orange : CRGB(CRGB::Black);
   }
 }
 
@@ -53,7 +59,7 @@ void applyRedSloshShadow(uint32_t elapsedMs) {
 }
 
 uint8_t renderRedSlosh(uint32_t elapsedMs) {
-  renderRedSloshBackground(elapsedMs); // All three colored quadrants share one pulse; other positions dark.
+  renderRedSloshBackground(elapsedMs); // All four colored quadrants share one pulse; other positions dark.
   // applyRedSloshShadow(elapsedMs); // Disabled: isolate the red background first.
   return throbBrightness(elapsedMs,throbPeriodMs,throbMinBrightness,outputBrightness);
 }
