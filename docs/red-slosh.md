@@ -48,3 +48,7 @@ Phase-one output now selects x < 0.5 and y < 0.5 over mapped display bounds (y=0
 ## Original Throb envelope — 3.3.2
 
 Operator confirmed quadrant placement but reported no visible change. Replaced the small 75–100% six-second per-pixel modulation with the actual original Throb algorithm: three-second linear rise/fall, brightness 10→200→10 (5–100% of configured peak). Both Throb and Red Slosh now call `throbBrightness()` in throb_envelope.h. The red quadrant buffer stays RGB(255,0,4); the renderer returns envelope brightness for the shared controller/output path to apply. Original Throb still changes only its existing colors after complete cycles. Tests cover envelope endpoints and prove displayed red rises from 12 to 255 in the pre-global-output buffer. Shadow stays disabled; outside/unmapped pixels black. Live Red Slosh held alone; visual confirmation pending.
+
+## Synchronized left quadrants — 3.3.3
+
+Johnny confirmed the original Throb pulse is visible. Added top-left purple RGB(128,0,128) alongside bottom-left red RGB(255,0,4). Both use the same returned three-second brightness envelope, rising and falling together. Top-left means normalized x < 32768 and y >= 32768; y increases upward. Right-side and unmapped addresses remain dark. Shadow remains disabled.

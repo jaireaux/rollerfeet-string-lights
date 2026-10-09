@@ -29,6 +29,8 @@ int main() {
     for(unsigned i=0;i<600;++i) {
       if(redSloshBottomLeft(i)) {
         assert(pixels[i].r==255 && pixels[i].g==0 && pixels[i].b==4);
+      } else if(redSloshTopLeft(i)) {
+        assert(pixels[i].r==128 && pixels[i].g==0 && pixels[i].b==128);
       } else assert(pixels[i].r==0 && pixels[i].g==0 && pixels[i].b==0);
     }
   }

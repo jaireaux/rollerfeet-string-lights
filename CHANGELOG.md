@@ -1,5 +1,11 @@
 # Release notes
 
+## 3.3.3 — 2026-10-09
+
+- Add purple to the mapped top-left quadrant, synchronized with the red bottom-left on the same three-second Throb envelope.
+- Keep the right half dark, shadow disabled and live cycling off.
+
+
 ## 3.3.2 — 2026-10-09
 
 - Use the original Throb three-second brightness ramp for the bottom-left red quadrant, via controller brightness (10–200, or 5–100% of effect peak).

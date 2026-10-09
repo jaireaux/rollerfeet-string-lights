@@ -268,6 +268,13 @@
       "approximate_response_released_at": "2026-10-09T23:10:57.324189+00:00",
       "duration_seconds": 126,
       "status": "partial_pre_commit_snapshot; first capture lower bound; later retention excluded"
+    },
+    {
+      "id": "synchronized-purple-quadrant-3.3.3",
+      "approximate_received_at": "2026-10-09T23:20:58+00:00",
+      "approximate_response_released_at": "2026-10-09T23:21:57.327532+00:00",
+      "duration_seconds": 59,
+      "status": "partial_pre_commit_snapshot; first capture is a lower bound; deployment and retention excluded"
     }
   ],
   "snapshots": [
