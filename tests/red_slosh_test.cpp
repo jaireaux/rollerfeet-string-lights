@@ -17,11 +17,12 @@ int main() {
     renderRedSlosh(t);
     for(unsigned i=0;i<300;++i) {
       assert(pixels[i].g==0 && pixels[i].b<=4);
-      if(t<7000) assert(pixels[i].r>=191);
+      assert(pixels[i].r>=191); // No shadow at any phase in troubleshooting build.
     }
     for(unsigned i=300;i<600;++i) assert(pixels[i].r==0 && pixels[i].g==0 && pixels[i].b==0);
   }
   renderRedSlosh(7500);
+  applyRedSloshShadow(7500); // Exercise preserved mask separately.
   bool shadow=false,bright=false;
   for(unsigned i=0;i<300;++i) {float x=spatialMap[i].x/65535.0f;
     if(std::fabs(x-0.5f)<0.07f) {assert(pixels[i].r==0);shadow=true;}
@@ -40,8 +41,10 @@ int main() {
   // The stationary midpoint shadow does not freeze uncovered red pixels.
   CRGB before[300];
   renderRedSlosh(15500);
+  applyRedSloshShadow(15500);
   for(unsigned i=0;i<300;++i) before[i]=pixels[i];
   renderRedSlosh(16499);
+  applyRedSloshShadow(16499);
   unsigned changedOutside=0;
   for(unsigned i=0;i<300;++i) {
     float x=spatialMap[i].x/65535.0f;

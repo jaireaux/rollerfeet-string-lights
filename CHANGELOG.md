@@ -1,5 +1,11 @@
 # Release notes
 
+## 3.2.2 — 2026-10-09
+
+- Isolate Red Slosh’s red background for phase-one troubleshooting; comment out the shadow call and label background/shadow sections clearly.
+- Preserve the shadow function for phase two. Tests verify active output never includes a shadow and test the preserved mask separately.
+- Hold the live controller on Red Slosh only; automatic cycling must be restored explicitly after troubleshooting.
+
 ## 3.2.1 — 2026-10-09
 
 - Slow Red Slosh to 24/37-second broad spatial waves so neighboring pixels vary smoothly.

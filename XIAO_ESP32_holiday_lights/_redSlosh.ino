@@ -2,6 +2,7 @@
 #include "spatial_map.h"
 #include "red_slosh_timing.h"
 
+// SECTION 1 — RED BACKGROUND (active during phase-one troubleshooting).
 // A continuous field over physical x/y: neighbors share a similar brightness.
 // Wave clocks are independent of the 22-second shadow choreography.
 float redSloshLevel(uint32_t elapsedMs, float x, float y) {
@@ -22,6 +23,7 @@ void renderRedSloshBackground(uint32_t elapsedMs) {
   }
 }
 
+// SECTION 2 — SHADOW MASK (preserved for phase two; call disabled below).
 void applyRedSloshShadow(uint32_t elapsedMs) {
   const float shadow=redShadowCenter(elapsedMs);
   for (uint16_t i=0; i<spatialPixelCount && i<pixelCount; ++i) {
@@ -36,6 +38,6 @@ void applyRedSloshShadow(uint32_t elapsedMs) {
 
 uint8_t renderRedSlosh(uint32_t elapsedMs) {
   renderRedSloshBackground(elapsedMs); // Always compute the current moving red field.
-  applyRedSloshShadow(elapsedMs);      // Then obscure it; never pause its clock.
+  // applyRedSloshShadow(elapsedMs); // Disabled: isolate the red background first.
   return outputBrightness;
 }
