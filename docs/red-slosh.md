@@ -52,3 +52,7 @@ Operator confirmed quadrant placement but reported no visible change. Replaced t
 ## Synchronized left quadrants — 3.3.3
 
 Johnny confirmed the original Throb pulse is visible. Added top-left purple RGB(128,0,128) alongside bottom-left red RGB(255,0,4). Both use the same returned three-second brightness envelope, rising and falling together. Top-left means normalized x < 32768 and y >= 32768; y increases upward. Right-side and unmapped addresses remain dark. Shadow remains disabled.
+
+## Three synchronized quadrants — 3.3.4
+
+Added top-right green RGB(0,128,0), defined by normalized x >= 32768 and y >= 32768. It shares the same three-second brightness envelope with red bottom-left and purple top-left. Bottom-right and unmapped pixels remain dark; shadow stays disabled.

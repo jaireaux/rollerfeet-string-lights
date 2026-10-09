@@ -31,6 +31,8 @@ int main() {
         assert(pixels[i].r==255 && pixels[i].g==0 && pixels[i].b==4);
       } else if(redSloshTopLeft(i)) {
         assert(pixels[i].r==128 && pixels[i].g==0 && pixels[i].b==128);
+      } else if(redSloshTopRight(i)) {
+        assert(pixels[i].r==0 && pixels[i].g==128 && pixels[i].b==0);
       } else assert(pixels[i].r==0 && pixels[i].g==0 && pixels[i].b==0);
     }
   }

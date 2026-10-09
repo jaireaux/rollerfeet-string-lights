@@ -1,5 +1,10 @@
 # Release notes
 
+## 3.3.4 — 2026-10-09
+
+- Add green to the top-right quadrant, synchronized with red bottom-left and purple top-left on the same three-second Throb envelope.
+- Keep bottom-right dark, shadow disabled and live cycling off.
+
 ## 3.3.3 — 2026-10-09
 
 - Add purple to the mapped top-left quadrant, synchronized with the red bottom-left on the same three-second Throb envelope.
