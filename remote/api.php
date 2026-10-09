@@ -29,7 +29,7 @@ if (!in_array($action,['state','public-state'],true)) {
         if ($origin!=='' && $origin!=='https://'.($_SERVER['HTTP_HOST']??'')) fail(403,'This page is not allowed to control the lights.');
     }
 }
-$limits=['power'=>[0,1],'brightness'=>[0,100],'animation'=>[0,4],'auto'=>[0,1],'playlist'=>[0,1],'duration'=>[10,600],'next'=>[1,1]];
+$limits=['power'=>[0,1],'brightness'=>[0,100],'animation'=>[0,5],'auto'=>[0,1],'playlist'=>[0,1],'duration'=>[10,600],'next'=>[1,1]];
 if (in_array($action,['control','public-control'],true)) {
     $name=$_POST['action']??''; $value=$_POST['value']??'';
     if (!is_string($name) || !isset($limits[$name]) || !is_string($value) || !preg_match('/^\d{1,3}$/D',$value)) fail(400,'Invalid light setting.');
@@ -64,7 +64,7 @@ if ($bridge) {
         && is_bool($s['power']) && is_int($s['brightness']) && $s['brightness']>=0 && $s['brightness']<=100
         && is_bool($s['auto']) && in_array($s['playlist'],['all','preview'],true)
         && is_int($s['duration']) && $s['duration']>=10 && $s['duration']<=600
-        && is_int($s['animation']) && $s['animation']>=0 && $s['animation']<=4 && is_bool($s['updating']);
+        && is_int($s['animation']) && $s['animation']>=0 && $s['animation']<=5 && is_bool($s['updating']);
     if ($valid) {
         $data['state']=array_intersect_key($s,array_flip(['version','pixels','power','brightness','auto','playlist','duration','animation','updating','remaining_ms']));
         if (isset($s['remaining_ms']) && (!is_int($s['remaining_ms']) || $s['remaining_ms']<0 || $s['remaining_ms']>600000)) unset($data['state']['remaining_ms']);

@@ -17,3 +17,6 @@ __pycache__/
 *.pyc
 
 /runtime/
+
+# Operator-specific spatial layout; retain privately on LNM/Drive.
+**/spatial_map.h

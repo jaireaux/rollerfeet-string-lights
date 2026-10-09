@@ -1,21 +1,23 @@
 # Rollerfeet string lights
 
-A Halloween light display running on a Seeed XIAO ESP32S3 with FastLED, a companion web app, and password-protected wireless firmware updates. Current installed firmware: **3.0.2**. The current code runs without Blynk.
+A Halloween light display running on a Seeed XIAO ESP32S3 with FastLED, a companion web app, and password-protected wireless firmware updates. Current installed firmware: **3.1.0**. The current code runs without Blynk.
+
+**New in 3.1.0:** Red Slosh uses a draft 300-pixel 2D map to move deep-red waves and a vertical shadow across the scene. Its choreography repeats every 22 seconds. The other effects retain their 600-pixel addressing. [Spatial effect details](docs/red-slosh.md).
 
 ## What it does now
 
 - Drives **600 individually addressable WS2811 RGB pixels** using orange, purple, and green Halloween colors.
 - Haunted Tide’s wave peaks are about 35% brighter, with the same dark floor and firefly highlights.
-- Runs five animations: **Throb, Haunted Tide, Orange / Purple, Meteor Rain, and Witchfire Sparkles**.
+- Runs six animations: **Throb, Haunted Tide, Orange / Purple, Meteor Rain, Witchfire Sparkles, and Red Slosh**.
 - Provides a phone-friendly companion app at **[rollerfeet.com/lights](https://rollerfeet.com/lights/)**. The public page opens without a password to the animation picker, a countdown, and Next.
-- Starts the selected animation immediately, resets its countdown, and continues cycling through all five. The current display uses 120 seconds per animation.
+- Starts the selected animation immediately, resets its countdown, and continues cycling through all six. The current display uses 120 seconds per animation.
 - Unlocks power, brightness, automatic cycling, playlist, and duration controls through **Admin Access Only**, using the web password.
 - Supports **password-protected ArduinoOTA updates over Wi-Fi**, so firmware can be installed without reconnecting USB. It retries two configured Wi-Fi networks and keeps the lights running when the network is unavailable.
 - Uses LED #1 for network and OTA status, returning it to the animation afterward; no-network status remains red.
 
 Remote control goes through the IONOS website and an outbound relay on LNM to the controller. No home inbound port or public DDNS address is required. Runtime settings reset after controller restart. Browser firmware uploads are not implemented; OTA uses the Arduino-compatible upload workflow.
 
-Current supported source lives on **[`main`](https://github.com/jaireaux/rollerfeet-string-lights/tree/main)**, tagged **v3.0.2**. The original v2.0 baseline is preserved in Git history and the legacy source directories. See [web app operation and deployment](docs/web-control.md) and [OTA setup and upload](docs/ota.md).
+Current supported source lives on **[`main`](https://github.com/jaireaux/rollerfeet-string-lights/tree/main)**, tagged **v3.1.0**. The original v2.0 baseline is preserved in Git history and the legacy source directories. See [web app operation and deployment](docs/web-control.md) and [OTA setup and upload](docs/ota.md).
 
 ## Release versions
 
@@ -25,19 +27,19 @@ For every firmware or website rollout, update this README to reflect current beh
 
 ## Wi-Fi firmware updates
 
-Current firmware: **3.0.2**. Password-protected ArduinoOTA and two-network Wi-Fi retry support are implemented; the lights continue while Wi-Fi is unavailable. A read-only `/status` endpoint reports the running version. The root page provides password-protected web controls; see [web control setup](docs/web-control.md). Version ota.1 was installed over USB, then ota.2 was successfully uploaded over Wi-Fi and read back after reboot. Build: esp32 core 3.3.12, FastLED 3.10.5, 1,108,155 program bytes and 58,332 global RAM bytes. Seven host test programs passed, including retry timing/rollover and animation output pausing, plus the production playlist check. LED #1 shows Wi-Fi/OTA status, with OTA priority and brief success confirmations. Offline red remains until the next search or connection. Browser firmware upload and BLE controls are future work. See [OTA setup and upload instructions](docs/ota.md).
+Current firmware: **3.1.0**. Password-protected ArduinoOTA and two-network Wi-Fi retry support are implemented; the lights continue while Wi-Fi is unavailable. A read-only `/status` endpoint reports the running version. The root page provides password-protected web controls; see [web control setup](docs/web-control.md). Version ota.1 was installed over USB, then ota.2 was successfully uploaded over Wi-Fi and read back after reboot. Build: esp32 core 3.3.12, FastLED 3.10.5, 1,110,375 program bytes and 58,332 global RAM bytes. Eight host test programs passed, including retry timing/rollover and animation output pausing, plus the production playlist check. LED #1 shows Wi-Fi/OTA status, with OTA priority and brief success confirmations. Offline red remains until the next search or connection. Browser firmware upload and BLE controls are future work. See [OTA setup and upload instructions](docs/ota.md).
 
 ## Web controls
 
 Web.1 was prepared on October 6 while the controller was unreachable. Web.2 was installed wirelessly on October 7 and its restarted status was verified. It shortens Meteor Rain launches to 1.25 seconds. The IONOS page and LNM relay now reach the controller.
 
-The phone-friendly page offers all five Halloween animations, on/off, brightness, next animation, automatic cycling, preview/full playlist, and a shared 10–600 second animation duration. Defaults preserve Meteor Rain / Witchfire Sparkles at 30 seconds each; settings reset on controller restart. Off and brightness zero leave the first pixel available for network/OTA status.
+The phone-friendly page offers all six Halloween animations, on/off, brightness, next animation, automatic cycling, preview/full playlist, and a shared 10–600 second animation duration. Defaults preview Red Slosh / Witchfire Sparkles at 30 seconds each; settings reset on controller restart. Off and brightness zero leave the first pixel available for network/OTA status.
 
 The public IONOS page opens with animation selection, Next, and a countdown. “Admin Access Only” prompts for the existing web password before showing full controls. Remote access uses an HTTPS relay on IONOS and a persistent outbound-only Python service on LNM. It requires no home inbound port or published DDNS. The page waits for controller acknowledgement, refuses commands while offline, and expires pending commands. [Operation and deployment](docs/web-control.md). Browser firmware upload, Tuya switch control, and BLE remain future work.
 
 ## Firmware profiles and animation implementation
 
-Open `XIAO_ESP32_holiday_lights/XIAO_ESP32_holiday_lights.ino` in Arduino IDE; select `esp32:esp32:XIAO_ESP32S3`. The development boot default is the Meteor Rain / Witchfire Sparkles preview. The installed display was switched to all five at 30 seconds each; using the animation picker also enables all five. Preview mode remains available for trying two effects while adding animations. Production retains Throb, Orange / Purple, Meteor Rain, Haunted Tide, Witchfire Sparkles. All effects use one `animationDurationMs`. `HOLIDAY_LIGHTS_PRODUCTION` defaults to 0 (30 seconds per effect); set it to 1 for 180 seconds per effect. This replaces the earlier per-effect 9/16-second durations. Production runs three minutes per effect; development prioritizes quick transitions and can interrupt a repeating color sequence or meteor at the shared deadline.
+Provision the private `spatial_map.h` from your retained layout before building; the generic `spatial_map.example.h` is only a starting point. Open `XIAO_ESP32_holiday_lights/XIAO_ESP32_holiday_lights.ino` in Arduino IDE; select `esp32:esp32:XIAO_ESP32S3`. The development boot default is the Red Slosh / Witchfire Sparkles preview. Selecting any animation enables all six. Preview mode remains available for trying two effects while adding animations. Production retains Throb, Haunted Tide, Orange / Purple, Meteor Rain, Witchfire Sparkles, Red Slosh. All effects use one `animationDurationMs`. `HOLIDAY_LIGHTS_PRODUCTION` defaults to 0 (30 seconds per effect); set it to 1 for 180 seconds per effect. This replaces the earlier per-effect 9/16-second durations. Production runs three minutes per effect; development prioritizes quick transitions and can interrupt a repeating color sequence or meteor at the shared deadline.
 
 The animation table contains names, frame intervals, and render functions. `AnimationClock` checks elapsed time and frame deadlines. `updateAnimation(now)` advances the playlist, starts the next effect immediately, applies its brightness and calls `FastLED.show()` once. Effects never block, call delay, or send their own frames. Late frames sample current elapsed time without replaying missed frames.
 
@@ -47,6 +49,7 @@ The animation table contains names, frame intervals, and render functions. `Anim
 | Orange / Purple | Whole visible string switches between darker orange and purple every second, brightness 200 | 1000 ms |
 | Meteor Rain | Two staggered meteors with smooth fading trails; successive launches use darker orange, purple, green | 20 ms |
 | Haunted Tide | Slow Halloween-colored waves with scattered fireflies that gently brighten and fade | 40 ms |
+| Red Slosh | Spatial red waves at 75–100% of the effect peak, with a 20%-wide shadow and midpoint pauses | 30 ms |
 | Witchfire Sparkles | Whole string gently throbs and shifts orange/purple/green, with 1–3 warm-white glints per 25 pixels | 30 ms |
 
 Witchfire Sparkles is a new renderer with a three-second whole-string throb and smooth six-second transitions between each Halloween color. Each region flashes 1–3 distinct sparkle positions for one nominal 30 ms displayed frame, then returns to the background on the next frame. Regions fire once every 240 ms with staggered timing; there is no fade. Glints use 75% of their original brightness (`sparkleBrightnessPercent=75`), without dimming the background. Actual flash duration depends on frame delivery. Positions/counts are deterministic pseudorandom choices from elapsed time; no frame history or global random state. Tune `sparkle_settings.h`. The saved connector mask is currently disabled.

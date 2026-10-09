@@ -219,6 +219,13 @@
       "approximate_response_released_at": "2026-10-08T22:44:10Z",
       "duration_seconds": null,
       "status": "unmeasured_no_start_clock_capture"
+    },
+    {
+      "id": "spatial-red-slosh-3.1.0",
+      "approximate_received_at": "2026-10-09T17:28:20+00:00",
+      "approximate_response_released_at": "2026-10-09T17:33:55.649738+00:00",
+      "duration_seconds": 335,
+      "status": "partial_pre_commit_snapshot; first capture lower bound; later retention excluded"
     }
   ],
   "snapshots": [
@@ -325,6 +332,13 @@
       "recorded_at": "2026-10-08T22:44:10Z",
       "measured_project_elapsed_seconds": 369386,
       "measured_cumulative_ai_waiting_seconds": 3605,
+      "historical_time_included": false
+    },
+    {
+      "label": "v3.1.0",
+      "recorded_at": "2026-10-09T17:33:55.649738+00:00",
+      "measured_project_elapsed_seconds": 437171,
+      "measured_cumulative_ai_waiting_seconds": 3940,
       "historical_time_included": false
     }
   ]

@@ -43,3 +43,5 @@ Release v3.0.0 snapshot, 2026-10-08 00:53 EDT: provisional tracked development a
 Temporary pixel mapping diagnostic snapshot 2026-10-08T22:42:21Z: 369277 seconds calendar project age; 3605 seconds measured cumulative waiting. This prompt interval is unmeasured because its starting timestamp was not captured.
 
 400-pixel full-white diagnostic snapshot 2026-10-08T22:44:10Z: 369386 seconds calendar project age; 3605 seconds measured cumulative waiting. Prompt interval unmeasured; no receipt clock captured.
+
+3.1.0 spatial effect snapshot 2026-10-09T17:33:55.649738+00:00: 437171 seconds provisional calendar project age; 3940 seconds measured cumulative AI waiting. Latest interval 335 seconds is a lower-bound pre-commit snapshot; earlier unmeasured mapping/conversation and later retention excluded.

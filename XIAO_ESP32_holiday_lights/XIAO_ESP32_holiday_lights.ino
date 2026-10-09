@@ -45,6 +45,7 @@ uint8_t renderAlternatingColors(uint32_t elapsedMs);
 uint8_t renderMeteorRain(uint32_t elapsedMs);
 uint8_t renderHauntedTide(uint32_t elapsedMs);
 uint8_t renderWitchfireSparkles(uint32_t elapsedMs);
+uint8_t renderRedSlosh(uint32_t elapsedMs);
 void applySkippedPixels();
 void updateAnimation(uint32_t now);
 void sendCurrentFrame(uint32_t now);
@@ -56,7 +57,7 @@ struct Animation {
   uint8_t (*render)(uint32_t elapsedMs);
 };
 
-// Development previews two selected effects (currently Meteor Rain + Witchfire Sparkles).
+// Development previews two selected effects (currently Red Slosh + Witchfire Sparkles).
 // Update this pair as requested; retain the full production list.
 const Animation animations[] = {
 #if HOLIDAY_LIGHTS_PRODUCTION
@@ -65,9 +66,12 @@ const Animation animations[] = {
   {"Orange / Purple", alternatingColorStepMs, renderAlternatingColors},
   {"Meteor Rain", 20, renderMeteorRain},
 #else
-  {"Meteor Rain", 20, renderMeteorRain},
+  {"Red Slosh", 30, renderRedSlosh},
 #endif
   {"Witchfire Sparkles", sparkleFrameMs, renderWitchfireSparkles}
+#if HOLIDAY_LIGHTS_PRODUCTION
+  ,{"Red Slosh", 30, renderRedSlosh}
+#endif
 };
 constexpr uint8_t animationCount = sizeof(animations) / sizeof(animations[0]);
 uint8_t currentAnimationIndex = 0;
@@ -78,11 +82,12 @@ const Animation allAnimations[] = {
   {"Haunted Tide", hauntedTideFrameMs, renderHauntedTide},
   {"Orange / Purple", alternatingColorStepMs, renderAlternatingColors},
   {"Meteor Rain", 20, renderMeteorRain},
-  {"Witchfire Sparkles", sparkleFrameMs, renderWitchfireSparkles}
+  {"Witchfire Sparkles", sparkleFrameMs, renderWitchfireSparkles},
+  {"Red Slosh", 30, renderRedSlosh}
 };
 constexpr uint8_t allAnimationCount = sizeof(allAnimations) / sizeof(allAnimations[0]);
 const Animation previewAnimations[] = {
-  {"Meteor Rain", 20, renderMeteorRain},
+  {"Red Slosh", 30, renderRedSlosh},
   {"Witchfire Sparkles", sparkleFrameMs, renderWitchfireSparkles}
 };
 constexpr uint8_t previewAnimationCount = 2;

@@ -1,5 +1,11 @@
 # Release notes
 
+## 3.1.0 — 2026-10-09
+
+- Add Red Slosh: a draft 300-pixel spatial map, deep-red 75–100% waves, and a repeating 22-second vertical-shadow sequence. Unmapped addresses remain dark only in this effect.
+- Add the sixth effect to the public/admin picker and relay validation; preview Red Slosh with Witchfire Sparkles.
+- Preserve previous effects, shared duration, Wi-Fi/OTA and first-pixel status. Perceived appearance awaits dusk review.
+
 ## 3.0.2 — 2026-10-08
 
 - Raise Haunted Tide’s maximum wave brightness from 75 to 101 (34.7%); keep the minimum, colors, fireflies and timing unchanged.
