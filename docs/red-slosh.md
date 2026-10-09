@@ -76,3 +76,7 @@ Use the existing deep red RGB(255,0,4) for every region. Each region retains its
 ## Thirty-percent floor — 3.3.9
 
 The moving all-red pattern now rises and falls between 30% and 100% of its configured peak: envelope 60–200 at output cap 200. This is a Red Slosh setting; original standalone Throb retains its existing floor. Three-second pulses, 750 ms offsets and six-second wrap unchanged.
+
+## Vertical sine motion — 3.3.10
+
+Add a smooth full-height vertical translation down and back up every two seconds. Offset is half a display height times (1 − cos(2πt/2000)), from zero to one height and back; sample y plus offset, wrapping at top/bottom. Cosine gives the same sinusoidal motion with zero displacement at startup. Compute offset once per frame. Six-second leftward drift, staggered pulses and 30% floor preserved; complete appearance still repeats every six seconds.

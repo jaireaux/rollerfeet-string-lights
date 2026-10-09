@@ -40,14 +40,25 @@ uint8_t redSloshQuadrantBrightness(uint32_t elapsedMs, uint8_t quadrant) {
   return throbBrightness(phase,throbPeriodMs,redSloshMinBrightness,outputBrightness);
 }
 
-// Sample to the right of each physical pixel: the pattern moves left.
-uint8_t redSloshMovingQuadrant(uint16_t i, uint32_t elapsedMs) {
-  constexpr uint32_t travelPeriodMs=6000;
-  const uint32_t shift=(elapsedMs%travelPeriodMs)*65536u/travelPeriodMs;
-  const uint16_t x=uint16_t(uint32_t(spatialMap[i].x)+shift);
-  const bool left=x<32768;
-  const bool bottom=spatialMap[i].y<32768;
+// One full-height down/up sine oscillation per two seconds.
+uint32_t redSloshVerticalShift(uint32_t elapsedMs) {
+  constexpr float tau=6.28318530718f;
+  const float phase=tau*float(elapsedMs%2000)/2000.0f;
+  return uint32_t(lroundf(32768.0f*(1.0f-cosf(phase))));
+}
+
+uint8_t redSloshPatternQuadrant(uint16_t i, uint32_t xShift, uint32_t yShift) {
+  const uint16_t x=uint16_t(uint32_t(spatialMap[i].x)+xShift);
+  const uint16_t y=uint16_t(uint32_t(spatialMap[i].y)+yShift);
+  const bool left=x<32768, bottom=y<32768;
   return bottom ? (left?0:3) : (left?1:2);
+}
+
+// Inverse sampling: rightward source offset moves the pattern left;
+// upward source offset moves the pattern down. Both axes wrap.
+uint8_t redSloshMovingQuadrant(uint16_t i, uint32_t elapsedMs) {
+  const uint32_t xShift=(elapsedMs%6000)*65536u/6000;
+  return redSloshPatternQuadrant(i,xShift,redSloshVerticalShift(elapsedMs));
 }
 
 void renderRedSloshBackground(uint32_t elapsedMs) {
@@ -59,8 +70,10 @@ void renderRedSloshBackground(uint32_t elapsedMs) {
                    uint32_t(colors[q].g)*brightness/outputBrightness,
                    uint32_t(colors[q].b)*brightness/outputBrightness);
   }
+  const uint32_t xShift=(elapsedMs%6000)*65536u/6000;
+  const uint32_t yShift=redSloshVerticalShift(elapsedMs); // Compute sine once per frame.
   for(uint16_t i=0;i<pixelCount;++i) {
-    pixels[i]=i<spatialPixelCount ? levels[redSloshMovingQuadrant(i,elapsedMs)]
+    pixels[i]=i<spatialPixelCount ? levels[redSloshPatternQuadrant(i,xShift,yShift)]
                                   : CRGB(CRGB::Black);
   }
 }

@@ -33,7 +33,9 @@ int main() {
         continue;
       }
       const unsigned shiftedX=(unsigned(spatialMap[i].x)+(t%6000)*65536u/6000)%65536;
-      const bool left=shiftedX<32768, bottom=spatialMap[i].y<32768;
+      const double vertical=32768.0*(1.0-std::cos(6.28318530718*(t%2000)/2000.0));
+      const unsigned shiftedY=(unsigned(spatialMap[i].y)+unsigned(std::lround(vertical)))%65536;
+      const bool left=shiftedX<32768, bottom=shiftedY<32768;
       const unsigned q=bottom?(left?0:3):(left?1:2);
       const uint32_t phase=(t%3000+3000-q*750)%3000;
       const uint32_t ramp=phase<1500?phase:3000-phase;
@@ -43,6 +45,11 @@ int main() {
       assert(pixels[i].b==colors[q].b*brightness/200);
     }
   }
+  assert(redSloshVerticalShift(0)==0);
+  assert(redSloshVerticalShift(500)==32768);
+  assert(redSloshVerticalShift(1000)==65536);
+  assert(redSloshVerticalShift(1500)==32768);
+  assert(redSloshVerticalShift(2000)==0);
   // Half a travel cycle swaps columns; full cycle restores color and pulse phase.
   renderRedSlosh(0);
   CRGB initial[pixelCount];

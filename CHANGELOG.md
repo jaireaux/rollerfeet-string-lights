@@ -1,5 +1,10 @@
 # Release notes
 
+## 3.3.10 — 2026-10-09
+
+- Add full-height vertical sine motion, down and back up once per two seconds, with edge wrapping.
+- Preserve the six-second leftward drift and staggered three-second 30–100% red pulses. Compute vertical motion once per frame.
+
 ## 3.3.9 — 2026-10-09
 
 - Raise the all-red moving animation’s Throb floor to 30% of its configured peak (60–200).
