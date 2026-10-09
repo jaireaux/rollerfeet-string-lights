@@ -21,7 +21,7 @@ async function scenario(remote) {
  if(remote){await new Promise(resolve=>setImmediate(resolve));await poll();assert.equal(elements.adminSettings.hidden,true);assert.equal(elements.controls.disabled,false);assert.match(elements.countdown.textContent,/Next animation in/);}
  elements.adminAccess.onclick();assert.equal(elements.login.open,true);
  elements.password.value='test-password';await elements.loginForm.onsubmit({preventDefault(){}});
- assert.equal(elements.login.open,false);assert.equal(elements.adminSettings.hidden,false);assert.equal(elements.app.hidden,false);assert.equal(elements.controls.disabled,false);assert.equal(elements.effects.children.length,6);assert.equal(elements.current.textContent,'Meteor Rain');
+ assert.equal(elements.login.open,false);assert.equal(elements.adminSettings.hidden,false);assert.equal(elements.app.hidden,false);assert.equal(elements.controls.disabled,false);assert.equal(elements.effects.children.length,7);assert.equal(elements.current.textContent,'Meteor Rain');
  elements.brightness.value='25';await elements.brightness.onchange();
  if(remote){assert.equal(elements.controls.disabled,true);command.status='done';state.brightness=25;await poll();}
  assert.equal(elements.brightnessValue.textContent,'25%');assert.equal(elements.controls.disabled,false);

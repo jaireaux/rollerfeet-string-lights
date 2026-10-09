@@ -46,6 +46,7 @@ uint8_t renderMeteorRain(uint32_t elapsedMs);
 uint8_t renderHauntedTide(uint32_t elapsedMs);
 uint8_t renderWitchfireSparkles(uint32_t elapsedMs);
 uint8_t renderRedSlosh(uint32_t elapsedMs);
+uint8_t renderWitchesBrew(uint32_t elapsedMs);
 void applySkippedPixels();
 void updateAnimation(uint32_t now);
 void sendCurrentFrame(uint32_t now);
@@ -57,7 +58,7 @@ struct Animation {
   uint8_t (*render)(uint32_t elapsedMs);
 };
 
-// Development previews two selected effects (currently Red Slosh + Witchfire Sparkles).
+// Development previews two selected effects (currently Red Slosh + Witch's Brew).
 // Update this pair as requested; retain the full production list.
 const Animation animations[] = {
 #if HOLIDAY_LIGHTS_PRODUCTION
@@ -65,13 +66,10 @@ const Animation animations[] = {
   {"Haunted Tide", hauntedTideFrameMs, renderHauntedTide},
   {"Orange / Purple", alternatingColorStepMs, renderAlternatingColors},
   {"Meteor Rain", 20, renderMeteorRain},
-#else
+  {"Witchfire Sparkles", sparkleFrameMs, renderWitchfireSparkles},
+#endif
   {"Red Slosh", 30, renderRedSlosh},
-#endif
-  {"Witchfire Sparkles", sparkleFrameMs, renderWitchfireSparkles}
-#if HOLIDAY_LIGHTS_PRODUCTION
-  ,{"Red Slosh", 30, renderRedSlosh}
-#endif
+  {"Witch's Brew", 30, renderWitchesBrew}
 };
 constexpr uint8_t animationCount = sizeof(animations) / sizeof(animations[0]);
 uint8_t currentAnimationIndex = 0;
@@ -83,12 +81,13 @@ const Animation allAnimations[] = {
   {"Orange / Purple", alternatingColorStepMs, renderAlternatingColors},
   {"Meteor Rain", 20, renderMeteorRain},
   {"Witchfire Sparkles", sparkleFrameMs, renderWitchfireSparkles},
-  {"Red Slosh", 30, renderRedSlosh}
+  {"Red Slosh", 30, renderRedSlosh},
+  {"Witch's Brew", 30, renderWitchesBrew}
 };
 constexpr uint8_t allAnimationCount = sizeof(allAnimations) / sizeof(allAnimations[0]);
 const Animation previewAnimations[] = {
   {"Red Slosh", 30, renderRedSlosh},
-  {"Witchfire Sparkles", sparkleFrameMs, renderWitchfireSparkles}
+  {"Witch's Brew", 30, renderWitchesBrew}
 };
 constexpr uint8_t previewAnimationCount = 2;
 bool lightsEnabled = true, automaticCycling = true;

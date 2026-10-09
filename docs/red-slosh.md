@@ -22,3 +22,7 @@ The vertical shadow occupies 20% of mapped scene width with soft edges and a bla
 | 21.5–22 | Continue right |
 
 The shadow choreography repeats every 22 seconds; wave phases continue independently. The shared animation duration still controls playlist switching. A 120-second duration permits five full sequences and a partial sixth. Development preview is Red Slosh then Witchfire Sparkles; full playlist appends Red Slosh after the original five. Choosing it in the picker restarts the effect and continues automatic cycling. Visual validation at dusk remains necessary; corrections to the coordinate lookup do not require redesigning the renderer.
+
+## Witch’s Brew — 3.2.0
+
+Uses the same private map. A green pool occupies the lower roughly 40% with a rolling surface; three staggered purple bubbles expand and rise, with short orange bursts near the surface. Soft-white wisps drift only in the upper third (normalized y > 2/3). Wisp cores breathe from 55% to 65% around a 60% midpoint, relative to the existing output cap and user brightness; soft edges are dimmer. Broad wisps accommodate the sparse pixel layout. A 15-second simmer phase combines with independently staggered 6.2/7.3/8.4-second bubble periods and 9-second steam motion, avoiding one obvious synchronized loop. Addresses beyond the map remain dark. Preview now pairs Red Slosh with Witch’s Brew at the shared duration. Dusk appearance review remains pending.

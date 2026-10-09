@@ -1,5 +1,11 @@
 # Release notes
 
+## 3.2.0 — 2026-10-09
+
+- Add spatial Witch’s Brew: green liquid, expanding purple bubbles, short orange pops and soft-white steam in the upper third. Steam cores breathe 55–65% of effect peak, with soft spatial fades.
+- Preview Red Slosh and Witch’s Brew; add seventh effect to picker and relay validation. Shared duration and private map provisioning remain unchanged.
+- Appearance awaits dusk review.
+
 ## 3.1.0 — 2026-10-09
 
 - Add Red Slosh: a draft 300-pixel spatial map, deep-red 75–100% waves, and a repeating 22-second vertical-shadow sequence. Unmapped addresses remain dark only in this effect.

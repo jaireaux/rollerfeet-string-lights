@@ -5,6 +5,7 @@ constexpr uint16_t pixelCount=600;
 constexpr uint8_t outputBrightness=200;
 CRGB pixels[pixelCount];
 #include "../XIAO_ESP32_holiday_lights/_redSlosh.ino"
+#include "../XIAO_ESP32_holiday_lights/_witchesBrew.ino"
 int main() {
   assert(std::fabs(redShadowCenter(7500)-0.5f)<0.0001f);
   assert(std::fabs(redShadowCenter(11500)-0.5f)<0.0001f);
@@ -28,4 +29,20 @@ int main() {
   }
   assert(shadow && bright && FastLED.frames==0);
   renderRedSlosh(UINT32_MAX);
+  bool green=false,purple=false;
+  for(uint32_t t=0;t<30000;t+=137) {
+    renderWitchesBrew(t);
+    for(unsigned i=0;i<300;++i) {
+      if(spatialMap[i].y/65535.0f>2.0f/3) {
+        assert(pixels[i].r==pixels[i].g && pixels[i].g==pixels[i].b);
+        assert(pixels[i].r<=166); // White steam <=65% before output cap.
+      }
+      green |= pixels[i].g>pixels[i].r;
+      purple |= pixels[i].b>pixels[i].g;
+    }
+    for(unsigned i=300;i<600;++i) assert(pixels[i].r==0 && pixels[i].g==0 && pixels[i].b==0);
+  }
+  assert(green && purple && FastLED.frames==0);
+  assert(brewSoft(0,1)==1 && brewSoft(2,1)==0);
+  renderWitchesBrew(UINT32_MAX);
 }

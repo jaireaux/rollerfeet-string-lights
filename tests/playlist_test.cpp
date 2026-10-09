@@ -19,6 +19,7 @@ bool takeAnimationRestartRequest() {
 #include "../XIAO_ESP32_holiday_lights/_hauntedTide.ino"
 #include "../XIAO_ESP32_holiday_lights/_witchfireSparkles.ino"
 #include "../XIAO_ESP32_holiday_lights/_redSlosh.ino"
+#include "../XIAO_ESP32_holiday_lights/_witchesBrew.ino"
 bool dark(const CRGB &p) {return p.r==0 && p.g==0 && p.b==0;}
 int main() {
   static_assert(pixelCount == 600, "Profile length");
@@ -28,10 +29,10 @@ int main() {
   updateAnimation(1);
   assert(FastLED.frames==1);
 #if HOLIDAY_LIGHTS_PRODUCTION
-  assert(animationCount==6 && !strcmp(animations[3].name,"Meteor Rain"));
+  assert(animationCount==7 && !strcmp(animations[3].name,"Meteor Rain"));
 #else
   assert(animationCount==2 && !strcmp(animations[0].name,"Red Slosh") &&
-      !strcmp(animations[1].name,"Witchfire Sparkles"));
+      !strcmp(animations[1].name,"Witch's Brew"));
 #endif
   for (uint8_t effect=1;effect<=animationCount;++effect) {
     updateAnimation(uint32_t(effect)*animationDurationMs);
@@ -132,7 +133,7 @@ int main() {
   refreshStatusFrame(testNow+1);
   assert(displayedPixels[0].r==5 && displayedPixels[0].b==1);
   // Web commands expose all effects, restart the selected animation and keep cycling, and reject invalid changes.
-  assert(!applyLightCommand("animation", 6, 200001));
+  assert(!applyLightCommand("animation", 7, 200001));
   assert(!applyLightCommand("brightness", 101, 200001));
   assert(!applyLightCommand("duration", 9, 200001));
   assert(!applyLightCommand("duration", 601, 200001));
@@ -154,7 +155,7 @@ int main() {
   assert(!automaticCycling && selectedAnimationId()==1);
   assert(applyLightCommand("playlist", 0, 720004));
   assert(automaticCycling && !fullPlaylist && selectedAnimationId()==5);
-  assert(applyLightCommand("next", 1, 720004) && selectedAnimationId()==4);
+  assert(applyLightCommand("next", 1, 720004) && selectedAnimationId()==6);
   assert(applyLightCommand("next", 1, 720004) && selectedAnimationId()==5);
   fakeUpdateBusy=true;
   assert(!applyLightCommand("power", 0, 720005) && lightsEnabled);
