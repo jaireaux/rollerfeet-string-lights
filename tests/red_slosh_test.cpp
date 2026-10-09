@@ -18,24 +18,28 @@ int main() {
   unsigned selected=0;
   for(unsigned i=0;i<300;++i) selected+=redSloshBottomLeft(i);
   assert(selected>0 && selected<300);
-  assert(renderRedSlosh(0)==10);
-  assert(renderRedSlosh(750)==105);
-  assert(renderRedSlosh(1500)==200);
-  assert(renderRedSlosh(2250)==105);
-  assert(renderRedSlosh(3000)==10);
+  const CRGB colors[]={CRGB(255,0,4),CRGB(128,0,128),CRGB(0,128,0),CRGB(128,70,0)};
+  // Each quadrant begins rising on its beat, peaks two beats later, then repeats.
+  for(unsigned q=0;q<4;++q) {
+    assert(redSloshQuadrantBrightness(q*750,q)==10);
+    assert(redSloshQuadrantBrightness(q*750+750,q)==105);
+    assert(redSloshQuadrantBrightness(q*750+1500,q)==200);
+    assert(redSloshQuadrantBrightness(q*750+3000,q)==10);
+  }
   for(uint32_t t=0;t<22000;t+=31) {
-    const uint8_t brightness=renderRedSlosh(t);
-    assert(brightness>=10 && brightness<=200);
+    assert(renderRedSlosh(t)==outputBrightness);
     for(unsigned i=0;i<600;++i) {
-      if(redSloshBottomLeft(i)) {
-        assert(pixels[i].r==255 && pixels[i].g==0 && pixels[i].b==4);
-      } else if(redSloshTopLeft(i)) {
-        assert(pixels[i].r==128 && pixels[i].g==0 && pixels[i].b==128);
-      } else if(redSloshTopRight(i)) {
-        assert(pixels[i].r==0 && pixels[i].g==128 && pixels[i].b==0);
-      } else if(redSloshBottomRight(i)) {
-        assert(pixels[i].r==128 && pixels[i].g==70 && pixels[i].b==0);
-      } else assert(pixels[i].r==0 && pixels[i].g==0 && pixels[i].b==0);
+      if(i>=spatialPixelCount) {
+        assert(pixels[i].r==0 && pixels[i].g==0 && pixels[i].b==0);
+        continue;
+      }
+      const unsigned q=redSloshBottomLeft(i)?0:redSloshTopLeft(i)?1:redSloshTopRight(i)?2:3;
+      const uint32_t phase=(t%3000+3000-q*750)%3000;
+      const uint32_t ramp=phase<1500?phase:3000-phase;
+      const unsigned brightness=10+190*ramp/1500;
+      assert(pixels[i].r==colors[q].r*brightness/200);
+      assert(pixels[i].g==colors[q].g*brightness/200);
+      assert(pixels[i].b==colors[q].b*brightness/200);
     }
   }
   // Preserved phase-two mask is still exercised independently.

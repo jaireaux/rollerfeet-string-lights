@@ -1,5 +1,10 @@
 # Release notes
 
+## 3.3.6 — 2026-10-09
+
+- Offset quadrant pulses by quarter-cycle beats: red bottom-left, purple top-left, green top-right, orange bottom-right.
+- Each full three-second Throb envelope starts 750 ms after the previous quadrant; per-quadrant brightness preserves full rise/fall and shared output controls.
+
 ## 3.3.5 — 2026-10-09
 
 - Add bottom-right orange, synchronized with the other three quadrants on the original three-second Throb envelope.

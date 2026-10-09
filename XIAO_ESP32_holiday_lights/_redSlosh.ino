@@ -3,7 +3,7 @@
 #include "red_slosh_timing.h"
 #include "throb_envelope.h"
 
-// SECTION 1 — QUADRANT BACKGROUND (synchronized four-color pulses for phase one).
+// SECTION 1 — QUADRANT BACKGROUND (sequential four-color pulses for phase one).
 // A continuous field over physical x/y: neighbors share a similar brightness.
 // Wave clocks are independent of the 22-second shadow choreography.
 float redSloshLevel(uint32_t elapsedMs, float x, float y) {
@@ -31,17 +31,27 @@ bool redSloshBottomRight(uint16_t i) {
   return i < spatialPixelCount && spatialMap[i].x >= 32768 && spatialMap[i].y < 32768;
 }
 
+// Delay each quadrant's full Throb envelope by a quarter-cycle beat.
+uint8_t redSloshQuadrantBrightness(uint32_t elapsedMs, uint8_t quadrant) {
+  const uint32_t phase=(elapsedMs%throbPeriodMs+throbPeriodMs-
+                        quadrant*(throbPeriodMs/4))%throbPeriodMs;
+  return throbBrightness(phase,throbPeriodMs,throbMinBrightness,outputBrightness);
+}
+
 void renderRedSloshBackground(uint32_t elapsedMs) {
-  (void)elapsedMs; // Throb timing is applied by the controller, not per-pixel color.
-  const CRGB red(255,0,4);
-  const CRGB purple(128,0,128);
-  const CRGB green(0,128,0);
-  const CRGB orange(128,70,0);
-  for (uint16_t i=0; i<pixelCount; ++i) {
-    pixels[i]=redSloshBottomLeft(i) ? red :
-              redSloshTopLeft(i) ? purple :
-              redSloshTopRight(i) ? green :
-              redSloshBottomRight(i) ? orange : CRGB(CRGB::Black);
+  const CRGB colors[]={CRGB(255,0,4),CRGB(128,0,128),CRGB(0,128,0),CRGB(128,70,0)};
+  CRGB levels[4];
+  for(uint8_t q=0;q<4;++q) {
+    const uint8_t brightness=redSloshQuadrantBrightness(elapsedMs,q);
+    levels[q]=CRGB(uint32_t(colors[q].r)*brightness/outputBrightness,
+                   uint32_t(colors[q].g)*brightness/outputBrightness,
+                   uint32_t(colors[q].b)*brightness/outputBrightness);
+  }
+  for(uint16_t i=0;i<pixelCount;++i) {
+    pixels[i]=redSloshBottomLeft(i) ? levels[0] :
+              redSloshTopLeft(i) ? levels[1] :
+              redSloshTopRight(i) ? levels[2] :
+              redSloshBottomRight(i) ? levels[3] : CRGB(CRGB::Black);
   }
 }
 
@@ -59,7 +69,7 @@ void applyRedSloshShadow(uint32_t elapsedMs) {
 }
 
 uint8_t renderRedSlosh(uint32_t elapsedMs) {
-  renderRedSloshBackground(elapsedMs); // All four colored quadrants share one pulse; other positions dark.
+  renderRedSloshBackground(elapsedMs); // Quarter-cycle offsets: red, purple, green, orange.
   // applyRedSloshShadow(elapsedMs); // Disabled: isolate the red background first.
-  return throbBrightness(elapsedMs,throbPeriodMs,throbMinBrightness,outputBrightness);
+  return outputBrightness; // Per-quadrant envelopes are already applied above.
 }

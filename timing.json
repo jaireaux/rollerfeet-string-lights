@@ -289,6 +289,13 @@
       "approximate_response_released_at": "2026-10-09T23:30:27.836196+00:00",
       "duration_seconds": 88,
       "status": "partial_pre_commit_snapshot; first capture is a lower bound; deployment and retention excluded"
+    },
+    {
+      "id": "sequential-quadrants-3.3.6",
+      "approximate_received_at": "2026-10-09T23:35:44+00:00",
+      "approximate_response_released_at": "2026-10-09T23:36:44.998676+00:00",
+      "duration_seconds": 60,
+      "status": "partial_pre_commit_snapshot; first capture is a lower bound; deployment and retention excluded"
     }
   ],
   "snapshots": [
@@ -458,6 +465,13 @@
       "recorded_at": "2026-10-09T23:30:27.836196+00:00",
       "measured_project_elapsed_seconds": 458563,
       "measured_cumulative_ai_waiting_seconds": 5074,
+      "historical_time_included": false
+    },
+    {
+      "label": "v3.3.6",
+      "recorded_at": "2026-10-09T23:36:44.998676+00:00",
+      "measured_project_elapsed_seconds": 458940,
+      "measured_cumulative_ai_waiting_seconds": 5134,
       "historical_time_included": false
     }
   ]

@@ -60,3 +60,7 @@ Added top-right green RGB(0,128,0), defined by normalized x >= 32768 and y >= 32
 ## Four synchronized quadrants — 3.3.5
 
 Added bottom-right orange RGB(128,70,0), using the existing Halloween orange. The 53 mapped pixels with normalized x >= 32768 and y < 32768 share the same three-second Throb envelope as red bottom-left, purple top-left and green top-right. All 300 mapped pixels are now covered; unmapped addresses remain dark. Shadow stays disabled.
+
+## Sequential beats — 3.3.6
+
+Split the existing three-second cycle into four 750 ms beats. Bottom-left starts its rise on beat 1, top-left on 2, top-right on 3, bottom-right on 4; then repeat. Each quadrant completes a full three-second rise/fall with an offset, so pulses overlap. Compute four envelope levels per frame and apply them to each quadrant color; return the constant output cap so the controller preserves user brightness without applying a second pulse. Shadow remains disabled.
