@@ -47,3 +47,5 @@ Temporary pixel mapping diagnostic snapshot 2026-10-08T22:42:21Z: 369277 seconds
 3.1.0 spatial effect snapshot 2026-10-09T17:33:55.649738+00:00: 437171 seconds provisional calendar project age; 3940 seconds measured cumulative AI waiting. Latest interval 335 seconds is a lower-bound pre-commit snapshot; earlier unmeasured mapping/conversation and later retention excluded.
 
 3.2.0 Witch’s Brew snapshot 2026-10-09T17:45:10.803049+00:00: 437846 seconds provisional calendar project age; 4112 seconds measured cumulative AI waiting. Latest interval 172 seconds is a lower-bound pre-commit snapshot; earlier unmeasured mapping/conversation and later retention excluded.
+
+3.2.1 Red Slosh smoothing snapshot 2026-10-09T19:57:26.929053+00:00: 445782 seconds provisional calendar project age; 4230 seconds measured cumulative AI waiting. Latest interval 118 seconds is a lower-bound pre-commit snapshot; earlier unmeasured mapping/conversation and later retention excluded.

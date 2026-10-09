@@ -233,6 +233,13 @@
       "approximate_response_released_at": "2026-10-09T17:45:10.803049+00:00",
       "duration_seconds": 172,
       "status": "partial_pre_commit_snapshot; first capture lower bound; later retention excluded"
+    },
+    {
+      "id": "red-slosh-smoothing-3.2.1",
+      "approximate_received_at": "2026-10-09T19:55:28+00:00",
+      "approximate_response_released_at": "2026-10-09T19:57:26.929053+00:00",
+      "duration_seconds": 118,
+      "status": "partial_pre_commit_snapshot; first capture lower bound; later retention excluded"
     }
   ],
   "snapshots": [
@@ -353,6 +360,13 @@
       "recorded_at": "2026-10-09T17:45:10.803049+00:00",
       "measured_project_elapsed_seconds": 437846,
       "measured_cumulative_ai_waiting_seconds": 4112,
+      "historical_time_included": false
+    },
+    {
+      "label": "v3.2.1",
+      "recorded_at": "2026-10-09T19:57:26.929053+00:00",
+      "measured_project_elapsed_seconds": 445782,
+      "measured_cumulative_ai_waiting_seconds": 4230,
       "historical_time_included": false
     }
   ]

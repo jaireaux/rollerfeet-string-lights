@@ -1,5 +1,11 @@
 # Release notes
 
+## 3.2.1 — 2026-10-09
+
+- Slow Red Slosh to 24/37-second broad spatial waves so neighboring pixels vary smoothly.
+- Render the full moving red background first, then apply the shadow in a separate pass. Preserve uncovered pixels exactly and continue waves during shadow pauses.
+- Keep 75–100% red range, 20%-width shadow choreography and Witch’s Brew unchanged. User-reported blinking/freeze is not yet explained; visual retest required.
+
 ## 3.2.0 — 2026-10-09
 
 - Add spatial Witch’s Brew: green liquid, expanding purple bubbles, short orange pops and soft-white steam in the upper third. Steam cores breathe 55–65% of effect peak, with soft spatial fades.

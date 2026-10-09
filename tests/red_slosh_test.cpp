@@ -28,6 +28,29 @@ int main() {
     if(std::fabs(x-0.5f)>0.1f) {assert(pixels[i].r>=191);bright=true;}
   }
   assert(shadow && bright && FastLED.frames==0);
+  // Continuous waves have bounded temporal and spatial gradients.
+  for(uint32_t t=0;t<40000;t+=113) {
+    for(float x=0;x<=1;x+=0.1f) {
+      float v=redSloshLevel(t,x,0.4f);
+      assert(v>=0.75f && v<=1.0f);
+      assert(std::fabs(v-redSloshLevel(t+30,x,0.4f))<0.002f);
+      assert(std::fabs(v-redSloshLevel(t,x+0.01f,0.4f))<0.004f);
+    }
+  }
+  // The stationary midpoint shadow does not freeze uncovered red pixels.
+  CRGB before[300];
+  renderRedSlosh(15500);
+  for(unsigned i=0;i<300;++i) before[i]=pixels[i];
+  renderRedSlosh(16499);
+  unsigned changedOutside=0;
+  for(unsigned i=0;i<300;++i) {
+    float x=spatialMap[i].x/65535.0f;
+    if(std::fabs(x-0.5f)>=0.1f) {
+      changedOutside+=before[i].r!=pixels[i].r;
+      assert(pixels[i].r==uint8_t(255*redSloshLevel(16499,x,spatialMap[i].y/65535.0f)));
+    }
+  }
+  assert(changedOutside>0);
   renderRedSlosh(UINT32_MAX);
   bool green=false,purple=false;
   for(uint32_t t=0;t<30000;t+=137) {
