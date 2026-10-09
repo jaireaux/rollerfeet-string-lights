@@ -3,7 +3,7 @@
 #include "red_slosh_timing.h"
 #include "throb_envelope.h"
 
-// SECTION 1 — QUADRANT BACKGROUND (leftward scrolling four-color pulses for phase one).
+// SECTION 1 — QUADRANT BACKGROUND (leftward scrolling red pulses for phase one).
 // A continuous field over physical x/y: neighbors share a similar brightness.
 // Wave clocks are independent of the 22-second shadow choreography.
 float redSloshLevel(uint32_t elapsedMs, float x, float y) {
@@ -49,7 +49,7 @@ uint8_t redSloshMovingQuadrant(uint16_t i, uint32_t elapsedMs) {
 }
 
 void renderRedSloshBackground(uint32_t elapsedMs) {
-  const CRGB colors[]={CRGB(255,0,4),CRGB(128,0,128),CRGB(0,128,0),CRGB(128,70,0)};
+  const CRGB colors[]={CRGB(255,0,4),CRGB(255,0,4),CRGB(255,0,4),CRGB(255,0,4)};
   CRGB levels[4];
   for(uint8_t q=0;q<4;++q) {
     const uint8_t brightness=redSloshQuadrantBrightness(elapsedMs,q);

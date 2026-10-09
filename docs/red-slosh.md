@@ -68,3 +68,7 @@ Split the existing three-second cycle into four 750 ms beats. Bottom-left starts
 ## Leftward wrap — 3.3.7
 
 Translate the entire four-color pattern left by one normalized display width every six seconds, wrapping at the edges. Sample the pattern at physical x plus elapsed travel offset; y remains fixed. Pulse phases belong to the moving color regions, retaining the original quarter-cycle sequence and three-second Throb envelopes. Full appearance repeats every six seconds (two pulse cycles). Shadow stays disabled.
+
+## All-red moving pulses — 3.3.8
+
+Use the existing deep red RGB(255,0,4) for every region. Each region retains its own quarter-cycle phase, so the six-second leftward movement now carries brightness regions rather than different colors. Timing, coordinates, shadow-disabled state and unmapped darkness unchanged.

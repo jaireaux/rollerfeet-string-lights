@@ -18,7 +18,7 @@ int main() {
   unsigned selected=0;
   for(unsigned i=0;i<300;++i) selected+=redSloshBottomLeft(i);
   assert(selected>0 && selected<300);
-  const CRGB colors[]={CRGB(255,0,4),CRGB(128,0,128),CRGB(0,128,0),CRGB(128,70,0)};
+  const CRGB colors[]={CRGB(255,0,4),CRGB(255,0,4),CRGB(255,0,4),CRGB(255,0,4)};
   // Each quadrant begins rising on its beat, peaks two beats later, then repeats.
   for(unsigned q=0;q<4;++q) {
     assert(redSloshQuadrantBrightness(q*750,q)==10);

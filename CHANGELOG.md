@@ -1,5 +1,10 @@
 # Release notes
 
+## 3.3.8 — 2026-10-09
+
+- Make all four moving regions the existing deep red RGB(255,0,4).
+- Preserve staggered three-second Throb envelopes and six-second leftward wrap.
+
 ## 3.3.7 — 2026-10-09
 
 - Slide the complete four-color pattern left, wrapping in from the right every six seconds.

@@ -303,6 +303,13 @@
       "approximate_response_released_at": "2026-10-09T23:43:23.113074+00:00",
       "duration_seconds": 59,
       "status": "partial_pre_commit_snapshot; first capture is a lower bound; deployment and retention excluded"
+    },
+    {
+      "id": "all-red-3.3.8",
+      "approximate_received_at": "2026-10-09T23:45:14+00:00",
+      "approximate_response_released_at": "2026-10-09T23:45:58.340939+00:00",
+      "duration_seconds": 44,
+      "status": "partial_pre_commit_snapshot; first capture is a lower bound; deployment and retention excluded"
     }
   ],
   "snapshots": [
@@ -486,6 +493,13 @@
       "recorded_at": "2026-10-09T23:43:23.113074+00:00",
       "measured_project_elapsed_seconds": 459339,
       "measured_cumulative_ai_waiting_seconds": 5193,
+      "historical_time_included": false
+    },
+    {
+      "label": "v3.3.8",
+      "recorded_at": "2026-10-09T23:45:58.340939+00:00",
+      "measured_project_elapsed_seconds": 459494,
+      "measured_cumulative_ai_waiting_seconds": 5237,
       "historical_time_included": false
     }
   ]

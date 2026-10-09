@@ -67,3 +67,5 @@ Temporary pixel mapping diagnostic snapshot 2026-10-08T22:42:21Z: 369277 seconds
 3.3.6 sequential quadrant snapshot 2026-10-09T23:36:44.998676+00:00: 458940 seconds provisional calendar project age; 5134 seconds measured cumulative AI waiting. Latest interval 60 seconds is a lower-bound pre-commit snapshot; deployment and retention excluded.
 
 3.3.7 leftward wrap snapshot 2026-10-09T23:43:23.113074+00:00: 459339 seconds provisional calendar project age; 5193 seconds measured cumulative AI waiting. Latest interval 59 seconds is a lower-bound pre-commit snapshot; deployment and retention excluded.
+
+3.3.8 all-red snapshot 2026-10-09T23:45:58.340939+00:00: 459494 seconds provisional calendar project age; 5237 seconds measured cumulative AI waiting. Latest interval 44 seconds is a lower-bound pre-commit snapshot; deployment and retention excluded.
