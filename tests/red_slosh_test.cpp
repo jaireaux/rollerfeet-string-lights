@@ -4,7 +4,6 @@
 constexpr uint16_t pixelCount=600;
 constexpr uint8_t outputBrightness=200;
 constexpr uint32_t throbPeriodMs=3000;
-constexpr uint8_t throbMinBrightness=10;
 CRGB pixels[pixelCount];
 #include "../XIAO_ESP32_holiday_lights/_redSlosh.ino"
 #include "../XIAO_ESP32_holiday_lights/_witchesBrew.ino"
@@ -21,10 +20,10 @@ int main() {
   const CRGB colors[]={CRGB(255,0,4),CRGB(255,0,4),CRGB(255,0,4),CRGB(255,0,4)};
   // Each quadrant begins rising on its beat, peaks two beats later, then repeats.
   for(unsigned q=0;q<4;++q) {
-    assert(redSloshQuadrantBrightness(q*750,q)==10);
-    assert(redSloshQuadrantBrightness(q*750+750,q)==105);
+    assert(redSloshQuadrantBrightness(q*750,q)==60);
+    assert(redSloshQuadrantBrightness(q*750+750,q)==130);
     assert(redSloshQuadrantBrightness(q*750+1500,q)==200);
-    assert(redSloshQuadrantBrightness(q*750+3000,q)==10);
+    assert(redSloshQuadrantBrightness(q*750+3000,q)==60);
   }
   for(uint32_t t=0;t<22000;t+=31) {
     assert(renderRedSlosh(t)==outputBrightness);
@@ -38,7 +37,7 @@ int main() {
       const unsigned q=bottom?(left?0:3):(left?1:2);
       const uint32_t phase=(t%3000+3000-q*750)%3000;
       const uint32_t ramp=phase<1500?phase:3000-phase;
-      const unsigned brightness=10+190*ramp/1500;
+      const unsigned brightness=60+140*ramp/1500;
       assert(pixels[i].r==colors[q].r*brightness/200);
       assert(pixels[i].g==colors[q].g*brightness/200);
       assert(pixels[i].b==colors[q].b*brightness/200);

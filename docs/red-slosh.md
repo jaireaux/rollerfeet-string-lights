@@ -72,3 +72,7 @@ Translate the entire four-color pattern left by one normalized display width eve
 ## All-red moving pulses — 3.3.8
 
 Use the existing deep red RGB(255,0,4) for every region. Each region retains its own quarter-cycle phase, so the six-second leftward movement now carries brightness regions rather than different colors. Timing, coordinates, shadow-disabled state and unmapped darkness unchanged.
+
+## Thirty-percent floor — 3.3.9
+
+The moving all-red pattern now rises and falls between 30% and 100% of its configured peak: envelope 60–200 at output cap 200. This is a Red Slosh setting; original standalone Throb retains its existing floor. Three-second pulses, 750 ms offsets and six-second wrap unchanged.

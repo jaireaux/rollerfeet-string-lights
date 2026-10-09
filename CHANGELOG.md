@@ -1,5 +1,10 @@
 # Release notes
 
+## 3.3.9 — 2026-10-09
+
+- Raise the all-red moving animation’s Throb floor to 30% of its configured peak (60–200).
+- Preserve its three-second pulse, staggered phases and six-second wrap. Original standalone Throb keeps its existing floor.
+
 ## 3.3.8 — 2026-10-09
 
 - Make all four moving regions the existing deep red RGB(255,0,4).

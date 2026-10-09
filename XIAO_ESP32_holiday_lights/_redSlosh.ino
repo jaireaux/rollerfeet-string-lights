@@ -31,11 +31,13 @@ bool redSloshBottomRight(uint16_t i) {
   return i < spatialPixelCount && spatialMap[i].x >= 32768 && spatialMap[i].y < 32768;
 }
 
+constexpr uint8_t redSloshMinBrightness=uint32_t(outputBrightness)*30/100;
+
 // Delay each quadrant's full Throb envelope by a quarter-cycle beat.
 uint8_t redSloshQuadrantBrightness(uint32_t elapsedMs, uint8_t quadrant) {
   const uint32_t phase=(elapsedMs%throbPeriodMs+throbPeriodMs-
                         quadrant*(throbPeriodMs/4))%throbPeriodMs;
-  return throbBrightness(phase,throbPeriodMs,throbMinBrightness,outputBrightness);
+  return throbBrightness(phase,throbPeriodMs,redSloshMinBrightness,outputBrightness);
 }
 
 // Sample to the right of each physical pixel: the pattern moves left.
