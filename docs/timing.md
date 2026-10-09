@@ -55,3 +55,5 @@ Temporary pixel mapping diagnostic snapshot 2026-10-08T22:42:21Z: 369277 seconds
 3.3.0 six-effect show snapshot 2026-10-09T21:04:21.920617+00:00: 449797 seconds provisional calendar project age; 4576 seconds measured cumulative AI waiting. Latest interval 181 seconds is a lower-bound pre-commit snapshot; earlier unmeasured mapping/conversation and later retention excluded.
 
 3.3.1 quadrant throb snapshot 2026-10-09T22:57:40.070202+00:00: 456596 seconds provisional calendar project age; 4710 seconds measured cumulative AI waiting. Latest interval 134 seconds is a lower-bound pre-commit snapshot; earlier unmeasured mapping/conversation and later retention excluded.
+
+3.3.2 original Throb quadrant snapshot 2026-10-09T23:10:57.324189+00:00: 457393 seconds provisional calendar project age; 4836 seconds measured cumulative AI waiting. Latest interval 126 seconds is a lower-bound pre-commit snapshot; earlier unmeasured mapping/conversation and later retention excluded.

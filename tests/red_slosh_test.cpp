@@ -3,6 +3,8 @@
 #include <FastLED.h>
 constexpr uint16_t pixelCount=600;
 constexpr uint8_t outputBrightness=200;
+constexpr uint32_t throbPeriodMs=3000;
+constexpr uint8_t throbMinBrightness=10;
 CRGB pixels[pixelCount];
 #include "../XIAO_ESP32_holiday_lights/_redSlosh.ino"
 #include "../XIAO_ESP32_holiday_lights/_witchesBrew.ino"
@@ -16,15 +18,17 @@ int main() {
   unsigned selected=0;
   for(unsigned i=0;i<300;++i) selected+=redSloshBottomLeft(i);
   assert(selected>0 && selected<300);
-  assert(redSloshQuadrantLevel(0)==0.75f);
-  assert(redSloshQuadrantLevel(3000)==1.0f);
-  assert(redSloshQuadrantLevel(6000)==redSloshQuadrantLevel(0));
+  assert(renderRedSlosh(0)==10);
+  assert(renderRedSlosh(750)==105);
+  assert(renderRedSlosh(1500)==200);
+  assert(renderRedSlosh(2250)==105);
+  assert(renderRedSlosh(3000)==10);
   for(uint32_t t=0;t<22000;t+=31) {
-    renderRedSlosh(t);
-    const uint8_t expected=uint8_t(255*redSloshQuadrantLevel(t));
+    const uint8_t brightness=renderRedSlosh(t);
+    assert(brightness>=10 && brightness<=200);
     for(unsigned i=0;i<600;++i) {
       if(redSloshBottomLeft(i)) {
-        assert(pixels[i].r==expected && pixels[i].g==0 && pixels[i].b<=4);
+        assert(pixels[i].r==255 && pixels[i].g==0 && pixels[i].b==4);
       } else assert(pixels[i].r==0 && pixels[i].g==0 && pixels[i].b==0);
     }
   }

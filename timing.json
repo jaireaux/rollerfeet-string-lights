@@ -261,6 +261,13 @@
       "approximate_response_released_at": "2026-10-09T22:57:40.070202+00:00",
       "duration_seconds": 134,
       "status": "partial_pre_commit_snapshot; first capture lower bound; later retention excluded"
+    },
+    {
+      "id": "original-throb-quadrant-3.3.2",
+      "approximate_received_at": "2026-10-09T23:08:51+00:00",
+      "approximate_response_released_at": "2026-10-09T23:10:57.324189+00:00",
+      "duration_seconds": 126,
+      "status": "partial_pre_commit_snapshot; first capture lower bound; later retention excluded"
     }
   ],
   "snapshots": [
@@ -409,6 +416,13 @@
       "recorded_at": "2026-10-09T22:57:40.070202+00:00",
       "measured_project_elapsed_seconds": 456596,
       "measured_cumulative_ai_waiting_seconds": 4710,
+      "historical_time_included": false
+    },
+    {
+      "label": "v3.3.2",
+      "recorded_at": "2026-10-09T23:10:57.324189+00:00",
+      "measured_project_elapsed_seconds": 457393,
+      "measured_cumulative_ai_waiting_seconds": 4836,
       "historical_time_included": false
     }
   ]

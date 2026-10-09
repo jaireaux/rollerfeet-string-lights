@@ -1,6 +1,7 @@
 #include <math.h>
 #include "spatial_map.h"
 #include "red_slosh_timing.h"
+#include "throb_envelope.h"
 
 // SECTION 1 — RED BACKGROUND (bottom-left quadrant pulse for phase one).
 // A continuous field over physical x/y: neighbors share a similar brightness.
@@ -18,14 +19,9 @@ bool redSloshBottomLeft(uint16_t i) {
   return i < spatialPixelCount && spatialMap[i].x < 32768 && spatialMap[i].y < 32768;
 }
 
-float redSloshQuadrantLevel(uint32_t elapsedMs) {
-  constexpr float tau=6.28318530718f;
-  return 0.875f-0.125f*cosf(tau*float(elapsedMs%6000)/6000.0f);
-}
-
 void renderRedSloshBackground(uint32_t elapsedMs) {
-  const float level=redSloshQuadrantLevel(elapsedMs);
-  const CRGB red(uint8_t(255*level),0,uint8_t(4*level));
+  (void)elapsedMs; // Throb timing is applied by the controller, not per-pixel color.
+  const CRGB red(255,0,4);
   for (uint16_t i=0; i<pixelCount; ++i) {
     pixels[i]=redSloshBottomLeft(i) ? red : CRGB(CRGB::Black);
   }
@@ -47,5 +43,5 @@ void applyRedSloshShadow(uint32_t elapsedMs) {
 uint8_t renderRedSlosh(uint32_t elapsedMs) {
   renderRedSloshBackground(elapsedMs); // Shared quadrant pulse; all other positions dark.
   // applyRedSloshShadow(elapsedMs); // Disabled: isolate the red background first.
-  return outputBrightness;
+  return throbBrightness(elapsedMs,throbPeriodMs,throbMinBrightness,outputBrightness);
 }

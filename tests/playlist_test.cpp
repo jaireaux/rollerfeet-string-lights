@@ -186,6 +186,15 @@ int main() {
   }
   assert(applyLightCommand("animation",5,900000));
   assert(!showPlaylist && selectedAnimationId()==5);
+  // Quadrant Throb must reach the actual output buffer via controller brightness.
+  assert(applyLightCommand("brightness",100,1000000));
+  unsigned quadrantPixel=0;
+  while(quadrantPixel<pixelCount && !redSloshBottomLeft(quadrantPixel)) ++quadrantPixel;
+  assert(quadrantPixel<pixelCount);
+  animationBrightness=renderRedSlosh(0);sendCurrentFrame(1000000);
+  assert(displayedPixels[quadrantPixel].r==12);
+  animationBrightness=renderRedSlosh(1500);sendCurrentFrame(1001500);
+  assert(displayedPixels[quadrantPixel].r==255);
   char tiny[4];writeLightState(tiny,sizeof(tiny));assert(tiny[3]=='\0');
 
 }
