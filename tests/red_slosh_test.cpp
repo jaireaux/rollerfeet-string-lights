@@ -32,9 +32,13 @@ int main() {
         assert(pixels[i].r==0 && pixels[i].g==0 && pixels[i].b==0);
         continue;
       }
-      const unsigned shiftedX=(unsigned(spatialMap[i].x)+(t%6000)*65536u/6000)%65536;
+      const float angle=6.28318530718f*float(t%1000)/1000.0f;
+      const float dx=float(spatialMap[i].x)-32768, dy=float(spatialMap[i].y)-32768;
+      const uint16_t rotatedX=uint16_t(int32_t(std::lround(32768+dx*std::cos(angle)-dy*std::sin(angle))));
+      const uint16_t rotatedY=uint16_t(int32_t(std::lround(32768+dx*std::sin(angle)+dy*std::cos(angle))));
+      const unsigned shiftedX=(unsigned(rotatedX)+(t%6000)*65536u/6000)%65536;
       const double vertical=32768.0*(1.0-std::cos(6.28318530718*(t%2000)/2000.0));
-      const unsigned shiftedY=(unsigned(spatialMap[i].y)+unsigned(std::lround(vertical)))%65536;
+      const unsigned shiftedY=(unsigned(rotatedY)+unsigned(std::lround(vertical)))%65536;
       const bool left=shiftedX<32768, bottom=shiftedY<32768;
       const unsigned q=bottom?(left?0:3):(left?1:2);
       const uint32_t phase=(t%3000+3000-q*750)%3000;
@@ -45,6 +49,13 @@ int main() {
       assert(pixels[i].b==colors[q].b*brightness/200);
     }
   }
+  const SpatialPoint probe={49152,32768};
+  const SpatialPoint quarter=redSloshRotatePoint(probe,0,1);
+  assert(quarter.x==32768 && quarter.y==49152);
+  const SpatialPoint half=redSloshRotatePoint(probe,-1,0);
+  assert(half.x==16384 && half.y==32768);
+  const SpatialPoint center=redSloshRotatePoint({32768,32768},0,1);
+  assert(center.x==32768 && center.y==32768);
   assert(redSloshVerticalShift(0)==0);
   assert(redSloshVerticalShift(500)==32768);
   assert(redSloshVerticalShift(1000)==65536);

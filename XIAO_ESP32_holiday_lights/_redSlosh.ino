@@ -47,18 +47,28 @@ uint32_t redSloshVerticalShift(uint32_t elapsedMs) {
   return uint32_t(lroundf(32768.0f*(1.0f-cosf(phase))));
 }
 
-uint8_t redSloshPatternQuadrant(uint16_t i, uint32_t xShift, uint32_t yShift) {
-  const uint16_t x=uint16_t(uint32_t(spatialMap[i].x)+xShift);
-  const uint16_t y=uint16_t(uint32_t(spatialMap[i].y)+yShift);
+// Inverse rotation around the original map center makes the displayed field
+// rotate clockwise. Translation is sampled afterward, so the whole moving field rotates.
+SpatialPoint redSloshRotatePoint(SpatialPoint point, float cosine, float sine) {
+  const float x=float(point.x)-32768.0f, y=float(point.y)-32768.0f;
+  return {uint16_t(int32_t(lroundf(32768.0f+x*cosine-y*sine))),
+          uint16_t(int32_t(lroundf(32768.0f+x*sine+y*cosine)))};
+}
+
+uint8_t redSloshPatternQuadrant(uint16_t i, uint32_t xShift, uint32_t yShift,
+                               float cosine, float sine) {
+  const SpatialPoint rotated=redSloshRotatePoint(spatialMap[i],cosine,sine);
+  const uint16_t x=uint16_t(uint32_t(rotated.x)+xShift);
+  const uint16_t y=uint16_t(uint32_t(rotated.y)+yShift);
   const bool left=x<32768, bottom=y<32768;
   return bottom ? (left?0:3) : (left?1:2);
 }
 
-// Inverse sampling: rightward source offset moves the pattern left;
-// upward source offset moves the pattern down. Both axes wrap.
 uint8_t redSloshMovingQuadrant(uint16_t i, uint32_t elapsedMs) {
   const uint32_t xShift=(elapsedMs%6000)*65536u/6000;
-  return redSloshPatternQuadrant(i,xShift,redSloshVerticalShift(elapsedMs));
+  const float angle=6.28318530718f*float(elapsedMs%1000)/1000.0f;
+  return redSloshPatternQuadrant(i,xShift,redSloshVerticalShift(elapsedMs),
+                                cosf(angle),sinf(angle));
 }
 
 void renderRedSloshBackground(uint32_t elapsedMs) {
@@ -72,8 +82,10 @@ void renderRedSloshBackground(uint32_t elapsedMs) {
   }
   const uint32_t xShift=(elapsedMs%6000)*65536u/6000;
   const uint32_t yShift=redSloshVerticalShift(elapsedMs); // Compute sine once per frame.
+  const float angle=6.28318530718f*float(elapsedMs%1000)/1000.0f;
+  const float cosine=cosf(angle), sine=sinf(angle); // Once per frame.
   for(uint16_t i=0;i<pixelCount;++i) {
-    pixels[i]=i<spatialPixelCount ? levels[redSloshPatternQuadrant(i,xShift,yShift)]
+    pixels[i]=i<spatialPixelCount ? levels[redSloshPatternQuadrant(i,xShift,yShift,cosine,sine)]
                                   : CRGB(CRGB::Black);
   }
 }

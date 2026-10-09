@@ -324,6 +324,13 @@
       "approximate_response_released_at": "2026-10-09T23:54:16.060514+00:00",
       "duration_seconds": 64,
       "status": "partial_pre_commit_snapshot; first capture is a lower bound; deployment and retention excluded"
+    },
+    {
+      "id": "one-second-rotation-3.3.11",
+      "approximate_received_at": "2026-10-09T23:56:30+00:00",
+      "approximate_response_released_at": "2026-10-09T23:58:02.673541+00:00",
+      "duration_seconds": 92,
+      "status": "partial_pre_commit_snapshot; first capture is a lower bound; deployment and retention excluded"
     }
   ],
   "snapshots": [
@@ -528,6 +535,13 @@
       "recorded_at": "2026-10-09T23:54:16.060514+00:00",
       "measured_project_elapsed_seconds": 459992,
       "measured_cumulative_ai_waiting_seconds": 5349,
+      "historical_time_included": false
+    },
+    {
+      "label": "v3.3.11",
+      "recorded_at": "2026-10-09T23:58:02.673541+00:00",
+      "measured_project_elapsed_seconds": 460218,
+      "measured_cumulative_ai_waiting_seconds": 5441,
       "historical_time_included": false
     }
   ]

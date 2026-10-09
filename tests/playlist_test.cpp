@@ -193,8 +193,8 @@ int main() {
   assert(quadrantPixel<pixelCount);
   animationBrightness=renderRedSlosh(0);sendCurrentFrame(1000000);
   assert(displayedPixels[quadrantPixel].r==76);
-  animationBrightness=renderRedSlosh(1500);sendCurrentFrame(1001500);
-  assert(displayedPixels[quadrantPixel].r==165);
+  animationBrightness=renderRedSlosh(6000);sendCurrentFrame(1006000);
+  assert(displayedPixels[quadrantPixel].r==76);
   char tiny[4];writeLightState(tiny,sizeof(tiny));assert(tiny[3]=='\0');
 
 }

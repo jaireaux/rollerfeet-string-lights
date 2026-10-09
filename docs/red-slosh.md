@@ -80,3 +80,7 @@ The moving all-red pattern now rises and falls between 30% and 100% of its confi
 ## Vertical sine motion — 3.3.10
 
 Add a smooth full-height vertical translation down and back up every two seconds. Offset is half a display height times (1 − cos(2πt/2000)), from zero to one height and back; sample y plus offset, wrapping at top/bottom. Cosine gives the same sinusoidal motion with zero displacement at startup. Compute offset once per frame. Six-second leftward drift, staggered pulses and 30% floor preserved; complete appearance still repeats every six seconds.
+
+## One-second rotation — 3.3.11
+
+Rotate the entire moving field clockwise once per second about the original normalized map center (32768,32768). Inverse-sample rotation first, then sample horizontal/vertical translation, preserving the fixed pivot while rotating the combined moving field. Coordinates wrap periodically. This uses the normalized map coordinate plane. Rotation sine/cosine computed once per frame; existing vertical sine, drift, pulse phases and 30% floor preserved. Complete appearance still repeats every six seconds.

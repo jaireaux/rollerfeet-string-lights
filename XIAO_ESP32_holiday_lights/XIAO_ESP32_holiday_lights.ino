@@ -1,4 +1,5 @@
 #include "version.h"
+#include "spatial_map.h" // Needed before Arduino-generated spatial helper prototypes.
 #define FASTLED_INTERNAL
 #include <FastLED.h>
 #include "animation_clock.h"

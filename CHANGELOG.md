@@ -1,5 +1,10 @@
 # Release notes
 
+## 3.3.11 — 2026-10-09
+
+- Rotate the entire moving red field clockwise around the original normalized map center once per second.
+- Preserve the two-second vertical sine, six-second horizontal wrap and staggered three-second pulses; compute rotation trigonometry once per frame.
+
 ## 3.3.10 — 2026-10-09
 
 - Add full-height vertical sine motion, down and back up once per two seconds, with edge wrapping.
