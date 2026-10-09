@@ -1,5 +1,11 @@
 # Release notes
 
+## 3.3.1 — 2026-10-09
+
+- Change Red Slosh phase-one diagnostic to pulse only the bottom-left quadrant of the mapped display.
+- All selected pixels share a six-second 75–100% red pulse; other animation-buffer pixels are dark. Shadow remains disabled, status overlay unchanged.
+- Preserve the spatial wave helper and prior releases for returning to the full-scene test.
+
 ## 3.3.0 — 2026-10-09
 
 - Add a six-effect show playlist: original five animations plus Witch’s Brew, excluding Red Slosh. Expose it in admin controls and relay validation; use it at boot.
