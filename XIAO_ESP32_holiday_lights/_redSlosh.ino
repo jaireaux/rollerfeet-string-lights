@@ -90,7 +90,7 @@ void renderRedSloshBackground(uint32_t elapsedMs) {
   }
 }
 
-// SECTION 2 — SHADOW MASK (preserved for phase two; call disabled below).
+// SECTION 2 — SHADOW MASK (original choreography in fixed scene coordinates).
 void applyRedSloshShadow(uint32_t elapsedMs) {
   const float shadow=redShadowCenter(elapsedMs);
   for (uint16_t i=0; i<spatialPixelCount && i<pixelCount; ++i) {
@@ -99,12 +99,12 @@ void applyRedSloshShadow(uint32_t elapsedMs) {
     if (distance<=0.07f) {pixels[i]=CRGB::Black;continue;}
     const float edge=(distance-0.07f)/0.03f;
     const float light=edge*edge*(3-2*edge);
-    pixels[i]=CRGB(uint8_t(pixels[i].r*light),0,uint8_t(pixels[i].b*light));
+    pixels[i]=CRGB(uint8_t(pixels[i].r*light),uint8_t(pixels[i].g*light),uint8_t(pixels[i].b*light));
   }
 }
 
 uint8_t renderRedSlosh(uint32_t elapsedMs) {
-  renderRedSloshBackground(elapsedMs); // Quarter-cycle offsets: red, purple, green, orange.
-  // applyRedSloshShadow(elapsedMs); // Disabled: isolate the red background first.
+  renderRedSloshBackground(elapsedMs); // Moving red background remains independent of the shadow.
+  applyRedSloshShadow(elapsedMs); // Overlay after rendering the moving background.
   return outputBrightness; // Per-quadrant envelopes are already applied above.
 }

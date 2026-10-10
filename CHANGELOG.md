@@ -1,5 +1,10 @@
 # Release notes
 
+## 3.3.12 — 2026-10-09
+
+- Restore the original 22-second shadow choreography as a final overlay after the moving red background.
+- Preserve its 20%-wide soft-edged vertical band, one-second full crossings, three-second waits and one-second midpoint pauses. Background motion and throbs continue underneath.
+
 ## 3.3.11 — 2026-10-09
 
 - Rotate the entire moving red field clockwise around the original normalized map center once per second.

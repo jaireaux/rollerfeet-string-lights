@@ -84,3 +84,7 @@ Add a smooth full-height vertical translation down and back up every two seconds
 ## One-second rotation — 3.3.11
 
 Rotate the entire moving field clockwise once per second about the original normalized map center (32768,32768). Inverse-sample rotation first, then sample horizontal/vertical translation, preserving the fixed pivot while rotating the combined moving field. Coordinates wrap periodically. This uses the normalized map coordinate plane. Rotation sine/cosine computed once per frame; existing vertical sine, drift, pulse phases and 30% floor preserved. Complete appearance still repeats every six seconds.
+
+## Shadow restored — 3.3.12
+
+Restore the original redShadowCenter choreography unchanged, using the table at the top of this document. Render the complete moving background first, then apply the shadow in fixed physical x coordinates. The shadow does not rotate or drift with the background. Width remains 20% with soft edges and a black core; motion clocks continue during crossings and midpoint pauses. All prior red pulse, vertical sine, horizontal wrap and rotation settings preserved.

@@ -26,7 +26,7 @@ int main() {
     assert(redSloshQuadrantBrightness(q*750+3000,q)==60);
   }
   for(uint32_t t=0;t<22000;t+=31) {
-    assert(renderRedSlosh(t)==outputBrightness);
+    renderRedSloshBackground(t);
     for(unsigned i=0;i<600;++i) {
       if(i>=spatialPixelCount) {
         assert(pixels[i].r==0 && pixels[i].g==0 && pixels[i].b==0);
@@ -74,6 +74,19 @@ int main() {
   renderRedSlosh(6000);
   for(unsigned i=0;i<pixelCount;++i) {
     assert(pixels[i].r==initial[i].r && pixels[i].g==initial[i].g && pixels[i].b==initial[i].b);
+  }
+  // Live renderer overlays the original shadow on the continuously moving background.
+  const uint32_t shadowTimes[]={7500,11500,16000,16031,21000};
+  for(uint32_t t: shadowTimes) {
+    renderRedSloshBackground(t);
+    CRGB background[pixelCount];
+    for(unsigned i=0;i<pixelCount;++i) background[i]=pixels[i];
+    assert(renderRedSlosh(t)==outputBrightness);
+    for(unsigned i=0;i<spatialPixelCount;++i) {
+      const float distance=std::fabs(spatialMap[i].x/65535.0f-redShadowCenter(t));
+      if(distance<=0.07f) assert(pixels[i].r==0 && pixels[i].b==0);
+      if(distance>=0.10f) assert(pixels[i].r==background[i].r && pixels[i].b==background[i].b);
+    }
   }
   // Preserved phase-two mask is still exercised independently.
   for(auto &p:pixels) p=CRGB(200,0,0);
