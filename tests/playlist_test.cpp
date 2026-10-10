@@ -24,7 +24,12 @@ bool dark(const CRGB &p) {return p.r==0 && p.g==0 && p.b==0;}
 int main() {
   static_assert(pixelCount == 600, "Profile length");
   setup();
-  assert(fullPlaylist && showPlaylist);
+  assert(fullPlaylist && !showPlaylist && automaticCycling);
+  assert(runtimeDurationMs==180000);
+  for(unsigned id=0;id<=7;++id) {
+    updateAnimation(id*180000u);
+    assert(selectedAnimationId()==id%7);
+  }
   assert(applyLightCommand("playlist", HOLIDAY_LIGHTS_PRODUCTION ? 1 : 0, 0));
   FastLED.frames=0;animationClock.start(0);
   updateAnimation(0);

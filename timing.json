@@ -338,6 +338,13 @@
       "approximate_response_released_at": "2026-10-10T00:02:25.977426+00:00",
       "duration_seconds": 61,
       "status": "partial_pre_commit_snapshot; first capture is a lower bound; deployment and retention excluded"
+    },
+    {
+      "id": "seven-effect-show-3.4.0",
+      "approximate_received_at": "2026-10-10T00:04:44+00:00",
+      "approximate_response_released_at": "2026-10-10T00:05:55.070942+00:00",
+      "duration_seconds": 71,
+      "status": "partial_pre_commit_snapshot; first capture is a lower bound; deployment and retention excluded"
     }
   ],
   "snapshots": [
@@ -556,6 +563,13 @@
       "recorded_at": "2026-10-10T00:02:25.977426+00:00",
       "measured_project_elapsed_seconds": 460481,
       "measured_cumulative_ai_waiting_seconds": 5502,
+      "historical_time_included": false
+    },
+    {
+      "label": "v3.4.0",
+      "recorded_at": "2026-10-10T00:05:55.070942+00:00",
+      "measured_project_elapsed_seconds": 460691,
+      "measured_cumulative_ai_waiting_seconds": 5573,
       "historical_time_included": false
     }
   ]

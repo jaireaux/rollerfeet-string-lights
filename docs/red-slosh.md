@@ -88,3 +88,7 @@ Rotate the entire moving field clockwise once per second about the original norm
 ## Shadow restored — 3.3.12
 
 Restore the original redShadowCenter choreography unchanged, using the table at the top of this document. Render the complete moving background first, then apply the shadow in fixed physical x coordinates. The shadow does not rotate or drift with the background. Width remains 20% with soft edges and a black core; motion clocks continue during crossings and midpoint pauses. All prior red pulse, vertical sine, horizontal wrap and rotation settings preserved.
+
+## Approved regular show — 3.4.0
+
+Johnny approved the completed moving red/shadow effect. Include it as animation 6 (ID 5) in the regular seven-effect show, before Witch’s Brew. All seven run three minutes each automatically, including after reboot. Preview and the older six-effect subset remain selectable.

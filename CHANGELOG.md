@@ -1,5 +1,10 @@
 # Release notes
 
+## 3.4.0 — 2026-10-09
+
+- Promote the approved Red Slosh to the regular seven-animation show.
+- Boot and installed runtime cycle all seven effects at three minutes each; preserve preview and six-effect subset choices.
+
 ## 3.3.12 — 2026-10-09
 
 - Restore the original 22-second shadow choreography as a final overlay after the moving red background.

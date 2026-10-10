@@ -28,7 +28,7 @@ constexpr uint16_t skippedPixelBegin = 210;
 constexpr uint16_t skippedPixelEnd = 252; // Exclusive; fixed physical connecting section.
 
 // One runtime for every animation; effect speeds remain independent.
-constexpr uint32_t animationDurationMs = HOLIDAY_LIGHTS_PRODUCTION ? 180000 : 30000;
+constexpr uint32_t animationDurationMs = 180000;
 
 // Scheduling and visual motion are separate settings.
 constexpr uint32_t throbPeriodMs = 3000;
@@ -93,7 +93,7 @@ const Animation previewAnimations[] = {
 constexpr uint8_t previewAnimationCount = 2;
 bool lightsEnabled = true, automaticCycling = true;
 bool fullPlaylist = true;
-bool showPlaylist = true; // Original five + Witch’s Brew; omit Red Slosh troubleshooting.
+bool showPlaylist = false; // Completed seven-effect show, including Red Slosh.
 uint8_t brightnessPercent = 100, manualAnimationIndex = 2;
 uint32_t runtimeDurationMs = animationDurationMs;
 

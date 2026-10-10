@@ -77,3 +77,5 @@ Temporary pixel mapping diagnostic snapshot 2026-10-08T22:42:21Z: 369277 seconds
 3.3.11 rotation snapshot 2026-10-09T23:58:02.673541+00:00: 460218 seconds provisional calendar project age; 5441 seconds measured cumulative AI waiting. Latest interval 92 seconds is a lower-bound pre-commit snapshot; deployment and retention excluded.
 
 3.3.12 shadow restoration snapshot 2026-10-10T00:02:25.977426+00:00: 460481 seconds provisional calendar project age; 5502 seconds measured cumulative AI waiting. Latest interval 61 seconds is a lower-bound pre-commit snapshot; deployment and retention excluded.
+
+3.4.0 regular show snapshot 2026-10-10T00:05:55.070942+00:00: 460691 seconds provisional calendar project age; 5573 seconds measured cumulative AI waiting. Latest interval 71 seconds is a lower-bound pre-commit snapshot; deployment and retention excluded.
