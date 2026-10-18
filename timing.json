@@ -345,6 +345,13 @@
       "approximate_response_released_at": "2026-10-10T00:05:55.070942+00:00",
       "duration_seconds": 71,
       "status": "partial_pre_commit_snapshot; first capture is a lower bound; deployment and retention excluded"
+    },
+    {
+      "id": "witches-brew-simulator-adaptation-3.4.1",
+      "approximate_received_at": "2026-10-18T22:41:15+00:00",
+      "approximate_response_released_at": "2026-10-18T22:44:29.859432+00:00",
+      "duration_seconds": 195,
+      "status": "approximate_pre_release_snapshot"
     }
   ],
   "snapshots": [
@@ -570,6 +577,13 @@
       "recorded_at": "2026-10-10T00:05:55.070942+00:00",
       "measured_project_elapsed_seconds": 460691,
       "measured_cumulative_ai_waiting_seconds": 5573,
+      "historical_time_included": false
+    },
+    {
+      "label": "v3.4.1",
+      "recorded_at": "2026-10-18T22:44:29.859432+00:00",
+      "measured_project_elapsed_seconds": 1233406,
+      "measured_cumulative_ai_waiting_seconds": 5768,
       "historical_time_included": false
     }
   ]

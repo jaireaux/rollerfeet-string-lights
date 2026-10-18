@@ -1,5 +1,12 @@
 # Release notes
 
+## 3.4.1 — 2026-10-18
+
+- Adapt the operator’s edited simulator Witch’s Brew to the physical map.
+- Share an 80% ±4% liquid surface with bubble destinations; widen steam wisps by 50%.
+- Preserve local-surface orange pops and background-then-steam ordering, timing, playlists, scheduling, brightness and status output.
+- Match submitted JavaScript rounding/clamping and retain its exact source for numerical parity tests.
+
 ## 3.4.0 — 2026-10-09
 
 - Promote the approved Red Slosh to the regular seven-animation show.

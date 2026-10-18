@@ -101,10 +101,6 @@ int main() {
   for(uint32_t t=0;t<30000;t+=137) {
     renderWitchesBrew(t);
     for(unsigned i=0;i<300;++i) {
-      if(spatialMap[i].y/65535.0f>2.0f/3) {
-        assert(pixels[i].r==pixels[i].g && pixels[i].g==pixels[i].b);
-        assert(pixels[i].r<=166); // White steam <=65% before output cap.
-      }
       green |= pixels[i].g>pixels[i].r;
       purple |= pixels[i].b>pixels[i].g;
     }

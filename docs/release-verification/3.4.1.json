@@ -1,0 +1,38 @@
+{
+  "version": "3.4.1",
+  "recorded_at": "2026-10-18T22:50:01.033909+00:00",
+  "host_tests": {
+    "cpp_programs": 9,
+    "production_playlist": "pass",
+    "web_control": "pass",
+    "submitted_js_point_time_samples": 4641,
+    "max_rgb_difference": 1
+  },
+  "build": {
+    "board": "esp32:esp32:XIAO_ESP32S3",
+    "esp32_core": "3.3.12",
+    "FastLED": "3.10.5",
+    "program_bytes": 1113039,
+    "ram_bytes": 58332
+  },
+  "ota": "success",
+  "controller_readback": {
+    "version": "3.4.1",
+    "pixels": 600,
+    "power": true,
+    "brightness": 100,
+    "auto": true,
+    "playlist": "all",
+    "duration": 180,
+    "animation": 6,
+    "updating": false
+  },
+  "website": {
+    "version": "3.4.1",
+    "download_check_matching_files": 1,
+    "https_source_matches": true,
+    "public_relay_online": true,
+    "public_relay_animation": 6
+  },
+  "visual_hardware_review": "not performed"
+}
