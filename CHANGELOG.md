@@ -1,5 +1,12 @@
 # Release notes
 
+## 3.4.2 — 2026-10-19
+
+- Raise Witch’s Brew’s liquid surface to 85% ±4% of mapped display height.
+- Center orange bubble pops on the same local surface instead of eight percentage points above it.
+- Preserve bubble contact geometry, ripple, steam, timing and the seven-animation playlist.
+- Retain the 3.4.1 submitted source; add a revised 3.4.2 numerical reference.
+
 ## 3.4.1 — 2026-10-18
 
 - Adapt the operator’s edited simulator Witch’s Brew to the physical map.

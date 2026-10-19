@@ -1,0 +1,34 @@
+{
+  "version": "3.4.2",
+  "recorded_at": "2026-10-19T22:09:20.735097+00:00",
+  "changes": {
+    "surface_center": 0.85,
+    "surface_ripple": 0.04,
+    "pop_height": "same local surface; removed +.08 offset"
+  },
+  "checks": {
+    "brew_cpp": "pass",
+    "production_playlist": "pass",
+    "web_control": "pass",
+    "numerical_samples": 4641,
+    "maximum_rgb_error": 1,
+    "program_bytes": 1113019,
+    "ram_bytes": 58332
+  },
+  "ota": {
+    "host": "LNM through SentinelX",
+    "result": "success",
+    "uptime_ms": 4017,
+    "sha256": "979c619c2d6252700b1bcfafd4257251393febaef8ed456c362b61b9a6eedc66"
+  },
+  "state": {
+    "animation": 6,
+    "auto": true,
+    "playlist": "all",
+    "duration": 180,
+    "brightness": 100,
+    "pixels": 600
+  },
+  "wiring": "Johnny reports repaired; no agent physical inspection",
+  "visual_review": "pending user observation"
+}

@@ -352,6 +352,13 @@
       "approximate_response_released_at": "2026-10-18T22:44:29.859432+00:00",
       "duration_seconds": 195,
       "status": "approximate_pre_release_snapshot"
+    },
+    {
+      "id": "brew-surface-342",
+      "approximate_received_at": "2026-10-19T22:07:27.838000+00:00",
+      "approximate_response_released_at": "2026-10-19T22:09:11.848067+00:00",
+      "duration_seconds": 104,
+      "status": "lower_bound_first_clock_after_initial_edits_and_build_start"
     }
   ],
   "snapshots": [
@@ -585,6 +592,14 @@
       "measured_project_elapsed_seconds": 1233406,
       "measured_cumulative_ai_waiting_seconds": 5768,
       "historical_time_included": false
+    },
+    {
+      "label": "v3.4.2",
+      "recorded_at": "2026-10-19T22:09:20.735097+00:00",
+      "measured_project_elapsed_seconds": 1317696,
+      "measured_cumulative_ai_waiting_seconds": 5872,
+      "historical_time_included": false,
+      "measurement_note": "Lower bound; first clock after initial edits/build start; previous OTA setup prompts unmeasured."
     }
   ]
 }

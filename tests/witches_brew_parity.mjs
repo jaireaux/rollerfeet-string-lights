@@ -9,7 +9,7 @@ const dir=mkdtempSync(join(tmpdir(),'brew-parity-'));
 try {
   const binary=join(dir,'probe');
   execFileSync(process.env.CXX||'c++',['-std=c++11',root+'tests/witches_brew_probe.cpp','-o',binary]);
-  const c=vm.createContext({});vm.runInContext(readFileSync(root+'docs/simulator-sources/witches-brew-3.4.1.js','utf8'),c,{timeout:100});
+  const c=vm.createContext({});vm.runInContext(readFileSync(root+'docs/simulator-sources/witches-brew-3.4.2.js','utf8'),c,{timeout:100});
   const points=[];
   for(let row=0;row<=16;row++)for(let col=0;col<=20;col++)points.push({x:col/20,y:row/16});
   const cases=[];const expected=[];

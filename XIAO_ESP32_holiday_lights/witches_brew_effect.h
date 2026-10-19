@@ -19,7 +19,7 @@ inline float brewSoft(float distance, float width) {
 
 // One boundary shared by the liquid and bubble destinations.
 inline float brewSurfaceAt(float x, float simmer) {
-  return 0.80f + 0.04f * sinf(brewTau * x + simmer);
+  return 0.85f + 0.04f * sinf(brewTau * x + simmer);
 }
 inline float brewBubbleCenterY(float progress, float surface, float radius) {
   constexpr float startY = 0.04f;
@@ -53,7 +53,7 @@ inline BrewRgb brewRenderBackground(float x, float y, const BrewFrame &frame) {
     rgb.b += 140 * ring;
     if (bubble.progress > 0.95f) {
       const float spark = brewSoft(fabsf(x - bubble.cx), 0.14f)
-                        * brewSoft(fabsf(y - (surface + 0.08f)), 0.10f);
+                        * brewSoft(fabsf(y - surface), 0.10f);
       rgb.r += 200 * spark;
       rgb.g += 65 * spark;
     }

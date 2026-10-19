@@ -81,3 +81,5 @@ Temporary pixel mapping diagnostic snapshot 2026-10-08T22:42:21Z: 369277 seconds
 3.4.0 regular show snapshot 2026-10-10T00:05:55.070942+00:00: 460691 seconds provisional calendar project age; 5573 seconds measured cumulative AI waiting. Latest interval 71 seconds is a lower-bound pre-commit snapshot; deployment and retention excluded.
 
 3.4.1: simulator-to-production Witch’s Brew adaptation, first clock 2026-10-18T22:41:15Z. Timing JSON records the pre-release snapshot; later build/upload/retention are excluded from that lower bound.
+
+3.4.2 shared-surface snapshot 2026-10-19T22:09:11.848067+00:00: 104 seconds measured from first clock at 2026-10-19T22:07:27.838Z; earlier editing/build time and prior OTA setup conversation were not measured. This is an explicit lower bound, not total waiting.

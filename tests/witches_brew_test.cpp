@@ -7,9 +7,9 @@ constexpr uint8_t outputBrightness=200;
 CRGB pixels[pixelCount];
 #include "../XIAO_ESP32_holiday_lights/_witchesBrew.ino"
 int main() {
-  assert(std::fabs(brewSurfaceAt(0,0)-.80f)<1e-6f);
-  assert(std::fabs(brewSurfaceAt(.25f,0)-.84f)<1e-6f);
-  for(float surface : {.76f,.80f,.84f}) {
+  assert(std::fabs(brewSurfaceAt(0,0)-.85f)<1e-6f);
+  assert(std::fabs(brewSurfaceAt(.25f,0)-.89f)<1e-6f);
+  for(float surface : {.81f,.85f,.89f}) {
     assert(std::fabs(brewBubbleCenterY(0,surface,.025f)-.04f)<1e-6f);
     assert(std::fabs(brewBubbleCenterY(1,surface,.095f)+.095f-surface)<1e-6f);
   }

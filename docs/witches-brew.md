@@ -28,3 +28,8 @@ The dedicated host test checks surface/endpoints, steam placement, unmapped
 pixels, repeatability and absence of FastLED output calls. The physical hardware
 still adds its configured brightness limit and optical behavior; numerical parity
 is not a visual observation.
+
+
+## 3.4.2 — Shared surface at 85%
+
+The liquid boundary is 0.85 + 0.04 × sin(2πx + simmer), measured upward from the bottom of the physical map. Bubble tops target this local boundary, and orange pop flashes are centered on it. The earlier +0.08 pop offset is removed. Steam still occupies its existing upper-third region and overlaps the liquid; timing, brightness and playlists are unchanged. The revised numerical reference is simulator-sources/witches-brew-3.4.2.js; the operator’s original 3.4.1 submission is preserved.
