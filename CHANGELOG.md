@@ -1,3 +1,8 @@
+## 3.5.1 — 2026-11-01
+
+- Slow Falling Embers by 75%, scaling movement, launches and fade together.
+- Halve Cranberry Drift spatial motion; preserve palette and throb timing.
+
 ## 3.5.0 — 2026-11-01
 
 - Convert the six approved fall simulator recipes to C++ and deploy the six-effect fall rotation. Retain Halloween renderers for reference.

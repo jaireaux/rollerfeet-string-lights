@@ -1,6 +1,6 @@
 # Wireless firmware uploads
 
-The lights use the ESP32 core's password-protected ArduinoOTA service. Blynk is not required. The current release is 3.5.0 with six fall animations; the preview pair is Cranberry Drift / Harvest Cider. The original animation renderers do not perform network I/O.
+The lights use the ESP32 core's password-protected ArduinoOTA service. Blynk is not required. The current release is 3.5.1 with six fall animations; the preview pair is Cranberry Drift / Harvest Cider. The original animation renderers do not perform network I/O.
 
 ## Private setup
 

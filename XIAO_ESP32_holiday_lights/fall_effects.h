@@ -25,7 +25,7 @@ inline FallRgb fallPixel(uint8_t effect,uint32_t ms,uint16_t i,uint16_t count,do
  if(effect==2){return (uint32_t(floor((i+time*6)/8))%2)?FallRgb{205,160,45}:FallRgb{190,75,22};}
  if(effect==3){
   const FallRgb p[]={{190,75,22},{205,160,45},{150,42,35},{100,120,42},{190,115,35}};
-  constexpr double interval=1.25,speed=60,headPixels=10,fade=.8;
+  constexpr double interval=5,speed=15,headPixels=10,fade=3.2;
   int32_t launch=int32_t(floor(time/interval));
   int32_t first=launch-int32_t(ceil(((count+headPixels)/speed+fade)/interval));if(first<0)first=0;
   FallRgb rgb={0,0,0};
@@ -40,7 +40,7 @@ inline FallRgb fallPixel(uint8_t effect,uint32_t ms,uint16_t i,uint16_t count,do
   const double phase=time/(20.0/6),fraction=fallWrap(phase),blend=fraction*fraction*(3-2*fraction);
   uint8_t n=uint32_t(floor(phase))%6;FallRgb color=fallMix(p[n],p[(n+1)%6],blend);
   color=fallScale(color,190/fmax(color.r,fmax(color.g,color.b)));
-  const double motion=time*.25,throb=time*.5,angle=fallTau*fmod(motion,1.0);
+  const double motion=time*.125,throb=time*.5,angle=fallTau*fmod(motion,1.0);
   double dx=x-.5,dy=y-.5;
   double xx=fallWrap(.5+dx*cos(angle)-dy*sin(angle)+fmod(motion,6.0)/6);
   double yy=fallWrap(.5+dx*sin(angle)+dy*cos(angle)+.5*(1-cos(fallTau*fmod(motion,2.0)/2)));

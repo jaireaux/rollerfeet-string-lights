@@ -1,18 +1,24 @@
 # Rollerfeet String Lights
 
-A fall light display on a Seeed XIAO ESP32-S3, with a companion website and password-protected OTA updates. **Installed release: 3.5.0.**
+A fall light display on a Seeed XIAO ESP32-S3, with a companion website and password-protected OTA updates. **Installed release: 3.5.1.**
 
 ## What it does now
 
 - Rotates **Harvest Glow → Autumn Tide → Orchard Bands → Falling Embers → Cranberry Drift → Harvest Cider**, three minutes each.
 - Uses the six approved simulator fall recipes: muted orange, olive, gold, cranberry, amber and cream. Witchfire Sparkles is not in this rotation; Halloween code remains in Git/source for reference.
-- Cranberry Drift has a **20-second color loop**, 4-second rotation, 24-second horizontal travel, 8-second vertical travel and 6-second throb. Its shadow is disabled; the original helper remains available.
+- Cranberry Drift has a **20-second color loop**, 8-second rotation, 48-second horizontal travel, 16-second vertical travel and 6-second throb. Its shadow is disabled; the original helper remains available.
 - Harvest Cider uses a shared 85% liquid/bubble surface, olive bubbles, golden pops and warm cream steam.
 - Addresses **600 WS2811 RGB outputs**. Spatial effects use the existing private 300-pixel map and leave unmapped outputs black. Global output limit remains 200/255, with the website brightness setting at 100%; the blackened connecting section remains disabled.
 - [rollerfeet.com/lights](https://rollerfeet.com/lights/) opens without a password to the six-animation picker, countdown and Next. Picking an effect resets its countdown and resumes automatic cycling. Admin controls retain power, brightness, playlist and duration.
 - Password-protected ArduinoOTA, two-network Wi-Fi retries and LED #1 network/OTA status remain in place. Remote web commands use the existing outbound LNM/IONOS relay.
 
-## 3.5.0 verification and rollback
+## 3.5.1 calmer fall timing
+
+Falling Embers runs at one-quarter speed: 15 pixels/second, 5-second launches and 3.2-second fade. Cranberry Drift motion runs at half its previous speed; its 20-second palette and 6-second throb are unchanged. Each animation still runs for 180 seconds.
+
+3.5.1 build and OTA/reboot verified (1,806 ms uptime after restart); 66,402 JS/C++ parity samples and web controls pass. Simulator 0.1.26 passes all 30 checks. Previous 3.5.0 image/helper remain available for rollback.
+
+## Historical 3.5.0 verification and rollback
 
 OTA upload and restart verified: version 3.5.0, uptime 1,812 ms, OTA ready. All six selections accepted after installation; final state power on, brightness 100%, automatic full playlist, duration 180 seconds, animation 0. Physical outdoor appearance remains for the operator to verify.
 

@@ -9,7 +9,7 @@ try{
  const points=map.slice(0,300);assert.equal(points.length,300);
  const lines=[],expected=[]; const sources=[];
  for(let effect=0;effect<6;effect++){
-  const source=readFileSync(root+'docs/simulator-sources/fall-3.5.0/'+names[effect]+'.js','utf8');sources.push(source); const scope=vm.createContext({});vm.runInContext(source,scope);
+  const source=readFileSync(root+'docs/simulator-sources/fall-3.5.1/'+names[effect]+'.js','utf8');sources.push(source); const scope=vm.createContext({});vm.runInContext(source,scope);
   for(const count of [1,50,600])for(const ms of [0,1,500,1249,1250,2999,3000,6200,7999,10000,15000,19999,20000,20001,60000,179999,4294967295]){
    const positions=Array.from({length:count},(_,i)=>points[i%points.length]);scope.context={time:ms/1000,delta:1/60,count,positions};scope.pixels=positions.map(()=>[0,0,0]);
    vm.runInContext('renderFrame(context,pixels)',scope);
