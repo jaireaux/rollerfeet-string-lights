@@ -1,37 +1,26 @@
-# Rollerfeet string lights
+# Rollerfeet String Lights
 
-A Halloween light display running on a Seeed XIAO ESP32S3 with FastLED, a companion web app, and password-protected wireless firmware updates. Current installed firmware: **3.4.2**. The current code runs without Blynk.
-
-**Updated in 3.4.2:** Liquid and orange bubble pops now share an 85% ±4% surface; bubble tops rise toward that same boundary. Ripple, steam and scheduling are unchanged.
-
-**Previously updated in 3.4.1:** Witch’s Brew now uses your edited simulator logic: liquid around 80% height with the same ripple, bubbles rising to the shared local surface, and wider steam wisps (0.30/0.195). It uses the physical installation map, with unmapped pixels off. Pool/bubbles render before additive steam, so they overlap where your code specifies. The submitted JavaScript is retained as a numerical reference; C++ matches within one RGB level across 4,641 point/time samples. See [Witch’s Brew adaptation](docs/witches-brew.md).
-
-**Current show since 3.4.0:** All seven animations cycle automatically, three minutes each: Throb → Haunted Tide → Orange / Purple → Meteor Rain → Witchfire Sparkles → Red Slosh → Witch’s Brew. Red Slosh is now a completed effect: moving deep-red regions throb from 30–100%, drift left every six seconds, move vertically on a two-second sine cycle and rotate once per second, beneath the original 22-second shadow choreography. Johnny approved the appearance. These playlist and duration defaults also survive restart.
-
-**Available since 3.3.0:** The six-effect show cycles Throb → Haunted Tide → Orange / Purple → Meteor Rain → Witchfire Sparkles → Witch’s Brew, omitting Red Slosh. All seven remain available in the picker.
-
-**Preserved troubleshooting checkpoint (3.2.2):** Red Slosh’s shadow call remains commented out. To resume, select Red Slosh and disable Auto cycle. Its 24/37-second red waves are unchanged; the prior blink/freeze is unresolved.
-
-**Updated in 3.2.1:** Red Slosh now uses broader 24/37-second waves, with separate background and shadow passes. Uncovered pixels keep moving throughout every sweep and pause.
-
-**New in 3.2.0:** Witch’s Brew adds green simmering liquid, rising purple bubbles, orange pops and soft-white steam in the upper third, breathing around 60% brightness. Preview pairs it with Red Slosh. Both use the same draft 300-pixel layout.
-
-**Added in 3.1.0:** Red Slosh uses a draft 300-pixel 2D map to move deep-red waves and a vertical shadow across the scene. Its choreography repeats every 22 seconds. The other effects retain their 600-pixel addressing. [Spatial effect details](docs/red-slosh.md).
+A fall light display on a Seeed XIAO ESP32-S3, with a companion website and password-protected OTA updates. **Installed release: 3.5.0.**
 
 ## What it does now
 
-- Drives **600 individually addressable WS2811 RGB pixels** using orange, purple, and green Halloween colors.
-- Haunted Tide’s wave peaks are about 35% brighter, with the same dark floor and firefly highlights.
-- Runs seven animations: **Throb, Haunted Tide, Orange / Purple, Meteor Rain, Witchfire Sparkles, Red Slosh, and Witch’s Brew**.
-- Provides a phone-friendly companion app at **[rollerfeet.com/lights](https://rollerfeet.com/lights/)**. The public page opens without a password to the animation picker, a countdown, and Next.
-- Starts the selected animation immediately, resets its countdown, and continues cycling through all seven. The current display uses 180 seconds per animation.
-- Unlocks power, brightness, automatic cycling, playlist, and duration controls through **Admin Access Only**, using the web password.
-- Supports **password-protected ArduinoOTA updates over Wi-Fi**, so firmware can be installed without reconnecting USB. It retries two configured Wi-Fi networks and keeps the lights running when the network is unavailable.
-- Uses LED #1 for network and OTA status, returning it to the animation afterward; no-network status remains red.
+- Rotates **Harvest Glow → Autumn Tide → Orchard Bands → Falling Embers → Cranberry Drift → Harvest Cider**, three minutes each.
+- Uses the six approved simulator fall recipes: muted orange, olive, gold, cranberry, amber and cream. Witchfire Sparkles is not in this rotation; Halloween code remains in Git/source for reference.
+- Cranberry Drift has a **20-second color loop**, 4-second rotation, 24-second horizontal travel, 8-second vertical travel and 6-second throb. Its shadow is disabled; the original helper remains available.
+- Harvest Cider uses a shared 85% liquid/bubble surface, olive bubbles, golden pops and warm cream steam.
+- Addresses **600 WS2811 RGB outputs**. Spatial effects use the existing private 300-pixel map and leave unmapped outputs black. Global output limit remains 200/255, with the website brightness setting at 100%; the blackened connecting section remains disabled.
+- [rollerfeet.com/lights](https://rollerfeet.com/lights/) opens without a password to the six-animation picker, countdown and Next. Picking an effect resets its countdown and resumes automatic cycling. Admin controls retain power, brightness, playlist and duration.
+- Password-protected ArduinoOTA, two-network Wi-Fi retries and LED #1 network/OTA status remain in place. Remote web commands use the existing outbound LNM/IONOS relay.
 
-Remote control goes through the IONOS website and an outbound relay on LNM to the controller. No home inbound port or public DDNS address is required. Runtime settings reset after controller restart. Browser firmware uploads are not implemented; OTA uses the Arduino-compatible upload workflow.
+## 3.5.0 verification and rollback
 
-Current supported source lives on **[`main`](https://github.com/jaireaux/rollerfeet-string-lights/tree/main)**, tagged **v3.4.2**. The original v2.0 baseline is preserved in Git history and the legacy source directories. See [web app operation and deployment](docs/web-control.md) and [OTA setup and upload](docs/ota.md).
+OTA upload and restart verified: version 3.5.0, uptime 1,812 ms, OTA ready. All six selections accepted after installation; final state power on, brightness 100%, automatic full playlist, duration 180 seconds, animation 0. Physical outdoor appearance remains for the operator to verify.
+
+Build: ESP32 core 3.3.12 / FastLED 3.10.5; 1,117,071 program bytes and 58,332 global RAM bytes. Host C++ tests, six-effect controller integration and web-control tests pass. 66,402 simulator/C++ samples match within one RGB level except two exact quadrant-edge samples verified to match adjacent-coordinate rounding. Existing Brew parity still passes 4,641 samples. Exact approved simulator 0.1.25 recipes are retained in [docs/simulator-sources/fall-3.5.0](docs/simulator-sources/fall-3.5.0/).
+
+Private LNM OTA image/helper: `/var/lib/sentinelx/uploads/holiday-lights-ota/firmware-3.5.0.bin` and `deploy-3.5.0.py`; active `deploy.py` pins 3.5.0. Prior 3.4.2 firmware and `deploy-3.4.2.py` remain for rollback. Firmware contains credentials and is excluded from Git and public/cloud source exports. Image SHA-256: `e5a50e6135faec41496e8258badc50fd0cb3d212382d0497c185c6a7b593f5bc`.
+
+Source: [GitHub](https://github.com/jaireaux/rollerfeet-string-lights), tag v3.5.0. LNM retained Git: `/media/jaireaux/backup/projects/holiday-lights/`. Drive: `gdrive-jaireaux:LNM/Projects/holiday-lights/`. Main human-facing project record: [Notion](https://app.notion.com/p/3ef76785d91981a2a848da74e9b3f626).
 
 ## Release versions
 
@@ -39,9 +28,11 @@ Firmware and companion website use the same release number. Patch releases (3.0.
 
 For every firmware or website rollout, update this README to reflect current behavior and limitations, update the firmware and website version together, and record changes in CHANGELOG.md before publishing. Verify the installed version after deployment and retain the release source.
 
-## Wi-Fi firmware updates
+## Historical 3.4.2 verification
 
-Current firmware: **3.4.2**. Password-protected ArduinoOTA and two-network Wi-Fi retry support are implemented; the lights continue while Wi-Fi is unavailable. A read-only `/status` endpoint reports the running version. The root page provides password-protected web controls; see [web control setup](docs/web-control.md). Version ota.1 was installed over USB, then ota.2 was successfully uploaded over Wi-Fi and read back after reboot. 3.4.2 build: esp32 core 3.3.12, FastLED 3.10.5, 1,113,019 program bytes and 58,332 global RAM bytes. Nine host C++ tests plus production playlist, submitted-JavaScript numerical parity, and web-control tests pass. OTA read-back verifies 3.4.2; the restored all-seven show starts on Witch’s Brew with power on, brightness 100% and 180-second duration. Outdoor visual validation remains for the operator. Latest quadrant/controller host tests and web-control tests passed; prior full checks cover retry timing/rollover, animation output pausing and the production playlist. LED #1 shows Wi-Fi/OTA status, with OTA priority and brief success confirmations. Offline red remains until the next search or connection. Browser firmware upload and BLE controls are future work. See [OTA setup and upload instructions](docs/ota.md).
+The following is the previous release record, retained for reference. Current installed firmware is 3.5.0.
+
+Previous firmware: **3.4.2**. Password-protected ArduinoOTA and two-network Wi-Fi retry support are implemented; the lights continue while Wi-Fi is unavailable. A read-only `/status` endpoint reports the running version. The root page provides password-protected web controls; see [web control setup](docs/web-control.md). Version ota.1 was installed over USB, then ota.2 was successfully uploaded over Wi-Fi and read back after reboot. 3.4.2 build: esp32 core 3.3.12, FastLED 3.10.5, 1,113,019 program bytes and 58,332 global RAM bytes. Nine host C++ tests plus production playlist, submitted-JavaScript numerical parity, and web-control tests pass. OTA read-back verifies 3.4.2; the restored all-seven show starts on Witch’s Brew with power on, brightness 100% and 180-second duration. Outdoor visual validation remains for the operator. Latest quadrant/controller host tests and web-control tests passed; prior full checks cover retry timing/rollover, animation output pausing and the production playlist. LED #1 shows Wi-Fi/OTA status, with OTA priority and brief success confirmations. Offline red remains until the next search or connection. Browser firmware upload and BLE controls are future work. See [OTA setup and upload instructions](docs/ota.md).
 
 ## Web controls
 

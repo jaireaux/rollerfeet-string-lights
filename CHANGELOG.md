@@ -1,3 +1,11 @@
+## 3.5.0 — 2026-11-01
+
+- Convert the six approved fall simulator recipes to C++ and deploy the six-effect fall rotation. Retain Halloween renderers for reference.
+- Preserve Cranberry Drift’s independent 20-second color loop, slowed motion and disabled shadow; retain Cider’s 85% shared bubble/liquid surface.
+- Update embedded/public website names and six-effect command bounds. Legacy playlist value 2 aliases the full fall list.
+- Retain 600 outputs, existing spatial map, 180-second duration, brightness limit, network status and OTA behavior.
+- OTA/reboot and all six selections verified; outdoor visual review remains pending.
+
 # Release notes
 
 ## 3.4.2 — 2026-10-19

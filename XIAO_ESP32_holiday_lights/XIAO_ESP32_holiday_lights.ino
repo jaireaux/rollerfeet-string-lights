@@ -48,6 +48,12 @@ uint8_t renderHauntedTide(uint32_t elapsedMs);
 uint8_t renderWitchfireSparkles(uint32_t elapsedMs);
 uint8_t renderRedSlosh(uint32_t elapsedMs);
 uint8_t renderWitchesBrew(uint32_t elapsedMs);
+uint8_t renderHarvestGlow(uint32_t elapsedMs);
+uint8_t renderAutumnTide(uint32_t elapsedMs);
+uint8_t renderOrchardBands(uint32_t elapsedMs);
+uint8_t renderFallingEmbers(uint32_t elapsedMs);
+uint8_t renderCranberryDrift(uint32_t elapsedMs);
+uint8_t renderHarvestCider(uint32_t elapsedMs);
 void applySkippedPixels();
 void updateAnimation(uint32_t now);
 void sendCurrentFrame(uint32_t now);
@@ -59,42 +65,37 @@ struct Animation {
   uint8_t (*render)(uint32_t elapsedMs);
 };
 
-// Development previews two selected effects (currently Red Slosh + Witch's Brew).
-// Update this pair as requested; retain the full production list.
+// Fall release: six approved simulator adaptations.
 const Animation animations[] = {
-#if HOLIDAY_LIGHTS_PRODUCTION
-  {"Throb", 50, renderThrob},
-  {"Haunted Tide", hauntedTideFrameMs, renderHauntedTide},
-  {"Orange / Purple", alternatingColorStepMs, renderAlternatingColors},
-  {"Meteor Rain", 20, renderMeteorRain},
-  {"Witchfire Sparkles", sparkleFrameMs, renderWitchfireSparkles},
-#endif
-  {"Red Slosh", 30, renderRedSlosh},
-  {"Witch's Brew", 30, renderWitchesBrew}
+  {"Harvest Glow", 30, renderHarvestGlow},
+  {"Autumn Tide", 30, renderAutumnTide},
+  {"Orchard Bands", 30, renderOrchardBands},
+  {"Falling Embers", 30, renderFallingEmbers},
+  {"Cranberry Drift", 30, renderCranberryDrift},
+  {"Harvest Cider", 30, renderHarvestCider},
 };
 constexpr uint8_t animationCount = sizeof(animations) / sizeof(animations[0]);
 uint8_t currentAnimationIndex = 0;
 
 // The web controls expose every completed effect without changing the preview default.
 const Animation allAnimations[] = {
-  {"Throb", 50, renderThrob},
-  {"Haunted Tide", hauntedTideFrameMs, renderHauntedTide},
-  {"Orange / Purple", alternatingColorStepMs, renderAlternatingColors},
-  {"Meteor Rain", 20, renderMeteorRain},
-  {"Witchfire Sparkles", sparkleFrameMs, renderWitchfireSparkles},
-  {"Red Slosh", 30, renderRedSlosh},
-  {"Witch's Brew", 30, renderWitchesBrew}
+  {"Harvest Glow", 30, renderHarvestGlow},
+  {"Autumn Tide", 30, renderAutumnTide},
+  {"Orchard Bands", 30, renderOrchardBands},
+  {"Falling Embers", 30, renderFallingEmbers},
+  {"Cranberry Drift", 30, renderCranberryDrift},
+  {"Harvest Cider", 30, renderHarvestCider},
 };
 constexpr uint8_t allAnimationCount = sizeof(allAnimations) / sizeof(allAnimations[0]);
 const Animation previewAnimations[] = {
-  {"Red Slosh", 30, renderRedSlosh},
-  {"Witch's Brew", 30, renderWitchesBrew}
+  {"Cranberry Drift", 30, renderCranberryDrift},
+  {"Harvest Cider", 30, renderHarvestCider}
 };
 constexpr uint8_t previewAnimationCount = 2;
 bool lightsEnabled = true, automaticCycling = true;
 bool fullPlaylist = true;
-bool showPlaylist = false; // Completed seven-effect show, including Red Slosh.
-uint8_t brightnessPercent = 100, manualAnimationIndex = 2;
+bool showPlaylist = false; // Legacy state flag retained for API compatibility.
+uint8_t brightnessPercent = 100, manualAnimationIndex = 0;
 uint32_t runtimeDurationMs = animationDurationMs;
 
 const Animation &selectedAnimation() {
@@ -116,7 +117,7 @@ bool applyLightCommand(const char *action, uint32_t value, uint32_t now) {
   else if (strcmp(action, "animation") == 0 && value < allAnimationCount) {
     manualAnimationIndex = value;
     fullPlaylist = true;
-    showPlaylist = false; // Picking any effect explicitly selects all seven.
+    showPlaylist = false; // Picking an effect resets the fall rotation countdown.
     currentAnimationIndex = value;
     automaticCycling = true;
     animationClock.start(now);
@@ -132,7 +133,7 @@ bool applyLightCommand(const char *action, uint32_t value, uint32_t now) {
     animationClock.start(now);
   } else if (strcmp(action, "playlist") == 0 && value <= 2) {
     fullPlaylist = value != 0;
-    showPlaylist = value == 2;
+    showPlaylist = false; // Legacy playlist 2 aliases the full fall rotation.
     automaticCycling = true;
     currentAnimationIndex = 0;
     animationClock.start(now);
@@ -143,8 +144,6 @@ bool applyLightCommand(const char *action, uint32_t value, uint32_t now) {
     if (automaticCycling) currentAnimationIndex = (currentAnimationIndex + 1) %
         (fullPlaylist ? allAnimationCount : previewAnimationCount);
     else manualAnimationIndex = (manualAnimationIndex + 1) % allAnimationCount;
-    if (automaticCycling && fullPlaylist && showPlaylist && currentAnimationIndex == 5)
-      currentAnimationIndex = 6; // Skip Red Slosh in the six-effect show.
     animationClock.start(now);
   } else return false;
   updateAnimation(now);
@@ -171,7 +170,7 @@ void setup() {
       .setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(outputBrightness);
   animationClock.start(millis()); // Start after initialization, not before setup.
-  Serial.println("Halloween playlist starting:");
+  Serial.println("Fall playlist starting:");
   Serial.println(selectedAnimation().name);
   setStatusFrameCallback(refreshStatusFrame);
   beginNetworkUpdates();
@@ -188,7 +187,6 @@ void loop() {
 void updateAnimation(uint32_t now) {
   if (automaticCycling && animationClock.finished(now, runtimeDurationMs)) {
     currentAnimationIndex = (currentAnimationIndex + 1) % (fullPlaylist ? allAnimationCount : previewAnimationCount);
-    if (fullPlaylist && showPlaylist && currentAnimationIndex == 5) currentAnimationIndex = 6;
     animationClock.start(now);
     Serial.println(selectedAnimation().name);
   }
